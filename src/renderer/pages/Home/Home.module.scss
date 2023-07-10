@@ -1,0 +1,148 @@
+.frame {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    overflow-y: overlay;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.header {
+    .logo {
+        display: block;
+        // animation: logo 3.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        background: linear-gradient(to bottom, var(--base), var(--base-green));
+        height: 68px;
+        width: 53px;
+        border-radius: 90px;
+        margin: 0 auto;
+    }
+
+    .name {
+        font-family: "Porpora";
+        font-size: 1.6em;
+        text-align: center;
+        margin-top: 16px;
+        color: var(--primary);
+
+    }
+
+    .version {
+        font-family: monospace;
+        text-align: center;
+        color: var(--secondary);
+        margin-top: 4px;
+    }
+}
+
+.create {
+    display: block;
+    text-align: center;
+    font-size: 0.8em;
+    padding: 9px 12px;
+    font-weight: 500;
+    color: var(--base);
+    background: Var(--bg-secondary);
+    border-radius: 12px;
+    margin: 32px auto;
+
+    &:hover {
+        cursor: pointer;
+        color: var(--base-hover);
+        background: var(--bg-tertiary);
+    }
+}
+
+.or {
+    font-size: 0.75em;
+    color: var(--secondary);
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.piles {
+    font-size: 0.8em;
+    border-radius: 12px;
+    // border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+
+
+    .pile {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+        padding: 7px 7px 7px 9px;
+        color: var(--primary);
+
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .name {
+            font-weight: 500;
+        }
+
+        .src {
+            margin-top: 1px;
+            font-size: 0.9em;
+            color: var(--secondary);
+        }
+
+        .right {
+            display: flex;
+            align-items: center;
+            margin-left: 64px;
+
+            .icon {
+                margin-right: 8px;
+                color: var(--secondary);
+                height: 18px;
+
+                &:hover {
+                    cursor: pointer;
+                    color: var(--base-red);
+                }
+            }
+        }
+    }
+
+    .button {
+        background: var(--bg-secondary);
+        color: var(--primary);
+        font-size: 0.95em;
+        padding: 9px 22px;
+        line-height: 1;
+        border-radius: 9px;
+
+        &:hover {
+            cursor: pointer;
+            background: var(--bg-tertiary);
+        }
+    }
+}
+
+.footer {
+    margin: 0 auto;
+
+    .unms {
+        display: block;
+        height: 16px;
+        width: 30px;
+        background: var(--secondary);
+        border-radius: 0 90px 90px 0;
+        margin: 0 auto;
+        margin-bottom: 12px;
+    }
+
+    font-size: 0.75em;
+    color: var(--secondary);
+    text-align: center;
+    margin-top: 25%;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    max-width: 200px;
+    opacity: 0.5;
+}

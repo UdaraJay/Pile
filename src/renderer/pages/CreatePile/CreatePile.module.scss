@@ -1,0 +1,138 @@
+.frame {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    overflow-y: overlay;
+}
+
+.card {
+    margin-top: -64px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 54px;
+
+    .logo {
+        display: block;
+        background: linear-gradient(to bottom, var(--base), var(--base-green));
+        height: 68px;
+        width: 53px;
+        border-radius: 90px;
+        margin-bottom: 4px;
+    }
+
+    .name {
+        font-family: "Porpora";
+        font-size: 1.6em;
+        margin-top: 16px;
+        color: var(--primary);
+
+    }
+
+}
+
+.create {
+    display: block;
+    text-align: center;
+    font-size: 0.8em;
+    padding: 9px 12px;
+    font-weight: 500;
+    color: var(--base);
+    background: Var(--bg-secondary);
+    border-radius: 12px;
+    margin: 32px auto;
+
+    &:hover {
+        cursor: pointer;
+        color: var(--base-hover);
+        background: var(--bg-tertiary);
+    }
+}
+
+.form {
+    .input {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 20px 0;
+
+
+        .des {
+            font-size: 0.8em;
+            color: var(--secondary);
+            width: 240px;
+
+            label {
+                display: block;
+                font-weight: 500;
+                color: var(--primary);
+                margin-bottom: 2px;
+            }
+        }
+
+
+        input {
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: 12px;
+            padding: 9px 12px;
+            line-height: 0.9;
+            outline: none;
+            font-size: 0.8em;
+            width: 200px;
+
+            &:focus {
+                background: var(--bg-tertiary);
+            }
+        }
+
+        button {
+            display: block;
+            text-align: center;
+            font-size: 0.8em;
+            padding: 9px 12px;
+            font-weight: 500;
+            color: var(--base);
+            background: Var(--bg-secondary);
+            border-radius: 12px;
+            border: none;
+            appearance: none;
+            outline: none;
+
+            &:hover {
+                cursor: pointer;
+                color: var(--base-hover);
+                background: var(--bg-tertiary);
+            }
+        }
+    }
+
+
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 40px;
+
+    .button {
+        text-align: center;
+        font-size: 0.8em;
+        padding: 9px 12px;
+        font-weight: 500;
+        color: var(--base);
+        background: Var(--bg-secondary);
+        border-radius: 12px;
+        width: 200px;
+
+        &:hover {
+            cursor: pointer;
+            color: var(--base-hover);
+            background: var(--bg-tertiary);
+        }
+    }
+}

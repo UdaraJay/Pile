@@ -1,0 +1,5 @@
+export const ServerIcon = props => {
+    return (
+        <svg {...props} height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd" transform="translate(2 4)"><path d="m.5 10.5v-2c0-1.1045695.8954305-2 2-2h12c1.1045695 0 2 .8954305 2 2v2c0 1.1045695-.8954305 2-2 2h-12c-1.1045695 0-2-.8954305-2-2z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><path d="m4.5 9.5c0-.55228475-.44771525-1-1-1s-1 .44771525-1 1c0 .5522847.44771525 1 1 1s1-.4477153 1-1z" fill="currentColor" /><path d="m.5 4.49375668.00936503-2c.00344048-1.10212675.89785814-1.99375668 1.99999025-1.99375668h11.99057232c1.0543617 0 1.9181651.81587779 1.9945142 1.85073766l.005476.15550566-.009365 2c-.0034405 1.10212675-.8978582 1.99375668-1.9999903 1.99375668h-11.9905625c-1.05437154 0-1.91817487-.81587779-1.99452401-1.85073766z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><path d="m4.5 3.5c0-.55228475-.44771525-1-1-1s-1 .44771525-1 1 .44771525 1 1 1 1-.44771525 1-1z" fill="currentColor" /></g></svg>
+    )
+}

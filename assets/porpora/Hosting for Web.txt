@@ -1,0 +1,21 @@
+In order to use Collletttivo typefaces on your website, you will need to:
+
+#1 Upload the .woff and .woff2 files to your web server (or .ttf and .woff2 in case of a variable version of the typeface)
+
+#2 In your site's CSS file, add an @font-face rule, similar to this:
+
+@font-face {
+  font-family: "FONT NAME";
+  src: url("[directory_folder]/FILE_NAME.woff2") format("woff2"),
+       url("[directory_folder]/FILE_NAME.woff") format("woff");
+}
+
+#3 Now that you have defined a font-face rule, you can call it anywhere else in your stylesheet like so:
+
+h1 {
+  font-family: "FONT NAME";
+}
+
+
+
+PLEASE NOTE: we DO NOT offer a webfoot hosting service, please do not reference the font files on our server when declaring font-face rules on your website. Files might change name and directory over time, breaking your font-face rules. 

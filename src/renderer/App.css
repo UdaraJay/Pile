@@ -1,0 +1,77 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+
+/* Root variables for app theme, dark and light mode */
+:root {
+  --translucent: rgba(255, 255, 255, 0.5);
+  --sidebar-width: 250px;
+  --nav-height: 52px;
+
+  --primary: #0b0b0b;
+  --secondary: #626262;
+
+  --base: #4d80e6;
+  --base-hover: #2b5bbb;
+  --base-green: #e6e04d;
+  --base-red: #e64d4d;
+
+  --active: #c69100;
+  --active-hover: #946d00;
+  --active-text: #fff;
+
+  --border: #e4e4e4;
+
+  --bg: #fff;
+  --bg-secondary: rgb(246, 246, 246);
+  --bg-tertiary: rgb(220, 220, 220);
+  --bg-color-secondary-hover: rgb(226, 226, 226);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #818181;
+  }
+}
+
+@font-face {
+  font-family: 'Porpora';
+  font-weight: 400;
+  font-display: swap;
+  src: url('../../assets/porpora/Porpora-Regular.woff2') format('woff2'),
+    url('../../assets/porpora/Porpora-Regular.woff') format('woff');
+}
+
+@import '../../assets/inter/inter.css';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  color: var(--primary);
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  overflow-x: hidden;
+  /* height: 100vh; */
+  /* background: var(--bg); */
+  font-family: 'Inter', sans-serif;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  height: fit-content;
+  width: fit-content;
+}
+
+a:hover {
+  opacity: 1;
+  text-decoration: none;
+}

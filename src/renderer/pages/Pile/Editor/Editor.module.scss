@@ -1,0 +1,214 @@
+.frame {
+    display: block;
+    margin-left: 1px;
+    backdrop-filter: blur(10);
+}
+
+.header {
+    display: flex;
+    font-size: 0.95em;
+    margin: 0 -5px;
+    margin-bottom: 5px;
+
+    .button {
+        color: var(--secondary);
+        padding: 4px 5px;
+        border-radius: 6px;
+        line-height: 1;
+        transition: all ease-in-out 120ms;
+        opacity: 0.5;
+        user-select: none;
+
+        &:hover {
+            cursor: pointer;
+            background: var(--bg-secondary);
+            color: var(--primary);
+            opacity: 1;
+        }
+
+        &:active {
+            cursor: pointer;
+            background: var(--bg-tertiary);
+        }
+    }
+}
+
+.editor {
+    display: block;
+
+    width: 100%;
+    transition: all ease-in-out 120ms;
+
+    p {
+        font-size: 1em;
+    }
+
+    &.editorBig {
+        p {
+            font-size: 1.2em;
+            margin-top: -2px;
+        }
+    }
+}
+
+.media {
+    display: block;
+    // overflow-x: auto;
+    position: relative;
+    height: 0px;
+
+    &.open {
+        height: 430px;
+    }
+
+    .scroll {
+        position: absolute;
+        top: 0;
+        left: -51px;
+        overflow-x: auto;
+        width: calc(100vw - var(--sidebar-width));
+        padding-left: 16px;
+        padding-bottom: 12px;
+
+        &.new {
+            left: -19px;
+        }
+
+        @media only screen and (max-width: 909px) {
+
+            width: 100vw;
+        }
+    }
+
+    .container {
+        white-space: nowrap;
+    }
+
+    .image {
+        display: inline-block;
+        margin-right: 16px;
+        user-select: none;
+        position: relative;
+
+        &:hover {}
+
+        &:active {
+            cursor: grabbing;
+        }
+
+        img {
+            max-height: 420px;
+            border-radius: 22px;
+        }
+
+        .close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            height: 32px;
+            width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--translucent);
+            color: var(--secondary);
+            backdrop-filter: filter(20px);
+            font-weight: 500;
+            border-radius: 90px;
+            transition: all ease-in-out 120ms;
+
+            .icon {
+                height: 20px;
+                width: 20px;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: var(--bg);
+                color: var(--base);
+            }
+        }
+    }
+}
+
+.footer {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .left {
+        display: flex;
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 26px;
+            width: 32px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            transition: all ease-in-out 120ms;
+            margin-right: 5px;
+
+            .icon {
+                height: 18px;
+                width: 18px;
+            }
+
+            &.active {
+                background: var(--bg-secondary);
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: var(--bg-tertiary);
+                color: var(--primary);
+            }
+
+            &:active {
+                background: var(--bg-secondary);
+            }
+        }
+    }
+
+    .right {
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 28px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            transition: all ease-in-out 120ms;
+            padding: 0 14px;
+            line-height: 28px;
+            color: var(--base);
+            // color: var(--active-text);
+            font-size: 0.9em;
+            border-radius: 90px;
+            user-select: none;
+
+            .icon {
+                height: 18px;
+                width: 18px;
+            }
+
+            &.active {
+                background: var(--bg-secondary);
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: var(--bg-tertiary);
+                color: var(--primary);
+            }
+
+            &:active {
+                background: var(--bg-secondary);
+            }
+        }
+    }
+
+
+}

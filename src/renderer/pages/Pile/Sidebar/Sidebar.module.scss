@@ -1,0 +1,36 @@
+.sidebar {
+    font-size: 0.8em;
+    margin: 18px;
+    margin-top: 6px;
+
+    .stats {
+        margin-bottom: 20px;
+        color: var(--secondary);
+        opacity: 0.5;
+        font-size: 1.1em;
+
+        .stat {
+            margin-bottom: 6px;
+        }
+    }
+
+    .title {
+        margin-bottom: 10px;
+        color: var(--secondary);
+        font-weight: 500;
+    }
+
+    .areas {
+        display: flex;
+        margin: -3px;
+        flex-wrap: wrap;
+
+        .area {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin: 3px;
+            padding: 4px 6px;
+            user-select: none;
+        }
+    }
+}

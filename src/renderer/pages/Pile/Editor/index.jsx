@@ -1,183 +1,135 @@
-import './editor.scss';
+import './ProseMirror.scss';
 import styles from './Editor.module.scss';
 import { useCallback, useState, useEffect } from 'react';
-import CharacterCount from '@tiptap/extension-character-count';
-import { useEditor, EditorContent } from '@tiptap/react';
-import Placeholder from '@tiptap/extension-placeholder';
-import StarterKit from '@tiptap/starter-kit';
 import { Extension } from '@tiptap/core';
-import { DiscIcon, PaperclipIcon, TrashIcon } from 'renderer/icons';
-import { usePostsContext } from 'renderer/context/PostsContext';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import CharacterCount from '@tiptap/extension-character-count';
+import TaskItem from '@tiptap/extension-task-item';
+import TaskList from '@tiptap/extension-task-list';
+import Placeholder from '@tiptap/extension-placeholder';
+import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { postFormat } from 'renderer/utils/fileOperations';
 import { useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
-import { nanoid } from 'nanoid';
-import { usePilesContext } from 'renderer/context/PilesContext';
+import TagButton from './TagButton';
+import TagList from './TagList';
+import Attachments from './Attachments';
+import usePost from 'renderer/hooks/usePost';
 
 export default function Editor({
-  content = '',
-  existingAttachments = [],
-  onSubmit = () => {},
+  postPath = null,
   editable = false,
-  isNew = false,
+  setEditable = () => {},
 }) {
-  console.log('editable', editable);
-  const { createPost } = usePostsContext();
-  const { currentPile } = usePilesContext();
-  const { pileName } = useParams();
-  const [area, setArea] = useState(null);
-  const [attachments, setAttachments] = useState(existingAttachments);
-  const [hasTitle, setHasTitle] = useState(false);
-  const [hasArea, setHasArea] = useState(false);
-  const [post, setPost] = useState(postFormat);
+  const {
+    post,
+    savePost,
+    addTag,
+    removeTag,
+    attachToPost,
+    detachFromPost,
+    setContent,
+    resetPost,
+  } = usePost(postPath);
 
-  const onAddAttachment = async () => {
-    const storePath = window.electron.joinPath(
-      currentPile.path,
-      currentPile.name
-    );
-
-    const newAttachments = await window.electron.ipc.invoke('open-file', {
-      storePath: storePath,
-    });
-
-    const correctedPaths = newAttachments.map((path) => {
-      const pathArr = path.split('/').slice(-4);
-      const newPath = window.electron.joinPath(...pathArr);
-
-      return newPath;
-    });
-
-    setAttachments((attachments) => [...attachments, ...correctedPaths]);
-  };
-
-  const onRemoveAttachment = (attachment) => {
-    const newAtt = attachments.filter((a) => a !== attachment);
-    setAttachments(newAtt);
-
-    const json = editor.getJSON();
-    onSubmit({ ...postFormat, content: json, attachments: newAtt });
-
-    const fullPath = window.electron.joinPath(
-      currentPile.path,
-      currentPile.name,
-      attachment
-    );
-    // delete the file
-    window.electron.deleteFile(fullPath, (err) => {
-      if (err) {
-        console.error('There was an error:', err);
-      } else {
-        console.log('File was deleted successfully');
-      }
-    });
-  };
-
+  const isNew = !postPath;
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: 'Stream your consciousness...',
+        placeholder: 'What are you thinking?',
       }),
       CharacterCount.configure({
         limit: 100000,
       }),
     ],
     editable: editable,
-    content: content,
+    content: post?.content || '',
+    onUpdate: ({ editor }) => {
+      setContent(editor.getHTML());
+    },
   });
+
+  useEffect(() => {
+    if (editor) {
+      if (post?.content != editor.getHTML()) {
+        editor.commands.setContent(post.content);
+      }
+    }
+  }, [post, editor]);
+
+  const triggerAttachment = () => attachToPost();
 
   useEffect(() => {
     if (editor) {
       editor.setEditable(editable);
     }
-  }, [editor, editable]);
+  }, [editable]);
 
-  const handleSubmit = useCallback(() => {
-    const json = editor.getJSON();
-    onSubmit({ ...postFormat, content: json, attachments: attachments });
+  const handleSubmit = useCallback(async () => {
+    const html = editor.getHTML();
+    await savePost(html);
 
     if (isNew) {
-      editor.commands.clearContent(true);
-      setAttachments([]);
-    } else {
-      onSubmit({ ...postFormat, content: json, attachments: attachments });
+      resetPost();
+      return;
     }
-  }, [editor, attachments, isNew]);
+
+    setEditable(false);
+  }, [editor, isNew, post]);
 
   const isBig = useCallback(() => {
     return editor?.storage.characterCount.characters() < 280;
   }, [editor]);
 
-  const onDragStart = (path) => {
-    // window.electron.startDrag(path);
-  };
-
-  const renderAttachments = () => {
-    const basePath = window.electron.joinPath(
-      currentPile.path,
-      currentPile.name
-    );
-    return attachments.map((attachment) => {
-      const image_exts = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-      const extension = attachment.split('.').pop();
-      const imgPath = 'local://' + basePath + '/' + attachment;
-
-      if (image_exts.includes(extension)) {
-        return (
-          <div className={styles.image}>
-            {editable && (
-              <div
-                className={styles.close}
-                onClick={() => onRemoveAttachment(attachment)}
-              >
-                <TrashIcon className={styles.icon} />
-              </div>
-            )}
-
-            <img src={imgPath} />
-          </div>
-        );
-      }
-    });
-  };
+  if (!post) return;
 
   return (
     <div className={styles.frame}>
-      {/* {editable && (
-        <div className={styles.header}>
-          <div className={styles.button}>+title</div>
-          <div className={styles.button}>+area</div>
-        </div>
-      )} */}
-
+      {/* <div className={styles.header}>
+        <TagList tags={post.data.tags} removeTag={removeTag} />
+      </div> */}
       <EditorContent
         key={'new'}
         className={`${styles.editor} ${isBig() ? styles.editorBig : ''}`}
         editor={editor}
-        placeholder="Stream your consciousness..."
       />
 
-      <div
-        className={`${styles.media} ${
-          attachments.length > 0 ? styles.open : ''
-        }`}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.75 }}
       >
-        <div className={`${styles.scroll} ${isNew && styles.new}`}>
-          <div className={styles.container}>{renderAttachments()}</div>
+        <div
+          className={`${styles.media} ${
+            post?.data?.attachments.length > 0 ? styles.open : ''
+          }`}
+        >
+          <div className={`${styles.scroll} ${isNew && styles.new}`}>
+            <div className={styles.container}>
+              <Attachments
+                post={post}
+                editable={editable}
+                onRemoveAttachment={detachFromPost}
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {editable && (
         <div className={styles.footer}>
           <div className={styles.left}>
-            <div className={styles.button} onClick={onAddAttachment}>
-              <PaperclipIcon className={styles.icon} />
+            <div className={styles.button} onClick={triggerAttachment}>
+              <PhotoIcon className={styles.icon} />
             </div>
-            <div className={styles.button}>
-              <DiscIcon className={styles.icon} />
-            </div>
+            {/* <TagButton
+              tags={post.data.tags}
+              addTag={addTag}
+              removeTag={removeTag}
+            /> */}
           </div>
           <div className={styles.right}>
             <div className={styles.button} onClick={handleSubmit}>

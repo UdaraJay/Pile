@@ -5,11 +5,28 @@ import { Link } from 'react-router-dom';
 import { usePilesContext } from '../../context/PilesContext';
 
 const pilesList = ['Users/uj/Personal', 'Users/uj/Startup', 'Users/uj/School'];
+
+const quotes = [
+  // 'One moment at a time',
+  'Scribe your soul',
+  // 'Reflections reimagined',
+  // 'Look back, leap forward!',
+  // 'Tales of you - for every human is an epic in progress',
+  'Your thoughtopia awaits',
+  'The quintessence of quiet contemplation',
+  // 'Journal jamboree',
+  // 'Because even a mound starts with a single memory!',
+];
+
 export default function Home() {
   const { piles } = usePilesContext();
   const [folderExists, setFolderExists] = useState(false);
+  const [quote, setQuote] = useState(quotes[0]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    setQuote(quote);
+  }, []);
 
   const renderPiles = () => {
     return piles.map((pile: any) => {
@@ -33,23 +50,38 @@ export default function Home() {
 
   return (
     <div className={styles.frame}>
-      <div className={styles.header}>
-        <div className={styles.logo}></div>
-        <div className={styles.name}>Pile</div>
-        <div className={styles.version}>version 0.0.3</div>
-      </div>
+      <div className={styles.bg}></div>
+      <div className={styles.wrapper}>
+        <div className={styles.header}>
+          <div className={styles.logo}></div>
+          <div className={styles.name}>Pile</div>
+          <div className={styles.version}>{quote}</div>
+        </div>
 
-      <Link to="/new-pile" className={styles.create}>
-        Create a new pile →
-      </Link>
+        <Link to="/new-pile" className={styles.create}>
+          Create a new pile →
+        </Link>
 
-      <div className={styles.or}>or open an existing pile</div>
+        <div className={styles.or}>or open an existing pile</div>
 
-      <div className={styles.piles}>{renderPiles()}</div>
+        <div className={styles.piles}>{renderPiles()}</div>
 
-      <div className={styles.footer}>
-        <div className={styles.unms}></div>
-        Designed by <b>unms</b>, an ultra new media studio. <br />
+        <div className={styles.footer}>
+          <div className={styles.unms}></div>
+          Weaving binary dreams
+          <br />, signed Udara
+          <div className={styles.nav}>
+            <Link to="/license" className={styles.link}>
+              License
+            </Link>
+            <Link to="/credits" className={styles.link}>
+              Credits
+            </Link>
+            <Link to="/license" className={styles.link}>
+              Learn more
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

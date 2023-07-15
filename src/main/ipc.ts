@@ -1,23 +1,82 @@
 import { ipcMain, app, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import pileWatcherService from '../workers/pileWatcher';
+import pileHelper from './utils/PileHelper';
+import pileIndex from './utils/PileIndex';
+import pileTags from './utils/PileTags';
 
+const matter = require('gray-matter');
+
+// Index operations
+ipcMain.handle('index-load', (event, pilePath) => {
+  const index = pileIndex.load(pilePath);
+  return index;
+});
+
+ipcMain.handle('index-get', (event) => {
+  const index = pileIndex.get();
+  return index;
+});
+
+ipcMain.handle('index-add', (event, filePath) => {
+  const index = pileIndex.add(filePath);
+  return index;
+});
+
+ipcMain.handle('index-remove', (event, filePath) => {
+  const index = pileIndex.remove(filePath);
+  return index;
+});
+
+// Tag operations
+ipcMain.handle('tags-load', (event, pilePath) => {
+  const tags = pileTags.load(pilePath);
+  return tags;
+});
+
+ipcMain.handle('tags-get', (event) => {
+  const tags = pileTags.get();
+  return tags;
+});
+
+ipcMain.handle('tags-sync', (event, filePath) => {
+  pileTags.sync(filePath);
+});
+
+ipcMain.handle('tags-add', (event, { tag, filePath }) => {
+  pileTags.add(tag, filePath);
+});
+
+ipcMain.handle('tags-remove', (event, { tag, filePath }) => {
+  pileTags.remove(tag, filePath);
+});
+
+// File operations
 ipcMain.on('update-file', (event, { path, content }) => {
-  pileWatcherService.updateFile(path, content);
+  pileHelper.updateFile(path, content);
 });
 
 ipcMain.on('change-folder', (event, newPath) => {
-  pileWatcherService.changeWatchFolder(newPath);
+  pileHelper.changeWatchFolder(newPath);
+});
+
+ipcMain.handle('matter-parse', async (event, file) => {
+  const post = matter(file);
+  return post;
+});
+
+ipcMain.handle('matter-stringify', async (event, { content, data }) => {
+  const stringifiedContent = matter.stringify(content, data);
+  return stringifiedContent;
 });
 
 ipcMain.handle('get-files', async (event, dirPath) => {
-  const files = await pileWatcherService.getFilesInFolder(dirPath);
+  const files = await pileHelper.getFilesInFolder(dirPath);
   return files;
 });
 
 ipcMain.handle('get-file', async (event, filePath) => {
-  const content = await pileWatcherService.getFile(filePath);
+  const content = await pileHelper.getFile(filePath);
   return content;
 });
 

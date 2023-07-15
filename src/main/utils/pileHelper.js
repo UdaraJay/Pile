@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { ipcMain } = require('electron');
 
-class PileWatcherService {
+class PileHelper {
   constructor() {
     this.watcher = null;
   }
@@ -33,7 +33,23 @@ class PileWatcherService {
     this.watchFolder(newPath);
   }
 
+  getMarkdownFiles(directory) {
+    return new Promise((resolve, reject) => {
+      glob(path.join(directory, '**', '*.md'), (error, files) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(files);
+        }
+      });
+    });
+  }
+
   async getFilesInFolder(dirPath) {
+    if (!fs.existsSync(dirPath)) {
+      return [];
+    }
+
     let entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
     let files = entries
       .filter((file) => !file.isDirectory())
@@ -55,4 +71,4 @@ class PileWatcherService {
   }
 }
 
-module.exports = new PileWatcherService();
+module.exports = new PileHelper();

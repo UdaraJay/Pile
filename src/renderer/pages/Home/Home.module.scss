@@ -3,9 +3,39 @@
     flex-direction: column;
     justify-content: center;
     height: 100vh;
+    width: 100vw;
     overflow-y: overlay;
-    max-width: 420px;
+    position: relative;
+}
+
+.wrapper {
+    position: relative;
+    max-width: 380px;
     margin: 0 auto;
+}
+
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background:
+        linear-gradient(to top, var(--base), transparent),
+        url(../../../../assets/noise.svg);
+    filter: contrast(170%) brightness(1000%);
+    // mix-blend-mode: multiply;
+}
+
+.bgOverlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: moccasin;
+    mix-blend-mode: multiply;
 }
 
 .header {
@@ -29,10 +59,14 @@
     }
 
     .version {
-        font-family: monospace;
         text-align: center;
         color: var(--secondary);
         margin-top: 4px;
+        font-size: 0.85em;
+        max-width: 200px;
+        margin: 6px auto;
+        line-height: 1.45;
+
     }
 }
 
@@ -65,14 +99,14 @@
     font-size: 0.8em;
     border-radius: 12px;
     // border: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(10px);
-
+    overflow: hidden;
 
     .pile {
         display: flex;
         justify-content: space-between;
-        border-bottom: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        margin-bottom: 1px;
         padding: 7px 7px 7px 9px;
         color: var(--primary);
 
@@ -126,6 +160,12 @@
 
 .footer {
     margin: 0 auto;
+    font-size: 0.75em;
+    color: var(--secondary);
+    text-align: center;
+    margin-top: 25%;
+    line-height: 1.4;
+    opacity: 0.5;
 
     .unms {
         display: block;
@@ -137,12 +177,17 @@
         margin-bottom: 12px;
     }
 
-    font-size: 0.75em;
-    color: var(--secondary);
-    text-align: center;
-    margin-top: 25%;
-    margin-bottom: 16px;
-    line-height: 1.4;
-    max-width: 200px;
-    opacity: 0.5;
+    .nav {
+        margin-top: 22px;
+
+        .link {
+            color: Var(--secondary);
+            margin: 0 1em;
+            transition: all ease-in-out 120ms;
+
+            &:hover {
+                color: var(--primary);
+            }
+        }
+    }
 }

@@ -1,11 +1,10 @@
    .ProseMirror {
        outline: none;
-       min-height: 40px;
+       min-height: 50px;
        display: block;
        position: relative;
+       width: calc(100% - 120px);
        max-width: 600px;
-       width: 100%;
-
 
        p.is-editor-empty:first-child::before {
            color: #adb5bd;
@@ -24,13 +23,45 @@
            line-height: 1.45;
        }
 
-       strong {
-           font-weight: 550;
-       }
-
        ul,
        ol {
            padding: 0 1rem;
+       }
+
+       ul[data-type='taskList'] {
+           margin: 0;
+           padding: 0;
+
+           li {
+               display: flex;
+               align-items: center;
+               margin: 0 0 4px 0;
+
+               >label {
+                   display: flex;
+                   align-items: center;
+                   flex: 0 0 auto;
+                   margin-right: 0.5rem;
+                   user-select: none;
+                   height: 18px;
+                   width: 18px;
+
+                   input {
+                       background: blue;
+                       height: 16px;
+                       width: 16px;
+                       margin: 0;
+                       padding: 0;
+                       border-radius: 8px;
+                       border: 1px solid var(--border);
+                   }
+
+               }
+
+               >div {
+                   flex: 1 1 auto;
+               }
+           }
        }
 
        h1,

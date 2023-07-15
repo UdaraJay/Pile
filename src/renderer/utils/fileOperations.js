@@ -4,6 +4,7 @@ const postFormat = {
   createdAt: null,
   updatedAt: null,
   attachments: [],
+  color: null,
   area: null,
   tags: [],
   replies: [],
@@ -27,7 +28,7 @@ const getFormattedTimestamp = () => {
   const minutes = String(currentDate.getMinutes()).padStart(2, '0');
   const seconds = String(currentDate.getSeconds()).padStart(2, '0');
 
-  const fileName = `${year}${month}${day}-${hours}${minutes}${seconds}.json`;
+  const fileName = `${year}${month}${day}-${hours}${minutes}${seconds}.md`;
 
   return fileName;
 };
@@ -90,10 +91,10 @@ const getFiles = async (dir) => {
   return files;
 };
 
-const savePostToFile = (path, post) => {
+const saveFile = (path, file) => {
+  console.log('saving...', path, file);
   return new Promise((resolve, reject) => {
-    const file = { ...postFormat, ...post };
-    window.electron.writeFile(path, JSON.stringify(file), (err) => {
+    window.electron.writeFile(path, file, (err) => {
       if (err) {
         console.error('Error writing to file.', err);
         reject(err);
@@ -104,12 +105,17 @@ const savePostToFile = (path, post) => {
   });
 };
 
+const generateMarkdown = (content, data) => {
+  return window.electron.ipc.invoke('matter-stringify', { content, data });
+};
+
 export {
   postFormat,
   createDirectory,
-  savePostToFile,
+  saveFile,
   getFiles,
   getPathByFileName,
   getDirectoryPath,
   getFilePathForNewPost,
+  generateMarkdown,
 };

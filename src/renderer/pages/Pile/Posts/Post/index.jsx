@@ -3,50 +3,34 @@ import styles from './Post.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { usePostsContext } from 'renderer/context/PostsContext';
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { postFormat } from 'renderer/utils/fileOperations';
 import Editor from '../../Editor';
 import * as fileOperations from 'renderer/utils/fileOperations';
 import { usePilesContext } from 'renderer/context/PilesContext';
+import usePost from 'renderer/hooks/usePost';
 
-export default function Post({ postName }) {
+export default function Post({ postPath }) {
   const { currentPile } = usePilesContext();
-  const { updatePost } = usePostsContext();
-  const [post, setPost] = useState();
+  const { post, cycleColor } = usePost(postPath);
   const [editable, setEditable] = useState(false);
-  const { getPost } = usePostsContext();
-
   const toggleEditable = () => setEditable(!editable);
-
-  useEffect(() => {
-    getPost(postName).then((post) => {
-      setPost(post);
-    });
-  }, [postName]);
-
-  // const post = getPost();
-
-  const onSubmit = (post) => {
-    const path = fileOperations.getPathByFileName(
-      currentPile.path,
-      currentPile.name,
-      postName
-    );
-    updatePost(path, post);
-    setEditable(false);
-  };
 
   if (!post) return;
 
-  const created = DateTime.fromISO(post.createdAt);
-  const updated = DateTime.fromISO(post.updatedAt);
+  const created = DateTime.fromISO(post.data.createdAt);
 
   return (
     <div className={styles.post}>
       <div className={styles.left}>
-        <div className={styles.ball}>{post.name}</div>
+        <div
+          className={styles.ball}
+          onDoubleClick={cycleColor}
+          style={{
+            backgroundColor: post.data.highlightColor ?? 'var(--border)',
+          }}
+        ></div>
       </div>
       <div className={styles.right}>
         <div className={styles.header}>
@@ -57,10 +41,9 @@ export default function Post({ postName }) {
         </div>
         <div className={styles.editor}>
           <Editor
-            content={post.content}
-            existingAttachments={post.attachments}
+            postPath={postPath}
             editable={editable}
-            onSubmit={onSubmit}
+            setEditable={setEditable}
           />
         </div>
       </div>

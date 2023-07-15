@@ -3,12 +3,9 @@ import styles from './Sidebar.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { usePostsContext } from 'renderer/context/PostsContext';
 import { useState } from 'react';
 
 export default function Sidebar({}) {
-  const { today } = usePostsContext();
-
   return (
     <div className={styles.sidebar}>
       {/* <div className={styles.stats}>

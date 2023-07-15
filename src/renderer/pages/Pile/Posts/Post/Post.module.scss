@@ -2,7 +2,7 @@
     display: flex;
     position: relative;
     padding: 18px;
-    // border-bottom: 1px solid var(--border);
+    transition: all ease-in-out 120ms;
 }
 
 .left {
@@ -27,6 +27,8 @@
 
         &:active {
             background: var(--bg-secondary);
+
+            transform: scale(0.9);
         }
     }
 }

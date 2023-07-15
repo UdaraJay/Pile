@@ -3,10 +3,12 @@ import styles from './CreatePile.module.scss';
 import { TrashIcon } from 'renderer/icons';
 import { Link } from 'react-router-dom';
 import { usePilesContext } from 'renderer/context/PilesContext';
+import { useNavigate } from 'react-router-dom';
 
 const pilesList = ['Users/uj/Personal', 'Users/uj/Startup', 'Users/uj/School'];
 
 export default function CreatePile() {
+  const navigate = useNavigate();
   const { createPile } = usePilesContext();
   const [folderExists, setFolderExists] = useState(false);
   const [name, setName] = useState('');
@@ -35,6 +37,7 @@ export default function CreatePile() {
     if (!name) return;
 
     createPile(name, path);
+    navigate('/pile/' + name);
   };
 
   const renderPiles = () => {

@@ -31,3 +31,5 @@ export * from './img/PostIcon';
 export * from './img/PaperIcon';
 export * from './img/SearchIcon';
 export * from './img/RefreshIcon';
+export * from './img/PhotoIcon';
+export * from './img/TagIcon';

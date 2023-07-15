@@ -14,18 +14,16 @@
     height: var(--nav-height);
     -webkit-app-region: drag;
     position: relative;
-    z-index: 2;
+    z-index: 4;
     position: sticky;
     top: 0;
-    transition: all ease-in-out 220ms;
+    transition: all ease-in-out 220ms, border ease-in-out 500ms;
     width: 100%;
+    background: var(--bg);
+    border-bottom: 1px solid transparent;
 
-    &:hover {
-
-        .center,
-        .right {
-            border-bottom: 1px solid var(--border);
-        }
+    &.showBorder {
+        border-bottom-color: var(--border);
     }
 
     .center {
@@ -33,10 +31,8 @@
         align-items: center;
         flex: 1 0 300px;
         height: var(--nav-height);
-        background: var(--bg);
         overflow: hidden;
-        border-bottom: 1px solid transparent;
-        transition: all ease-in-out 220ms;
+        transition: all ease-in-out 120ms;
 
         .search {
             display: flex;
@@ -57,6 +53,7 @@
             .icon {
                 color: var(--secondary);
                 margin-right: 4px;
+                opacity: 0.7;
             }
 
             input {
@@ -66,7 +63,7 @@
                 box-shadow: none;
                 background: transparent;
                 width: 100%;
-                height: calc(var(--nav-height) - 16px);
+                height: calc(var(--nav-height) - 18px);
                 opacity: 0.75;
             }
         }
@@ -75,10 +72,8 @@
     .right {
         display: flex;
         align-items: center;
-        background: var(--bg);
         padding: 0 8px;
         height: var(--nav-height);
-        border-bottom: 1px solid transparent;
         transition: all ease-in-out 220ms;
         transition-delay: 1s;
 
@@ -191,7 +186,7 @@
         background: var(--bg);
         box-shadow: -1px -1px 2px 0 rgba(0, 0, 0, 0.05);
         background: var(--bg);
-        min-height: 100%;
+        min-height: 100vh;
         transition: all ease-in-out 220ms;
 
         @media only screen and (max-width: 909px) {

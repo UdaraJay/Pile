@@ -1,0 +1,45 @@
+    .image {
+        display: inline-block;
+        margin-right: 16px;
+        user-select: none;
+        position: relative;
+
+        &:hover {}
+
+        &:active {
+            cursor: grabbing;
+        }
+
+        img {
+            max-height: 420px;
+            border-radius: 22px;
+        }
+
+        .close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            height: 32px;
+            width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--translucent);
+            color: var(--secondary);
+            backdrop-filter: filter(20px);
+            font-weight: 500;
+            border-radius: 90px;
+            transition: all ease-in-out 120ms;
+
+            .icon {
+                height: 20px;
+                width: 20px;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: var(--bg);
+                color: var(--base);
+            }
+        }
+    }

@@ -1,0 +1,109 @@
+   .frame {
+       position: relative;
+   }
+
+   .tags {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       height: 28px;
+       width: 34px;
+       background: var(--bg-secondary);
+       border-radius: 7px;
+       transition: all ease-in-out 120ms;
+       margin-right: 7px;
+       user-select: none;
+       border: none;
+
+
+       .icon {
+           height: 18px;
+           width: 18px;
+       }
+
+       &.active {
+           background: var(--bg-secondary);
+       }
+
+       &:hover {
+           cursor: pointer;
+           background: var(--bg-tertiary);
+           color: var(--primary);
+       }
+
+       &:active {
+           background: var(--bg-secondary);
+       }
+
+       .newTag {
+           border: none;
+           outline: none;
+           background: transparent;
+       }
+   }
+
+   .popover {
+       position: absolute;
+       left: 34px;
+       top: 0px;
+       width: 240px;
+       border-radius: 12px;
+       background: var(--bg-secondary);
+       backdrop-filter: blur(12px);
+       padding: 5px;
+       font-size: 0.9em;
+       border: 1px solid var(--border);
+
+       .title {
+           font-weight: 500;
+           color: Var(--secondary);
+           margin-bottom: 8px;
+       }
+
+       input {
+           display: block;
+           width: 100%;
+           border: none;
+           background: none;
+           border: 1px solid var(--border);
+           border-radius: 8px;
+           padding: 10px;
+           font-size: 0.95em;
+           background: var(--bg);
+           outline: none;
+           margin-bottom: 6px;
+
+           &:focus {
+               border-color: var(--base)
+           }
+       }
+
+
+       .noTags {
+           color: var(--secondary);
+           text-align: center;
+           justify-self: center;
+           margin: auto 20px;
+           line-height: 1.45;
+           font-size: 0.9em;
+           opacity: 0.75;
+       }
+
+       .list {
+           display: flex;
+           flex-direction: column;
+           min-height: 180px;
+
+           .item {
+               background: var(--bg-tertiary);
+               padding: 5px 7px;
+               border-radius: 7px;
+
+               &:hover {
+                   cursor: pointer;
+                   background: var(--base);
+                   color: var(--active-text);
+               }
+           }
+       }
+   }

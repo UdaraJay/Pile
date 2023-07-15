@@ -1,0 +1,21 @@
+.tags {
+    display: flex;
+    margin: -4px;
+    margin-bottom: 5px;
+
+    .tag {
+        // color: var(--base);
+        padding: 4px 6px;
+        transition: all ease-in-out 120ms;
+
+        &::before {
+            content: '#'
+        }
+
+        &:hover {
+            cursor: pointer;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+    }
+}

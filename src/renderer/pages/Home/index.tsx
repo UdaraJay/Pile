@@ -68,8 +68,7 @@ export default function Home() {
 
         <div className={styles.footer}>
           <div className={styles.unms}></div>
-          Weaving binary dreams
-          <br />, signed Udara
+          DARE TO DREAM, DARE TO CREATE
           <div className={styles.nav}>
             <Link to="/license" className={styles.link}>
               License

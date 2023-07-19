@@ -21,6 +21,8 @@ import usePost from 'renderer/hooks/usePost';
 export default function Editor({
   postPath = null,
   editable = false,
+  parentPostPath = null,
+  isReply = false,
   setEditable = () => {},
 }) {
   const {
@@ -32,7 +34,7 @@ export default function Editor({
     detachFromPost,
     setContent,
     resetPost,
-  } = usePost(postPath);
+  } = usePost(postPath, { isReply, parentPostPath });
 
   const isNew = !postPath;
   const editor = useEditor({
@@ -84,6 +86,13 @@ export default function Editor({
     return editor?.storage.characterCount.characters() < 280;
   }, [editor]);
 
+  const renderPostButton = () => {
+    if (isReply) return 'Reply';
+    if (isNew) return 'Post';
+
+    return 'Update';
+  };
+
   if (!post) return;
 
   return (
@@ -91,6 +100,7 @@ export default function Editor({
       {/* <div className={styles.header}>
         <TagList tags={post.data.tags} removeTag={removeTag} />
       </div> */}
+
       <EditorContent
         key={'new'}
         className={`${styles.editor} ${isBig() ? styles.editorBig : ''}`}
@@ -133,7 +143,7 @@ export default function Editor({
           </div>
           <div className={styles.right}>
             <div className={styles.button} onClick={handleSubmit}>
-              {isNew ? 'Post' : 'Update'}
+              {renderPostButton()}
             </div>
           </div>
         </div>

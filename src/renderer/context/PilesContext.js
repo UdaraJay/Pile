@@ -47,10 +47,10 @@ export const PilesContextProvider = ({ children }) => {
     }
   };
 
-  const getCurrentPilePath = () => {
+  const getCurrentPilePath = (appendPath = '') => {
     if (!currentPile) return;
     const pile = piles.find((p) => p.name == currentPile.name);
-    const path = window.electron.joinPath(pile.path, pile.name);
+    const path = window.electron.joinPath(pile.path, pile.name, appendPath);
     return path;
   };
 

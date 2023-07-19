@@ -9,7 +9,6 @@
 .editor {
     display: block;
     width: 100%;
-    transition: all ease-in-out 120ms;
 
     p {
         font-size: 1em;
@@ -39,7 +38,7 @@
         left: -51px;
         overflow-x: auto;
         width: calc(100vw - var(--sidebar-width));
-        padding-left: 16px;
+        padding-left: 40px;
         padding-bottom: 12px;
 
         &.new {
@@ -151,12 +150,11 @@
 
             &:hover {
                 cursor: pointer;
-                background: var(--bg-tertiary);
-                color: var(--primary);
+                background: var(--base-hover);
             }
 
             &:active {
-                background: var(--bg-secondary);
+                background: var(--base);
             }
         }
     }

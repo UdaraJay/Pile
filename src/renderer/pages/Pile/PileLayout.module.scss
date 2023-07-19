@@ -24,6 +24,7 @@
 
     &.showBorder {
         border-bottom-color: var(--border);
+        // box-shadow: 1px 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .center {
@@ -136,7 +137,7 @@
         height: 100vh;
         width: var(--sidebar-width);
         flex: 0 0 var(--sidebar-width);
-        border-right: 1px solid var(--border);
+        border-right: 1px solid rgba(0, 0, 0, 0.03);
         transition: all ease-in-out 220ms;
 
         @media only screen and (max-width: 909px) {
@@ -154,6 +155,8 @@
             font-size: 0.8em;
             transition: all ease-in-out 220ms;
             white-space: nowrap;
+            user-select: none;
+            -webkit-app-region: drag;
 
             .pile {
                 margin-top: -4px;
@@ -192,6 +195,20 @@
         @media only screen and (max-width: 909px) {
             margin-left: 0;
             box-shadow: none;
+        }
+
+        .left {
+            display: flex;
+            margin-left: 16px;
+            margin-bottom: 4px;
+            color: var(--secondary);
+            opacity: 0.5;
+            transition: all ease-in-out 120ms;
+            font-size: 13px;
+
+            @media only screen and (max-width: 909px) {
+                margin-left: 86px;
+            }
         }
     }
 }

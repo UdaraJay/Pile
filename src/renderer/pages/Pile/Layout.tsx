@@ -6,6 +6,7 @@ import { CountUp } from 'use-count-up';
 import usePost from 'renderer/hooks/usePost';
 import { useIndexContext } from 'renderer/context/IndexContext';
 import { useEffect, useState } from 'react';
+import { DateTime } from 'luxon';
 
 export default function PileLayout({ children }) {
   const { pileName } = useParams();
@@ -15,6 +16,8 @@ export default function PileLayout({ children }) {
     const position = window.scrollY;
     setScrollPosition(position);
   };
+
+  const now = DateTime.now().toLocaleString(DateTime.DATE_HUGE);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -45,11 +48,12 @@ export default function PileLayout({ children }) {
               scrollPosition > 5 && styles.showBorder
             }`}
           >
-            <div className={styles.center}>
+            <div className={styles.left}>
               {/* <div className={styles.search}>
                 <SearchIcon className={styles.icon} />
                 <input placeholder={'Search this pile...'} />
               </div> */}
+              {now}
             </div>
             <div className={styles.right}>
               <Link to={`/pile/${pileName}`} className={`${styles.iconHolder}`}>

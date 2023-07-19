@@ -24,7 +24,10 @@ const defaultPost = {
   },
 };
 
-function usePost(postPath = null) {
+function usePost(
+  postPath = null,
+  { isReply = false, isAI = false, parentPostPath = null } = {}
+) {
   const { currentPile } = usePilesContext();
   const { addIndex } = useIndexContext();
   const [updates, setUpdates] = useState(0);
@@ -34,14 +37,19 @@ function usePost(postPath = null) {
   // Init
   useEffect(() => {
     if (!postPath) {
-      console.log('Init new post');
       return;
     }
 
-    console.log('Load existing post', postPath);
-    getPost(postPath);
+    refreshPost(postPath);
     setPath(postPath);
   }, [postPath]);
+
+  const refreshPost = useCallback(async (path) => {
+    if (!path) return;
+
+    const freshPost = await getPost(path);
+    setPost(freshPost);
+  }, []);
 
   const getPost = useCallback(async (postPath) => {
     try {
@@ -50,12 +58,14 @@ function usePost(postPath = null) {
         'get-file',
         postPath
       );
+
       const parsed = await window.electron.ipc.invoke(
         'matter-parse',
         fileContent
-      ); // {data, content}
+      );
 
-      setPost({ content: parsed.content, data: parsed.data });
+      const post = { content: parsed.content, data: parsed.data };
+      return post;
     } catch (error) {
       console.error(`Error reading/parsing file: ${postPath}`);
       console.error(error);
@@ -202,24 +212,31 @@ function usePost(postPath = null) {
           currentPile.path,
           currentPile.name
         );
+
     const directoryPath = fileOperations.getDirectoryPath(saveToPath);
     const now = new Date().toISOString();
     const content = post.content;
     const data = {
       ...post.data,
+      isReply: post.data.createdAt ? post.data.isReply : isReply,
       createdAt: post.data.createdAt ?? now,
       updatedAt: now,
     };
 
     try {
-      const markdown = await fileOperations.generateMarkdown(content, data);
+      const fileContents = await fileOperations.generateMarkdown(content, data);
       await fileOperations.createDirectory(directoryPath);
-      await fileOperations.saveFile(saveToPath, markdown);
+      await fileOperations.saveFile(saveToPath, fileContents);
+
       console.log(`File successfully written to: ${saveToPath}`);
+
+      if (isReply) {
+        await addReplyToParent(parentPostPath, saveToPath);
+      }
 
       // Add the file to the index
       addIndex(saveToPath);
-      // window.electron.ipc.invoke('index-add', saveToPath);
+
       // Sync tags
       window.electron.ipc.invoke('tags-sync', saveToPath);
     } catch (error) {
@@ -227,6 +244,18 @@ function usePost(postPath = null) {
       console.error(error);
     }
   }, [path, post]);
+
+  const addReplyToParent = async (parentPostPath, replyPostPath) => {
+    const relativeReplyPath = replyPostPath.split('/').slice(-3).join('/');
+    const parentPost = await getPost(parentPostPath);
+    const content = parentPost.content;
+    const data = {
+      ...parentPost.data,
+      replies: [...parentPost.data.replies, relativeReplyPath],
+    };
+    const fileContents = await fileOperations.generateMarkdown(content, data);
+    await fileOperations.saveFile(parentPostPath, fileContents);
+  };
 
   const resetPost = () => {
     console.log('resetting post', defaultPost);

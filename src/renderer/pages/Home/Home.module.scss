@@ -6,6 +6,8 @@
     width: 100vw;
     overflow-y: overlay;
     position: relative;
+    -webkit-app-region: drag;
+
 }
 
 .wrapper {
@@ -21,24 +23,14 @@
     height: 100%;
     width: 100%;
     background:
-        linear-gradient(to top, var(--base), transparent),
-        url(../../../../assets/noise.svg);
-    filter: contrast(170%) brightness(1000%);
-    // mix-blend-mode: multiply;
-}
-
-.bgOverlay {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: moccasin;
-    mix-blend-mode: multiply;
+        linear-gradient(to top, var(--base), 30%, transparent);
+    filter: brightness(4);
+    opacity: 0.3;
 }
 
 .header {
+    -webkit-app-region: none;
+
     .logo {
         display: block;
         // animation: logo 3.5s cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -71,6 +63,7 @@
 }
 
 .create {
+    -webkit-app-region: none;
     display: block;
     text-align: center;
     font-size: 0.8em;
@@ -102,6 +95,7 @@
     overflow: hidden;
 
     .pile {
+        -webkit-app-region: none;
         display: flex;
         justify-content: space-between;
         background: rgba(255, 255, 255, 0.15);
@@ -166,6 +160,7 @@
     margin-top: 25%;
     line-height: 1.4;
     opacity: 0.5;
+    -webkit-app-region: none;
 
     .unms {
         display: block;

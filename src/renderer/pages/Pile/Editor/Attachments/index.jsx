@@ -20,16 +20,16 @@ export default function Attachments({
 
     if (image_exts.includes(extension)) {
       return (
-        <div className={styles.image}>
+        <div key={attachment} className={styles.image}>
           {editable && (
             <div
-              className={styles.close}
+              className={styles.remove}
               onClick={() => onRemoveAttachment(attachment)}
             >
               <TrashIcon className={styles.icon} />
             </div>
           )}
-          <img src={imgPath} />
+          <img src={imgPath} draggable="false" />
         </div>
       );
     }

@@ -10,7 +10,7 @@ import { DateTime } from 'luxon';
 
 export default function PileLayout({ children }) {
   const { pileName } = useParams();
-  const { index } = useIndexContext();
+  const { index, refreshIndex } = useIndexContext();
   const [scrollPosition, setScrollPosition] = useState(0);
   const handleScroll = () => {
     const position = window.scrollY;
@@ -56,9 +56,6 @@ export default function PileLayout({ children }) {
               {now}
             </div>
             <div className={styles.right}>
-              <Link to={`/pile/${pileName}`} className={`${styles.iconHolder}`}>
-                <RefreshIcon className={styles.icon} />
-              </Link>
               <Link to="/" className={`${styles.iconHolder}`}>
                 <HomeIcon className={styles.icon} />
               </Link>

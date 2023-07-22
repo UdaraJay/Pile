@@ -1,10 +1,8 @@
    .ProseMirror {
        outline: none;
-       min-height: 50px;
+       min-height: 0px;
        display: block;
        position: relative;
-       width: calc(100% - 120px);
-       max-width: 600px;
 
        p.is-editor-empty:first-child::before {
            color: #adb5bd;

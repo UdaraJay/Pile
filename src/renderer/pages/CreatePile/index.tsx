@@ -92,6 +92,9 @@ export default function CreatePile() {
           </div>
         </div>
         <div className={styles.buttons}>
+          <Link to="/" className={styles.back}>
+            ← Back
+          </Link>
           <div className={styles.button} onClick={handleSubmit}>
             Create
           </div>

@@ -6,7 +6,6 @@ import {
   Route,
   useLocation,
 } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
 import Pile from './pages/Pile';

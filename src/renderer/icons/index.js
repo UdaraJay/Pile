@@ -34,3 +34,5 @@ export * from './img/RefreshIcon';
 export * from './img/PhotoIcon';
 export * from './img/TagIcon';
 export * from './img/NeedleIcon';
+export * from './img/EditIcon';
+export * from './img/AIIcon';

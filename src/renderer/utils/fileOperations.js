@@ -105,6 +105,20 @@ const saveFile = (path, file) => {
   });
 };
 
+const deleteFile = (path) => {
+  console.log('deleting...', path);
+  return new Promise((resolve, reject) => {
+    window.electron.deleteFile(path, (err) => {
+      if (err) {
+        console.error('Error deleting file.', err);
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
 const generateMarkdown = (content, data) => {
   return window.electron.ipc.invoke('matter-stringify', { content, data });
 };
@@ -113,6 +127,7 @@ export {
   postFormat,
   createDirectory,
   saveFile,
+  deleteFile,
   getFiles,
   getPathByFileName,
   getDirectoryPath,

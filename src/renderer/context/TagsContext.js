@@ -24,7 +24,6 @@ export const TagsContextProvider = ({ children }) => {
     const newTags = await window.electron.ipc.invoke('tags-load', pilePath);
     const newMap = new Map(newTags);
     setTags(newMap);
-    console.log('Tags loaded.');
   }, []);
 
   const refreshTags = useCallback(async () => {

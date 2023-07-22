@@ -53,8 +53,8 @@
             &.show {
                 flex: 1 0 auto;
                 opacity: 1;
+                transition-delay: 15ms;
             }
-
 
         }
     }
@@ -62,6 +62,11 @@
     .right {
         margin: 4px 0;
         width: 100%;
+        padding-bottom: 12px;
+
+        &.hasReplies {
+            padding-bottom: 12px;
+        }
     }
 
     .header {
@@ -78,36 +83,9 @@
 
         .meta {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-end;
             margin-top: -3px;
-
-            .replyButton {
-                z-index: 1;
-                color: var(--secondary);
-                font-size: 0.9em;
-                transition: all ease-in-out 120ms;
-                user-select: none;
-
-                &:hover {
-                    cursor: pointer;
-                    color: var(--base);
-                }
-
-                &:active {
-                    color: var(--base-hover);
-                }
-
-                .icon {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    height: 16px;
-                    width: 16px;
-                    margin-top: 1px;
-                    margin-right: 6px;
-                }
-            }
 
             .time {
                 position: relative;
@@ -118,6 +96,7 @@
                 transition: all ease-in-out 120ms;
                 border-radius: 6px;
                 user-select: none;
+                margin: 0 -5px;
 
                 &:hover {
                     cursor: pointer;
@@ -142,11 +121,10 @@
 }
 
 .reply {
-
-
     .left {
         .connector {
-            height: 20px;
+            margin-top: 3px;
+            height: 15px;
             width: 2px;
             background: var(--border);
             transition: all ease-in-out 120ms;
@@ -156,12 +134,68 @@
             &.show {
                 opacity: 1;
             }
+
+
         }
     }
 
     .right {
-        margin-top: 24px;
+        margin-top: 22px;
     }
 }
 
-.replies {}
+.actions {
+    display: flex;
+    padding: 0 16px 0 20px;
+    margin: 1px -5px;
+
+    .openReply {
+        display: flex;
+        align-items: center;
+        z-index: 1;
+        font-size: 0.9em;
+        user-select: none;
+        padding: 2px 13px 2px 2px;
+        transition: all ease-in-out 120ms;
+        border-radius: 90px;
+        margin-right: 8px;
+        margin-top: 3px;
+        background: var(--base);
+        color: var(--primary);
+        line-height: 1;
+        white-space: nowrap;
+
+        &:hover {
+            cursor: pointer;
+            filter: contrast(1.1);
+        }
+
+        &:active {
+            filter: contrast(0.9);
+        }
+
+
+        .icon {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 25px;
+            width: 25px;
+            margin-right: 4px;
+            fill: currentColor;
+            transition: all ease-in-out 120ms;
+        }
+
+        .icon2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 18px;
+            width: 18px;
+            margin-right: 6px;
+            margin-left: 5px;
+            fill: currentColor;
+            transition: all ease-in-out 120ms;
+        }
+    }
+}

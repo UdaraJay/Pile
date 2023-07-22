@@ -1,6 +1,6 @@
 {
   "description": "Journal like many others.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "keywords": [
     "pile"
   ],
@@ -88,6 +88,7 @@
     }
   },
   "dependencies": {
+    "@radix-ui/react-alert-dialog": "^1.0.4",
     "@tiptap/extension-character-count": "^2.0.3",
     "@tiptap/extension-placeholder": "^2.0.3",
     "@tiptap/extension-task-item": "^2.0.3",
@@ -235,12 +236,9 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "",
+      "repo": ""
     }
-  },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "devEngines": {
     "node": ">=14.x",

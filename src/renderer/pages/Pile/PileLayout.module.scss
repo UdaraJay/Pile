@@ -27,13 +27,15 @@
         // box-shadow: 1px 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    .center {
+    .left {
         display: flex;
         align-items: center;
         flex: 1 0 300px;
         height: var(--nav-height);
         overflow: hidden;
         transition: all ease-in-out 120ms;
+        padding-bottom: 3px;
+
 
         .search {
             display: flex;
@@ -200,7 +202,7 @@
         .left {
             display: flex;
             margin-left: 16px;
-            margin-bottom: 4px;
+            // margin-bottom: 4px;
             color: var(--secondary);
             opacity: 0.5;
             transition: all ease-in-out 120ms;

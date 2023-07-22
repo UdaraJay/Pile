@@ -66,8 +66,13 @@ class PileHelper {
   }
 
   async getFile(filePath) {
-    const content = await fs.promises.readFile(filePath, 'utf-8');
-    return content;
+    try {
+      const content = await fs.promises.readFile(filePath, 'utf-8');
+      return content;
+    } catch (error) {
+      console.error(`File unavailable`);
+      throw error;
+    }
   }
 }
 

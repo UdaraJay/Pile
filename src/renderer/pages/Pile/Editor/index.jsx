@@ -1,6 +1,6 @@
 import './ProseMirror.scss';
 import styles from './Editor.module.scss';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { Extension } from '@tiptap/core';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -17,6 +17,7 @@ import TagButton from './TagButton';
 import TagList from './TagList';
 import Attachments from './Attachments';
 import usePost from 'renderer/hooks/usePost';
+import ProseMirrorStyles from './ProseMirror.scss';
 
 export default function Editor({
   postPath = null,
@@ -24,6 +25,7 @@ export default function Editor({
   parentPostPath = null,
   isReply = false,
   setEditable = () => {},
+  reloadParentPost,
 }) {
   const {
     post,
@@ -34,7 +36,8 @@ export default function Editor({
     detachFromPost,
     setContent,
     resetPost,
-  } = usePost(postPath, { isReply, parentPostPath });
+    deletePost,
+  } = usePost(postPath, { isReply, parentPostPath, reloadParentPost });
 
   const isNew = !postPath;
   const editor = useEditor({
@@ -47,12 +50,35 @@ export default function Editor({
         limit: 100000,
       }),
     ],
+    autofocus: true,
     editable: editable,
     content: post?.content || '',
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
     },
   });
+
+  const elRef = useRef();
+  const [deleteStep, setDeleteStep] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [prevDragPos, setPrevDragPos] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setPrevDragPos(e.clientX);
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging && elRef.current) {
+      const delta = e.clientX - prevDragPos;
+      elRef.current.scrollLeft -= delta;
+      setPrevDragPos(e.clientX);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   useEffect(() => {
     if (editor) {
@@ -68,11 +94,11 @@ export default function Editor({
     if (editor) {
       editor.setEditable(editable);
     }
+    setDeleteStep(0);
   }, [editable]);
 
   const handleSubmit = useCallback(async () => {
-    const html = editor.getHTML();
-    await savePost(html);
+    await savePost();
 
     if (isNew) {
       resetPost();
@@ -81,6 +107,15 @@ export default function Editor({
 
     setEditable(false);
   }, [editor, isNew, post]);
+
+  const handleOnDelete = useCallback(async () => {
+    if (deleteStep == 0) {
+      setDeleteStep(1);
+      return;
+    }
+
+    await deletePost();
+  }, [deleteStep]);
 
   const isBig = useCallback(() => {
     return editor?.storage.characterCount.characters() < 280;
@@ -96,16 +131,26 @@ export default function Editor({
   if (!post) return;
 
   return (
-    <div className={styles.frame}>
+    <div className={`${styles.frame} ${isNew && styles.isNew}`}>
       {/* <div className={styles.header}>
         <TagList tags={post.data.tags} removeTag={removeTag} />
       </div> */}
 
-      <EditorContent
-        key={'new'}
-        className={`${styles.editor} ${isBig() ? styles.editorBig : ''}`}
-        editor={editor}
-      />
+      {editable ? (
+        <EditorContent
+          key={'new'}
+          className={`${styles.editor} ${isBig() ? styles.editorBig : ''}`}
+          editor={editor}
+        />
+      ) : (
+        <div className={styles.uneditable}>
+          <EditorContent
+            key={'uneditable'}
+            className={`${styles.editor} ${isBig() && styles.editorBig}`}
+            editor={editor}
+          />
+        </div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, x: 20 }}
@@ -117,7 +162,14 @@ export default function Editor({
             post?.data?.attachments.length > 0 ? styles.open : ''
           }`}
         >
-          <div className={`${styles.scroll} ${isNew && styles.new}`}>
+          <div
+            className={`${styles.scroll} ${isNew && styles.new}`}
+            ref={elRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
             <div className={styles.container}>
               <Attachments
                 post={post}
@@ -129,25 +181,41 @@ export default function Editor({
         </div>
       </motion.div>
 
-      {editable && (
-        <div className={styles.footer}>
-          <div className={styles.left}>
-            <div className={styles.button} onClick={triggerAttachment}>
-              <PhotoIcon className={styles.icon} />
+      <AnimatePresence>
+        {editable && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.1 }}
+          >
+            <div className={styles.footer}>
+              <div className={styles.left}>
+                <button className={styles.button} onClick={triggerAttachment}>
+                  <PhotoIcon className={styles.icon} />
+                </button>
+              </div>
+              <div className={styles.right}>
+                {!isNew && (
+                  <button
+                    className={styles.deleteButton}
+                    onClick={handleOnDelete}
+                  >
+                    {deleteStep == 0 ? 'Delete' : 'Click again to confirm'}
+                  </button>
+                )}
+                <button
+                  tabindex="0"
+                  className={styles.button}
+                  onClick={handleSubmit}
+                >
+                  {renderPostButton()}
+                </button>
+              </div>
             </div>
-            {/* <TagButton
-              tags={post.data.tags}
-              addTag={addTag}
-              removeTag={removeTag}
-            /> */}
-          </div>
-          <div className={styles.right}>
-            <div className={styles.button} onClick={handleSubmit}>
-              {renderPostButton()}
-            </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

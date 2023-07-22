@@ -4,23 +4,29 @@
         user-select: none;
         position: relative;
 
-        &:hover {}
-
-        &:active {
-            cursor: grabbing;
-        }
 
         img {
-            max-height: 420px;
+            max-height: 350px;
             border-radius: 22px;
+            transition: all ease-in-out 120ms;
+
+            &:hover {
+                cursor: default;
+            }
+
+            &:active {
+                cursor: grabbing;
+                filter: brightness(0.9);
+            }
         }
 
-        .close {
+        .remove {
             position: absolute;
             top: 12px;
             right: 12px;
             height: 32px;
             width: 32px;
+            z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -39,7 +45,7 @@
             &:hover {
                 cursor: pointer;
                 background: var(--bg);
-                color: var(--base);
+                color: var(--base-red);
             }
         }
     }

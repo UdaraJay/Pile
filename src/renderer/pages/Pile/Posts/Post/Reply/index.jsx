@@ -16,14 +16,15 @@ export default function Reply({
   postPath,
   isLast = false,
   isFirst = false,
+  replying = false,
   highlightColor,
+  parentPostPath = null,
+  reloadParentPost = () => {},
 }) {
   const { currentPile } = usePilesContext();
   const { post, cycleColor } = usePost(postPath);
-  const [replying, setReplying] = useState(false);
   const [editable, setEditable] = useState(false);
 
-  const toggleReplying = () => setReplying(!replying);
   const toggleEditable = () => setEditable(!editable);
 
   if (!post) return;
@@ -48,7 +49,7 @@ export default function Reply({
             }}
           ></div>
           <div
-            className={`${styles.line} ${!isLast && styles.show}`}
+            className={`${styles.line} ${(!isLast || replying) && styles.show}`}
             style={{
               backgroundColor: highlightColor ?? 'var(--border)',
             }}
@@ -58,12 +59,6 @@ export default function Reply({
           <div className={styles.header}>
             <div className={styles.title}>{post.name}</div>
             <div className={styles.meta}>
-              {!isReply && (
-                <div className={styles.replyButton} onClick={toggleReplying}>
-                  Reply
-                </div>
-              )}
-
               <div className={styles.time} onClick={toggleEditable}>
                 {created.toRelative()}
               </div>
@@ -74,6 +69,8 @@ export default function Reply({
               postPath={postPath}
               editable={editable}
               setEditable={setEditable}
+              parentPostPath={parentPostPath}
+              reloadParentPost={reloadParentPost}
             />
           </div>
         </div>

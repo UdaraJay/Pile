@@ -88,12 +88,22 @@ export const PilesContextProvider = ({ children }) => {
     setCurrentPile(pile);
   };
 
+  // This does not delete the actual folder
+  // User can do that if they actually want to.
+  const deletePile = (name) => {
+    if (!piles || piles.length == 0) return;
+    const newPiles = piles.filter((p) => p.name != name);
+    setPiles(newPiles);
+    writeConfig(newPiles);
+  };
+
   const pilesContextValue = {
     piles,
     getCurrentPilePath,
     createPile,
     currentPile,
     changeCurrentPile,
+    deletePile,
   };
 
   return (

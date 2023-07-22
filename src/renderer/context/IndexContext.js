@@ -24,7 +24,6 @@ export const IndexContextProvider = ({ children }) => {
     const newIndex = await window.electron.ipc.invoke('index-load', pilePath);
     const newMap = new Map(newIndex);
     setIndex(newMap);
-    console.log('Index loaded.');
   }, []);
 
   const refreshIndex = useCallback(async () => {
@@ -40,7 +39,7 @@ export const IndexContextProvider = ({ children }) => {
   }, []);
 
   const removeIndex = useCallback(async (filePath) => {
-    window.electron.ipc.invoke('index-remove', pilePath).then((index) => {
+    window.electron.ipc.invoke('index-remove', filePath).then((index) => {
       setIndex(index);
     });
   }, []);

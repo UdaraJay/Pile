@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "pile",
+  "version": "0.3.4",
+  "description": "Everyday journal",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Udara Jay",
+    "email": "me@udara.io",
+    "url": "https://udara.io"
   },
   "main": "./dist/main/main.js",
   "scripts": {

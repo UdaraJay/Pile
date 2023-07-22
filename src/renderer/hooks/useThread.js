@@ -3,27 +3,6 @@ import { usePilesContext } from 'renderer/context/PilesContext';
 import * as fileOperations from '../utils/fileOperations';
 import { useIndexContext } from 'renderer/context/IndexContext';
 
-const highlightColors = [
-  'var(--border)',
-  'var(--base-yellow)',
-  'var(--base-green)',
-];
-
-const defaultPost = {
-  content: '',
-  data: {
-    title: '',
-    createdAt: null,
-    updatedAt: null,
-    highlightColor: null,
-    tags: [],
-    replies: [],
-    attachments: [],
-    isReply: false,
-    isAi: false,
-  },
-};
-
 function usePost(
   postPath = null,
   {
@@ -34,7 +13,7 @@ function usePost(
   } = {}
 ) {
   const { currentPile } = usePilesContext();
-  const { addIndex, removeIndex, refreshIndex } = useIndexContext();
+  const { addIndex, refreshIndex } = useIndexContext();
   const [updates, setUpdates] = useState(0);
   const [path, setPath] = useState();
   const [post, setPost] = useState({ ...defaultPost });
@@ -46,11 +25,11 @@ function usePost(
     setPath(postPath);
   }, [postPath]);
 
-  const refreshPost = useCallback(async () => {
+  const refreshPost = useCallback(async (postPath) => {
     if (!postPath) return;
     const freshPost = await getPost(postPath);
     setPost(freshPost);
-  }, [postPath]);
+  }, []);
 
   const getPost = useCallback(async (postPath) => {
     try {
@@ -59,9 +38,6 @@ function usePost(
         'get-file',
         postPath
       );
-
-      if (!fileContent) return null;
-
       const parsed = await window.electron.ipc.invoke(
         'matter-parse',
         fileContent
@@ -80,17 +56,19 @@ function usePost(
     });
   };
 
-  const updateData = useCallback((data) => {
-    console.log('updating data', data);
-    setPost((post) => {
-      return { ...post, data: { ...post.data, ...data } };
-    });
-  }, []);
+  const updateData = useCallback(
+    (data) => {
+      setPost((post) => {
+        return { ...post, data: { ...post.data, ...data } };
+      });
+    },
+    [post]
+  );
 
   const cycleColor = useCallback(() => {
+    console.log('cycling color');
     if (!post.data.highlightColor) {
       updateData({ highlightColor: highlightColors[1] });
-      savePost({ highlightColor: highlightColors[1] });
       return;
     }
     const currentColor = post.data.highlightColor;
@@ -99,11 +77,16 @@ function usePost(
     );
     const nextIndex = (currentIndex + 1) % highlightColors.length;
     const nextColor = highlightColors[nextIndex];
-    console.log('next color', currentIndex, nextIndex);
 
+    console.log('cycling color', nextColor);
     updateData({ highlightColor: nextColor });
-    savePost({ highlightColor: nextColor });
+    savePost();
   }, [post]);
+
+  const deletePost = useCallback(() => {
+    // Delete the file
+    // Remove from the index
+  }, []);
 
   const addTag = useCallback(
     (tag) => {
@@ -169,7 +152,7 @@ function usePost(
         ...post,
         data: { ...post.data, attachments },
       };
-
+      console.log('Attachments added', correctedPaths);
       return newPost;
     });
   }, [currentPile]);
@@ -180,9 +163,7 @@ function usePost(
       const newAtt = newPost.data.attachments.filter(
         (a) => a !== attachmentPath
       );
-
       newPost.data.attachments = newAtt;
-
       const fullPath = window.electron.joinPath(
         currentPile.path,
         currentPile.name,
@@ -203,52 +184,40 @@ function usePost(
     });
   }, []);
 
-  const savePost = useCallback(
-    async (dataOverrides) => {
-      const saveToPath = path
-        ? path
-        : fileOperations.getFilePathForNewPost(
-            currentPile.path,
-            currentPile.name
-          );
-
-      const directoryPath = fileOperations.getDirectoryPath(saveToPath);
-      const now = new Date().toISOString();
-      const content = post.content;
-      const data = {
-        ...post.data,
-        isReply: post.data.createdAt ? post.data.isReply : isReply,
-        createdAt: post.data.createdAt ?? now,
-        updatedAt: now,
-        ...dataOverrides,
-      };
-
-      try {
-        const fileContents = await fileOperations.generateMarkdown(
-          content,
-          data
+  const savePost = useCallback(async () => {
+    const saveToPath = path
+      ? path
+      : fileOperations.getFilePathForNewPost(
+          currentPile.path,
+          currentPile.name
         );
-        await fileOperations.createDirectory(directoryPath);
-        await fileOperations.saveFile(saveToPath, fileContents);
 
-        console.log(`File successfully written to: ${saveToPath}`);
+    const directoryPath = fileOperations.getDirectoryPath(saveToPath);
+    const now = new Date().toISOString();
+    const content = post.content;
+    const data = {
+      ...post.data,
+      isReply: post.data.createdAt ? post.data.isReply : isReply,
+      createdAt: post.data.createdAt ?? now,
+      updatedAt: now,
+    };
 
-        if (isReply) {
-          await addReplyToParent(parentPostPath, saveToPath);
-        }
-
-        // Add the file to the index
-        addIndex(saveToPath);
-
-        // Sync tags
-        window.electron.ipc.invoke('tags-sync', saveToPath);
-      } catch (error) {
-        console.error(`Error writing file: ${saveToPath}`);
-        console.error(error);
+    try {
+      const fileContents = await fileOperations.generateMarkdown(content, data);
+      await fileOperations.createDirectory(directoryPath);
+      await fileOperations.saveFile(saveToPath, fileContents);
+      if (isReply) {
+        await addReplyToParent(parentPostPath, saveToPath);
       }
-    },
-    [path, post, reloadParentPost]
-  );
+      // Add the file to the index
+      addIndex(saveToPath);
+      // Sync tags
+      window.electron.ipc.invoke('tags-sync', saveToPath);
+    } catch (error) {
+      console.error(`Error writing file: ${saveToPath}`);
+      console.error(error);
+    }
+  }, [path, post, reloadParentPost]);
 
   const addReplyToParent = async (parentPostPath, replyPostPath) => {
     const relativeReplyPath = replyPostPath.split('/').slice(-3).join('/');
@@ -264,38 +233,14 @@ function usePost(
   };
 
   const resetPost = () => {
+    console.log('resetting post', defaultPost);
     setPost(defaultPost);
   };
-
-  const deletePost = useCallback(async () => {
-    if (!postPath) return null;
-
-    // if is reply, remove from parent
-    if (post.data.isReply && parentPostPath) {
-      const parentPost = await getPost(parentPostPath);
-      const content = parentPost.content;
-      const newReplies = parentPost.data.replies.filter((p) => {
-        return p !== postPath.split('/').slice(-3).join('/');
-      });
-      const data = {
-        ...parentPost.data,
-        replies: newReplies,
-      };
-      const fileContents = await fileOperations.generateMarkdown(content, data);
-      await fileOperations.saveFile(parentPostPath, fileContents);
-      await reloadParentPost(parentPostPath);
-    }
-
-    // delete file and remove from index
-    await fileOperations.deleteFile(postPath);
-    removeIndex(postPath);
-  }, [postPath, reloadParentPost, parentPostPath, post]);
 
   return {
     defaultPost,
     post,
     savePost,
-    refreshPost,
     setContent,
     cycleColor,
     addTag,
@@ -303,7 +248,7 @@ function usePost(
     attachToPost,
     detachFromPost,
     resetPost,
-    deletePost,
+    refreshPost,
   };
 }
 

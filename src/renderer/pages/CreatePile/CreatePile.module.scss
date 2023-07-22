@@ -4,6 +4,8 @@
     justify-content: center;
     height: 100vh;
     overflow-y: overlay;
+    -webkit-app-region: drag;
+
 }
 
 .card {
@@ -47,6 +49,7 @@
     background: Var(--bg-secondary);
     border-radius: 12px;
     margin: 32px auto;
+    -webkit-app-region: none;
 
     &:hover {
         cursor: pointer;
@@ -56,6 +59,8 @@
 }
 
 .form {
+    -webkit-app-region: none;
+
     .input {
         display: flex;
         align-items: center;
@@ -118,8 +123,27 @@
 
 .buttons {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin-top: 40px;
+    -webkit-app-region: none;
+
+    .back {
+        text-align: center;
+        font-size: 0.8em;
+        padding: 9px 12px;
+        font-weight: 500;
+        color: var(--secondary);
+        background: Var(--bg-tertiary);
+        border-radius: 12px;
+        width: 100px;
+        transition: all ease-in-out 120ms;
+
+        &:hover {
+            cursor: pointer;
+            color: var(--primary);
+            background: var(--bg-secondary);
+        }
+    }
 
     .button {
         text-align: center;
@@ -130,6 +154,7 @@
         background: Var(--bg-secondary);
         border-radius: 12px;
         width: 200px;
+        transition: all ease-in-out 120ms;
 
         &:hover {
             cursor: pointer;

@@ -2,6 +2,11 @@
     display: block;
     margin-left: 1px;
     backdrop-filter: blur(10);
+
+    &.isNew {
+        // ideal default height of empty editor
+        min-height: 55px;
+    }
 }
 
 .header {}
@@ -9,10 +14,8 @@
 .editor {
     display: block;
     width: 100%;
-
-    p {
-        font-size: 1em;
-    }
+    width: calc(100% - 120px);
+    max-width: 600px;
 
     &.editorBig {
         p {
@@ -22,6 +25,10 @@
     }
 }
 
+.uneditable {
+    cursor: default;
+}
+
 .media {
     display: block;
     // overflow-x: auto;
@@ -29,17 +36,17 @@
     height: 0px;
 
     &.open {
-        height: 430px;
+        height: 360px;
     }
 
     .scroll {
         position: absolute;
         top: 0;
         left: -51px;
-        overflow-x: auto;
         width: calc(100vw - var(--sidebar-width));
         padding-left: 40px;
         padding-bottom: 12px;
+        overflow-x: auto;
 
         &.new {
             left: -19px;
@@ -52,13 +59,14 @@
 
     .container {
         white-space: nowrap;
+        margin: 12px 0 0 0;
     }
-
 
 }
 
 .footer {
     margin-top: 16px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -74,13 +82,14 @@
             height: 28px;
             width: 34px;
             background: var(--bg-secondary);
+            color: var(--secondary);
             border-radius: 7px;
             transition: all ease-in-out 120ms;
             margin-right: 7px;
 
             .icon {
-                height: 18px;
-                width: 18px;
+                height: 23px;
+                width: 23px;
             }
 
             &.active {
@@ -123,6 +132,9 @@
     }
 
     .right {
+        display: flex;
+        align-items: center;
+
         .button {
             display: flex;
             align-items: center;
@@ -155,6 +167,37 @@
 
             &:active {
                 background: var(--base);
+            }
+        }
+
+        .deleteButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 28px;
+            background: var(--bg);
+            border-radius: 8px;
+            transition: all ease-in-out 120ms;
+            padding: 0 14px;
+            line-height: 28px;
+            color: var(--base-red);
+            font-size: 0.9em;
+            border-radius: 90px;
+            user-select: none;
+            margin-right: 6px;
+
+            .icon {
+                height: 18px;
+                width: 18px;
+            }
+
+            &.active {
+                background: var(--bg-secondary);
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: var(--base-red-light);
             }
         }
     }

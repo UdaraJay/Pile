@@ -12,11 +12,12 @@ import { usePilesContext } from 'renderer/context/PilesContext';
 import usePost from 'renderer/hooks/usePost';
 import { AnimatePresence, motion } from 'framer-motion';
 import Reply from './Reply';
-import { NeedleIcon } from 'renderer/icons';
+import { AIIcon, EditIcon, NeedleIcon, PaperIcon } from 'renderer/icons';
 
 export default function Post({ postPath }) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-  const { post, cycleColor } = usePost(postPath);
+  const { post, cycleColor, refreshPost } = usePost(postPath);
+  const [hovering, setHover] = useState(false);
   const [replying, setReplying] = useState(false);
   const [editable, setEditable] = useState(false);
 
@@ -27,7 +28,9 @@ export default function Post({ postPath }) {
 
   const created = DateTime.fromISO(post.data.createdAt);
   const replies = post?.data?.replies || [];
+  const hasReplies = replies.length > 0;
   const isReply = post?.data?.isReply || false;
+  const highlightColor = post.data.highlightColor ?? 'var(--border)';
 
   const renderReplies = () => {
     return replies.map((reply, i) => {
@@ -35,39 +38,49 @@ export default function Post({ postPath }) {
       const isLast = i === replies.length - 1;
       const path = getCurrentPilePath(reply);
       return (
-        <div className={styles.replies}>
-          <Reply
-            postPath={path}
-            isLast={isLast}
-            isFirst={isFirst}
-            highlightColor={post.data.highlightColor}
-          />
-        </div>
+        <Reply
+          key={reply}
+          postPath={path}
+          isLast={isLast && !hovering}
+          isFirst={isFirst}
+          replying={replying}
+          highlightColor={post.data.highlightColor}
+          parentPostPath={postPath}
+          reloadParentPost={refreshPost}
+        />
       );
     });
   };
 
+  const handleRootMouseEnter = () => setHover(true);
+  const handleRootMouseLeave = () => setHover(false);
+
   if (isReply) return;
 
   return (
-    <div className={styles.root}>
+    <div
+      className={styles.root}
+      onMouseEnter={handleRootMouseEnter}
+      onMouseLeave={handleRootMouseLeave}
+    >
       <div className={styles.post}>
         <div className={styles.left}>
           {post.data.isReply && <div className={styles.connector}></div>}
           <div
             className={styles.ball}
-            onDoubleClick={cycleColor}
+            onClick={cycleColor}
             style={{
-              backgroundColor: post.data.highlightColor ?? 'var(--border)',
+              backgroundColor: highlightColor,
             }}
           ></div>
 
           <div
             className={`${styles.line} ${
-              (post.data.replies.length > 0 || replying) && styles.show
+              (post.data.replies.length > 0 || replying || hovering) &&
+              styles.show
             }`}
             style={{
-              backgroundColor: post.data.highlightColor ?? 'var(--border)',
+              backgroundColor: highlightColor,
             }}
           ></div>
         </div>
@@ -75,12 +88,6 @@ export default function Post({ postPath }) {
           <div className={styles.header}>
             <div className={styles.title}>{post.name}</div>
             <div className={styles.meta}>
-              {!isReply && (
-                <div className={styles.replyButton} onClick={toggleReplying}>
-                  <NeedleIcon className={styles.icon} />
-                </div>
-              )}
-
               <div className={styles.time} onClick={toggleEditable}>
                 {created.toRelative()}
               </div>
@@ -95,6 +102,39 @@ export default function Post({ postPath }) {
           </div>
         </div>
       </div>
+
+      {renderReplies()}
+
+      <AnimatePresence>
+        {(replying || hovering) && !isReply && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className={styles.actions}>
+              <div
+                className={styles.openReply}
+                style={{ backgroundColor: highlightColor }}
+                onClick={toggleReplying}
+              >
+                <NeedleIcon className={styles.icon} />
+                Add another post
+              </div>
+              <div
+                className={styles.openReply}
+                style={{ backgroundColor: highlightColor }}
+                onClick={toggleReplying}
+              >
+                <AIIcon className={styles.icon2} />
+                Generate
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {replying && (
           <motion.div
@@ -110,38 +150,30 @@ export default function Post({ postPath }) {
                     (post.data.replies.length > 0 || replying) && styles.show
                   }`}
                   style={{
-                    backgroundColor:
-                      post.data.highlightColor ?? 'var(--border)',
+                    backgroundColor: highlightColor,
                   }}
                 ></div>
                 <div
                   className={styles.ball}
-                  onDoubleClick={cycleColor}
                   style={{
-                    backgroundColor: 'var(--border)',
-                  }}
-                ></div>
-                <div
-                  className={`${styles.line} ${
-                    (post.data.replies.length > 0 || replying) && styles.show
-                  }`}
-                  style={{
-                    backgroundColor:
-                      post.data.highlightColor ?? 'var(--border)',
+                    backgroundColor: highlightColor,
                   }}
                 ></div>
               </div>
               <div className={styles.right}>
                 <div className={styles.editor}>
-                  <Editor parentPostPath={postPath} editable isReply />
+                  <Editor
+                    parentPostPath={postPath}
+                    reloadParentPost={refreshPost}
+                    editable
+                    isReply
+                  />
                 </div>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {renderReplies()}
     </div>
   );
 }

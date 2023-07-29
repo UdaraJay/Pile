@@ -15,6 +15,7 @@ import CreatePile from './pages/CreatePile';
 import { PilesContextProvider } from './context/PilesContext';
 import { IndexContextProvider } from './context/IndexContext';
 import { TagsContextProvider } from './context/TagsContext';
+import { TimelineContextProvider } from './context/TimelineContext';
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
@@ -47,52 +48,54 @@ export default function App() {
     <PilesContextProvider>
       <IndexContextProvider>
         <TagsContextProvider>
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route
-                path="/"
-                element={
-                  <AnimatedPage _key="home">
-                    <Home />
-                  </AnimatedPage>
-                }
-              />
-              <Route
-                path="/license"
-                element={
-                  <AnimatedPage _key="license">
-                    <License />
-                  </AnimatedPage>
-                }
-              />
-              <Route
-                path="/credits"
-                element={
-                  <AnimatedPage _key="credits">
-                    <Credits />
-                  </AnimatedPage>
-                }
-              />
-              <Route
-                path="/new-pile"
-                element={
-                  <AnimatedPage _key="new-pile">
-                    <CreatePile />
-                  </AnimatedPage>
-                }
-              />
-              <Route path="/pile">
+          <TimelineContextProvider>
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
                 <Route
-                  path=":pileName"
+                  path="/"
                   element={
-                    <AnimatedPage down _key="pile">
-                      <Pile />
+                    <AnimatedPage _key="home">
+                      <Home />
                     </AnimatedPage>
                   }
                 />
-              </Route>
-            </Routes>
-          </AnimatePresence>
+                <Route
+                  path="/license"
+                  element={
+                    <AnimatedPage _key="license">
+                      <License />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/credits"
+                  element={
+                    <AnimatedPage _key="credits">
+                      <Credits />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/new-pile"
+                  element={
+                    <AnimatedPage _key="new-pile">
+                      <CreatePile />
+                    </AnimatedPage>
+                  }
+                />
+                <Route path="/pile">
+                  <Route
+                    path=":pileName"
+                    element={
+                      <AnimatedPage down _key="pile">
+                        <Pile />
+                      </AnimatedPage>
+                    }
+                  />
+                </Route>
+              </Routes>
+            </AnimatePresence>
+          </TimelineContextProvider>
         </TagsContextProvider>
       </IndexContextProvider>
     </PilesContextProvider>

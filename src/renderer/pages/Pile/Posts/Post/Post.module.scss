@@ -41,6 +41,10 @@
                 background: var(--bg-secondary);
                 transform: scale(0.8);
             }
+
+            &.ai {
+                background: red;
+            }
         }
 
         .line {
@@ -167,11 +171,11 @@
 
         &:hover {
             cursor: pointer;
-            filter: contrast(1.1);
+            filter: contrast(1.15);
         }
 
         &:active {
-            filter: contrast(0.9);
+            filter: contrast(0.85);
         }
 
 

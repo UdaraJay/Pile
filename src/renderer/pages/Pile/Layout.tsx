@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import styles from './PileLayout.module.scss';
 import { HomeIcon, RefreshIcon, SearchIcon } from 'renderer/icons';
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar/Timeline/index';
 import { CountUp } from 'use-count-up';
 import usePost from 'renderer/hooks/usePost';
 import { useIndexContext } from 'renderer/context/IndexContext';
@@ -20,6 +20,7 @@ export default function PileLayout({ children }) {
   const now = DateTime.now().toLocaleString(DateTime.DATE_HUGE);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {

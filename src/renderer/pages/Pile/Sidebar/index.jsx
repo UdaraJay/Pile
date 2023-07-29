@@ -4,23 +4,19 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useState } from 'react';
+import { DateTime } from 'luxon';
+import Timeline from './Timeline';
 
 export default function Sidebar({}) {
+  // current time
+  const [time, setTime] = useState(DateTime.now());
+
+  let now = new Date();
+  let weeksTimestamps = [];
+
   return (
     <div className={styles.sidebar}>
-      {/* <div className={styles.stats}>
-        <div className={styles.stat}>3 posts today</div>
-        <div className={styles.stat}>10 posts this week</div>
-      </div> */}
-      <div className={styles.title}>Tags</div>
-      <div className={styles.areas}>
-        <div className={styles.area}>Wellness</div>
-        <div className={styles.area}>ML</div>
-        <div className={styles.area}>WebDev</div>
-        <div className={styles.area}>Inspiration</div>
-        <div className={styles.area}>Knowledge</div>
-        <div className={styles.area}>Thoughts</div>
-      </div>
+      <Timeline />
     </div>
   );
 }

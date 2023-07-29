@@ -50,7 +50,7 @@ export const PilesContextProvider = ({ children }) => {
   const getCurrentPilePath = (appendPath = '') => {
     if (!currentPile) return;
     const pile = piles.find((p) => p.name == currentPile.name);
-    const path = window.electron.joinPath(pile.path, pile.name, appendPath);
+    const path = window.electron.joinPath(pile.path, appendPath);
     return path;
   };
 
@@ -65,19 +65,29 @@ export const PilesContextProvider = ({ children }) => {
     });
   };
 
-  const createPile = (name = '', path = null) => {
-    if (name == '' && path == null) return;
+  const createPile = (name = '', selectedPath = null) => {
+    if (name == '' && selectedPath == null) return;
+
+    let path = selectedPath;
 
     if (piles.find((p) => p.name == name)) {
       return;
     }
 
+    // If selected directory is not empty, create a new directory
+    if (!window.electron.isDirEmpty(selectedPath)) {
+      path = window.electron.joinPath(selectedPath, name);
+      window.electron.mkdir(pilePath, (err) => {
+        if (err) {
+          console.error('Error creating pile folder', err);
+          return;
+        }
+      });
+    }
+
     const newPiles = [{ name, path }, ...piles];
     setPiles(newPiles);
     writeConfig(newPiles);
-
-    // create the base folder for this
-    // pile here as well.
 
     return name;
   };

@@ -41,6 +41,15 @@ const electronHandler = {
   },
   existsSync: (path: string) => fs.existsSync(path),
   readDir: (path: string, callback: any) => fs.readdir(path, callback),
+  isDirEmpty: (path: string) =>
+    fs.readdir(path, (err, files) => {
+      if (err) throw err;
+      if (files.length === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }),
   readFile: (path: string, callback: any) =>
     fs.readFile(path, 'utf-8', callback),
   deleteFile: (path: string, callback: any) => fs.unlink(path, callback),

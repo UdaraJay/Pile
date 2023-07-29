@@ -3,7 +3,7 @@ import styles from './Post.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { DateTime } from 'luxon';
 import { postFormat } from 'renderer/utils/fileOperations';
 import Editor from '../../Editor';
@@ -13,22 +13,57 @@ import usePost from 'renderer/hooks/usePost';
 import { AnimatePresence, motion } from 'framer-motion';
 import Reply from './Reply';
 import { AIIcon, EditIcon, NeedleIcon, PaperIcon } from 'renderer/icons';
+import { useTimelineContext } from 'renderer/context/TimelineContext';
 
 export default function Post({ postPath }) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
+  const { setClosestDate } = useTimelineContext();
   const { post, cycleColor, refreshPost } = usePost(postPath);
   const [hovering, setHover] = useState(false);
   const [replying, setReplying] = useState(false);
+  const [isAIResplying, setIsAiReplying] = useState(false);
   const [editable, setEditable] = useState(false);
 
-  const toggleReplying = () => setReplying(!replying);
+  const closeReply = () => setReplying(false);
+  const toggleReplying = () => {
+    if (replying) {
+      // reset AI reply
+      setIsAiReplying(false);
+    }
+
+    setReplying(!replying);
+  };
   const toggleEditable = () => setEditable(!editable);
+
+  const handleRootMouseEnter = () => setHover(true);
+  const handleRootMouseLeave = () => setHover(false);
+
+  const containerRef = useRef();
+
+  useEffect(() => {
+    const checkScroll = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const isNearTop = rect.top >= 0 && rect.top <= 52;
+      if (isNearTop) {
+        if (post.data.isReply) return;
+        setClosestDate(post.data.createdAt);
+      }
+    };
+
+    window.addEventListener('scroll', checkScroll);
+
+    return () => {
+      window.removeEventListener('scroll', checkScroll);
+    };
+  }, [post]);
 
   if (!post) return;
 
   const created = DateTime.fromISO(post.data.createdAt);
   const replies = post?.data?.replies || [];
   const hasReplies = replies.length > 0;
+  const isAI = post?.data?.isAI || false;
   const isReply = post?.data?.isReply || false;
   const highlightColor = post.data.highlightColor ?? 'var(--border)';
 
@@ -52,13 +87,11 @@ export default function Post({ postPath }) {
     });
   };
 
-  const handleRootMouseEnter = () => setHover(true);
-  const handleRootMouseLeave = () => setHover(false);
-
   if (isReply) return;
 
   return (
     <div
+      ref={containerRef}
       className={styles.root}
       onMouseEnter={handleRootMouseEnter}
       onMouseLeave={handleRootMouseLeave}
@@ -67,7 +100,7 @@ export default function Post({ postPath }) {
         <div className={styles.left}>
           {post.data.isReply && <div className={styles.connector}></div>}
           <div
-            className={styles.ball}
+            className={`${styles.ball} ${isAI && styles.ai}`}
             onClick={cycleColor}
             style={{
               backgroundColor: highlightColor,
@@ -125,7 +158,10 @@ export default function Post({ postPath }) {
               <div
                 className={styles.openReply}
                 style={{ backgroundColor: highlightColor }}
-                onClick={toggleReplying}
+                onClick={() => {
+                  setIsAiReplying(true);
+                  toggleReplying();
+                }}
               >
                 <AIIcon className={styles.icon2} />
                 Generate
@@ -165,8 +201,11 @@ export default function Post({ postPath }) {
                   <Editor
                     parentPostPath={postPath}
                     reloadParentPost={refreshPost}
+                    setEditable={setEditable}
                     editable
                     isReply
+                    closeReply={closeReply}
+                    isAI={isAIResplying}
                   />
                 </div>
               </div>

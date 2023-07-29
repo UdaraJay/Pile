@@ -17,6 +17,18 @@
     width: calc(100% - 120px);
     max-width: 600px;
 
+    p {
+        line-height: 1.45;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
     &.editorBig {
         p {
             font-size: 1.2em;
@@ -90,6 +102,7 @@
             .icon {
                 height: 23px;
                 width: 23px;
+                fill: var(--secondary);
             }
 
             &.active {
@@ -191,8 +204,8 @@
                 width: 18px;
             }
 
-            &.active {
-                background: var(--bg-secondary);
+            &:active {
+                filter: brightness(0.9);
             }
 
             &:hover {

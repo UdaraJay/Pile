@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import styles from './Home.module.scss';
-import { TrashIcon } from 'renderer/icons';
+import { PileIcon } from 'renderer/icons';
 import { Link } from 'react-router-dom';
 import { usePilesContext } from '../../context/PilesContext';
 import DeletePile from './DeletePile';
-import icon from '../../../../assets/logo.png';
+import icon from '../../../../assets/icon.svg';
+import { motion } from 'framer-motion';
+import Logo from './logo';
+
 const quotes = [
   'One moment at a time',
   'Scribe your soul',
@@ -48,11 +51,11 @@ export default function Home() {
 
   return (
     <div className={styles.frame}>
-      <div className={styles.bg}></div>
+      {/* <div className={styles.bg}></div> */}
       <div className={styles.wrapper}>
         <div className={styles.header}>
-          <img src={icon} className={styles.img} />
-          {/* <div className={styles.logo}></div> */}
+          <Logo className={styles.icon} />
+
           <div className={styles.name}>Pile</div>
           <div className={styles.version}>{quote}</div>
         </div>
@@ -68,7 +71,7 @@ export default function Home() {
         <div className={styles.footer}>
           <a href="https://un.ms" target="_blank">
             <div className={styles.unms}></div>
-            Dare to dream, dare to create.
+            Crafted with care by Udara Jay.
           </a>
 
           <div className={styles.nav}>
@@ -76,7 +79,7 @@ export default function Home() {
               License
             </Link>
             <a href="https://un.ms" target="_blank" className={styles.link}>
-              Learn more
+              Tips & Tricks
             </a>
           </div>
         </div>

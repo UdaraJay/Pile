@@ -1,109 +1,109 @@
-   .ProseMirror {
-       outline: none;
-       min-height: 0px;
-       display: block;
-       position: relative;
+.ProseMirror {
+    outline: none;
+    min-height: 0px;
+    display: block;
+    position: relative;
 
-       p.is-editor-empty:first-child::before {
-           color: #adb5bd;
-           content: attr(data-placeholder);
-           float: left;
-           height: 0;
-           pointer-events: none;
-       }
+    p.is-editor-empty:first-child::before {
+        color: #adb5bd;
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+    }
 
-       >*+* {
-           margin-top: 0.75em;
-       }
+    >*+* {
+        margin-top: 0.75em;
+    }
 
-       p {
-           margin: 0;
-           line-height: 1.45;
-       }
+    p {
+        margin: 0;
+        line-height: 1.45;
+    }
 
-       ul,
-       ol {
-           padding: 0 1rem;
-       }
+    ul,
+    ol {
+        padding: 0 1rem;
+    }
 
-       ul[data-type='taskList'] {
-           margin: 0;
-           padding: 0;
+    ul[data-type='taskList'] {
+        margin: 0;
+        padding: 0;
 
-           li {
-               display: flex;
-               align-items: center;
-               margin: 0 0 4px 0;
+        li {
+            display: flex;
+            align-items: center;
+            margin: 0 0 4px 0;
 
-               >label {
-                   display: flex;
-                   align-items: center;
-                   flex: 0 0 auto;
-                   margin-right: 0.5rem;
-                   user-select: none;
-                   height: 18px;
-                   width: 18px;
+            >label {
+                display: flex;
+                align-items: center;
+                flex: 0 0 auto;
+                margin-right: 0.5rem;
+                user-select: none;
+                height: 18px;
+                width: 18px;
 
-                   input {
-                       background: blue;
-                       height: 16px;
-                       width: 16px;
-                       margin: 0;
-                       padding: 0;
-                       border-radius: 8px;
-                       border: 1px solid var(--border);
-                   }
+                input {
+                    background: blue;
+                    height: 16px;
+                    width: 16px;
+                    margin: 0;
+                    padding: 0;
+                    border-radius: 8px;
+                    border: 1px solid var(--border);
+                }
 
-               }
+            }
 
-               >div {
-                   flex: 1 1 auto;
-               }
-           }
-       }
+            >div {
+                flex: 1 1 auto;
+            }
+        }
+    }
 
-       h1,
-       h2,
-       h3,
-       h4,
-       h5,
-       h6 {
-           line-height: 1.1;
-       }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.1;
+    }
 
-       code {
-           background-color: rgba(#616161, 0.1);
-           color: #616161;
-       }
+    code {
+        background-color: rgba(#616161, 0.1);
+        color: #616161;
+    }
 
-       pre {
-           background: #0D0D0D;
-           color: #FFF;
-           font-family: 'JetBrainsMono', monospace;
-           padding: 0.75rem 1rem;
-           border-radius: 0.5rem;
+    pre {
+        background: #0D0D0D;
+        color: #FFF;
+        font-family: 'JetBrainsMono', monospace;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
 
-           code {
-               color: inherit;
-               padding: 0;
-               background: none;
-               font-size: 0.8rem;
-           }
-       }
+        code {
+            color: inherit;
+            padding: 0;
+            background: none;
+            font-size: 0.8rem;
+        }
+    }
 
-       img {
-           max-width: 100%;
-           height: auto;
-       }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
 
-       blockquote {
-           padding-left: 1rem;
-           border-left: 2px solid rgba(#0D0D0D, 0.1);
-       }
+    blockquote {
+        padding-left: 1rem;
+        border-left: 2px solid rgba(#0D0D0D, 0.1);
+    }
 
-       hr {
-           border: none;
-           border-top: 2px solid rgba(#0D0D0D, 0.1);
-           margin: 2rem 0;
-       }
-   }
+    hr {
+        border: none;
+        border-top: 2px solid rgba(#0D0D0D, 0.1);
+        margin: 2rem 0;
+    }
+}

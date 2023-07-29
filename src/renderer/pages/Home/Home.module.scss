@@ -23,8 +23,8 @@
     height: 100%;
     width: 100%;
     background:
-        linear-gradient(to top, var(--base), 30%, transparent);
-    filter: brightness(4);
+        linear-gradient(to bottom, var(--brand), 30%, transparent);
+    opacity: 1;
     opacity: 0.3;
 }
 
@@ -32,22 +32,45 @@
     -webkit-app-region: none;
     user-select: none;
 
-    .img {
+    @keyframes grow {
+        0% {
+            transform: scaley(0.5)
+        }
+
+        100% {
+            transform: scaley(1)
+        }
+    }
+
+    .icon {
         display: block;
-        width: 60px;
-        border-radius: 90px;
         margin: 0 auto;
-        margin-bottom: 12px;
+        color: var(--brand-bg);
+        fill: #fff;
+        margin-bottom: 16px;
+        width: 80px;
+        height: 80px;
+    }
+
+    .logoLine {
+        display: block;
+        background: var(--base);
+        height: 128px;
+        width: 5px;
+        border-radius: 0;
+        margin: 0 auto;
+        margin-bottom: 10px;
+        position: relative;
     }
 
     .logo {
-        display: block;
-        // animation: logo 3.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-        background: linear-gradient(to bottom, var(--base), var(--base-green));
-        height: 68px;
-        width: 53px;
+        height: 24px;
+        width: 24px;
+        background: var(--base);
         border-radius: 90px;
         margin: 0 auto;
+        margin-top: 6px;
+        margin-bottom: 32px;
     }
 
     .name {
@@ -78,16 +101,21 @@
     font-size: 0.8em;
     padding: 9px 12px;
     font-weight: 500;
-    color: var(--base);
+    color: var(--secondary);
     background: Var(--bg-secondary);
     border-radius: 12px;
     margin: 32px auto;
     user-select: none;
+    transition: all ease-in-out 120ms;
 
     &:hover {
         cursor: pointer;
-        color: var(--base-hover);
-        background: var(--bg-tertiary);
+        color: var(--primary);
+        background: var(--bg);
+    }
+
+    &:active {
+        background: var(--bg);
     }
 }
 
@@ -109,7 +137,7 @@
         -webkit-app-region: none;
         display: flex;
         justify-content: space-between;
-        background: rgba(255, 255, 255, 0.15);
+        background: var(--translucent);
         backdrop-filter: blur(10px);
         margin-bottom: 1px;
         padding: 7px 7px 7px 9px;
@@ -151,17 +179,19 @@
     }
 
     .button {
-        background: var(--bg);
-        color: var(--primary);
+        background: var(--bg-secondary);
+        color: var(--secondary);
         font-size: 0.95em;
-        padding: 9px 22px;
+        padding: 9px 16px;
         line-height: 1;
         border-radius: 9px;
         user-select: none;
         transition: all ease-in-out 120ms;
+        font-weight: 500;
 
         &:hover {
             cursor: pointer;
+            color: var(--primary);
             background: var(--bg-secondary);
         }
 

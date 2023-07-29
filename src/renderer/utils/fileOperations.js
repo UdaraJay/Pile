@@ -9,7 +9,7 @@ const postFormat = {
   tags: [],
   replies: [],
   isReply: false,
-  isAi: false,
+  isAI: false,
 };
 
 const getDirectoryPath = (filePath) => {
@@ -33,37 +33,12 @@ const getFormattedTimestamp = () => {
   return fileName;
 };
 
-const getFilePathForNewPost = (basePath, pileName, timestamp = new Date()) => {
+const getFilePathForNewPost = (basePath, timestamp = new Date()) => {
   const date = new Date();
   const month = date.toLocaleString('default', { month: 'short' });
   const year = date.getFullYear().toString();
   const fileName = getFormattedTimestamp();
-  const path = window.electron.joinPath(
-    basePath,
-    pileName,
-    year,
-    month,
-    fileName
-  );
-
-  return path;
-};
-
-const getPathByFileName = (basePath, pileName, fileName) => {
-  const date = new Date();
-  const year = `20${fileName[0]}${fileName[1]}`;
-  const monthNumber = String(`${fileName[2]}${fileName[3]}`).valueOf();
-
-  date.setMonth(monthNumber - 1);
-  const month = date.toLocaleString('default', { month: 'short' });
-
-  const path = window.electron.joinPath(
-    basePath,
-    pileName,
-    year,
-    month,
-    fileName
-  );
+  const path = window.electron.joinPath(basePath, year, month, fileName);
 
   return path;
 };
@@ -129,7 +104,6 @@ export {
   saveFile,
   deleteFile,
   getFiles,
-  getPathByFileName,
   getDirectoryPath,
   getFilePathForNewPost,
   generateMarkdown,

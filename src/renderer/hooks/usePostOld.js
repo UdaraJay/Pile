@@ -2,13 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePilesContext } from 'renderer/context/PilesContext';
 import * as fileOperations from '../utils/fileOperations';
 import { useIndexContext } from 'renderer/context/IndexContext';
-import {
-  getPost,
-  cycleColorCreator,
-  tagActionsCreator,
-  attachToPostCreator,
-  detachFromPostCreator,
-} from './usePostHelpers';
 
 const highlightColors = [
   'var(--border)',
@@ -58,6 +51,131 @@ function usePost(
     setPost(freshPost);
   }, [postPath]);
 
+  const getPost = useCallback(async (postPath) => {
+    try {
+      if (!postPath) return;
+      const fileContent = await window.electron.ipc.invoke(
+        'get-file',
+        postPath
+      );
+      if (!fileContent) return null;
+      const parsed = await window.electron.ipc.invoke(
+        'matter-parse',
+        fileContent
+      );
+      const post = { content: parsed.content, data: parsed.data };
+      return post;
+    } catch (error) {
+      console.error(`Error reading/parsing file: ${postPath}`);
+    }
+  }, []);
+
+  const setContent = (content) => {
+    setPost((post) => {
+      return { ...post, content };
+    });
+  };
+
+  const updateData = useCallback((data) => {
+    setPost((post) => {
+      return { ...post, data: { ...post.data, ...data } };
+    });
+  }, []);
+
+  const cycleColor = useCallback(() => {
+    if (!post.data.highlightColor) {
+      updateData({ highlightColor: highlightColors[1] });
+      savePost({ highlightColor: highlightColors[1] });
+      return;
+    }
+    const currentColor = post.data.highlightColor;
+    const currentIndex = highlightColors.findIndex(
+      (color) => color === currentColor
+    );
+    const nextIndex = (currentIndex + 1) % highlightColors.length;
+    const nextColor = highlightColors[nextIndex];
+    updateData({ highlightColor: nextColor });
+    savePost({ highlightColor: nextColor });
+  }, [post]);
+
+  const addTag = useCallback(
+    (tag) => {
+      if (!post.data.tags.includes(tag)) {
+        setPost((post) => {
+          let newPost = {
+            ...post,
+            data: {
+              ...post.data,
+              tags: [...post.data.tags, tag],
+            },
+          };
+
+          return newPost;
+        });
+      }
+    },
+    [currentPile]
+  );
+
+  const removeTag = useCallback(
+    (tag) => {
+      if (post.data.tags.includes(tag)) {
+        let newPost = {
+          ...post,
+          data: {
+            ...post.data,
+            tags: post.data.tags.filter((t) => t !== tag),
+          },
+        };
+        setPost(newPost);
+      }
+    },
+    [currentPile]
+  );
+
+  const attachToPost = useCallback(async () => {
+    const storePath = getCurrentPilePath();
+    const newAttachments = await window.electron.ipc.invoke('open-file', {
+      storePath: storePath,
+    });
+    const correctedPaths = newAttachments.map((path) => {
+      const pathArr = path.split('/').slice(-4);
+      const newPath = window.electron.joinPath(...pathArr);
+
+      return newPath;
+    });
+    setPost((post) => {
+      const attachments = [...correctedPaths, ...post.data.attachments];
+      const newPost = {
+        ...post,
+        data: { ...post.data, attachments },
+      };
+      return newPost;
+    });
+  }, [currentPile]);
+
+  const detachFromPost = useCallback((attachmentPath) => {
+    setPost((post) => {
+      let newPost = JSON.parse(JSON.stringify(post));
+      const newAtt = newPost.data.attachments.filter(
+        (a) => a !== attachmentPath
+      );
+      newPost.data.attachments = newAtt;
+      const fullPath = window.electron.joinPath(
+        getCurrentPilePath(),
+        attachmentPath
+      );
+      window.electron.deleteFile(fullPath, (err) => {
+        if (err) {
+          console.error('There was an error:', err);
+        } else {
+          console.log('File was deleted successfully');
+        }
+      });
+      return newPost;
+    });
+  }, []);
+
   const savePost = useCallback(
     async (dataOverrides) => {
       const saveToPath = path
@@ -84,12 +202,17 @@ function usePost(
         await fileOperations.createDirectory(directoryPath);
         await fileOperations.saveFile(saveToPath, fileContents);
 
+        console.log(`File successfully written to: ${saveToPath}`);
+
         if (isReply) {
           await addReplyToParent(parentPostPath, saveToPath);
         }
 
-        addIndex(saveToPath); // Add the file to the index
-        window.electron.ipc.invoke('tags-sync', saveToPath); // Sync tags
+        // Add the file to the index
+        addIndex(saveToPath);
+
+        // Sync tags
+        window.electron.ipc.invoke('tags-sync', saveToPath);
       } catch (error) {
         console.error(`Error writing file: ${saveToPath}`);
         console.error(error);
@@ -109,6 +232,10 @@ function usePost(
     const fileContents = await fileOperations.generateMarkdown(content, data);
     await fileOperations.saveFile(parentPostPath, fileContents);
     reloadParentPost(parentPostPath);
+  };
+
+  const resetPost = () => {
+    setPost(defaultPost);
   };
 
   const deletePost = useCallback(async () => {
@@ -135,28 +262,19 @@ function usePost(
     removeIndex(postPath);
   }, [postPath, reloadParentPost, parentPostPath, post]);
 
-  const postActions = useMemo(
-    () => ({
-      setContent: (content) => setPost((post) => ({ ...post, content })),
-      updateData: (data) =>
-        setPost((post) => ({ ...post, data: { ...post.data, ...data } })),
-      cycleColor: cycleColorCreator(post, setPost, savePost, highlightColors),
-      addTag: tagActionsCreator(setPost, 'add'),
-      removeTag: tagActionsCreator(setPost, 'remove'),
-      attachToPost: attachToPostCreator(setPost, getCurrentPilePath),
-      detachFromPost: detachFromPostCreator(setPost, getCurrentPilePath),
-      resetPost: () => setPost(defaultPost),
-    }),
-    [post]
-  );
-
   return {
     defaultPost,
     post,
     savePost,
     refreshPost,
+    setContent,
+    cycleColor,
+    addTag,
+    removeTag,
+    attachToPost,
+    detachFromPost,
+    resetPost,
     deletePost,
-    ...postActions,
   };
 }
 

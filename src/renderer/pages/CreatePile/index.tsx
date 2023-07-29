@@ -4,7 +4,8 @@ import { TrashIcon } from 'renderer/icons';
 import { Link } from 'react-router-dom';
 import { usePilesContext } from 'renderer/context/PilesContext';
 import { useNavigate } from 'react-router-dom';
-
+import icon from '../../../../assets/logo.png';
+import { motion } from 'framer-motion';
 const pilesList = ['Users/uj/Personal', 'Users/uj/Startup', 'Users/uj/School'];
 
 export default function CreatePile() {
@@ -63,7 +64,6 @@ export default function CreatePile() {
     <div className={styles.frame}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <div className={styles.logo}></div>
           <div className={styles.name}>Create a new pile</div>
         </div>
 

@@ -27,13 +27,12 @@ button {
     position: fixed;
     inset: 0;
     animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-    background: var(--bg);
+    background: var(--bg-secondary);
     backdrop-filter: blur(10px);
     opacity: 0.75;
 }
 
 .AlertDialogContent {
-    background-color: white;
     border-radius: 12px;
     position: fixed;
     top: 50%;
@@ -42,9 +41,9 @@ button {
     width: 90vw;
     max-width: 400px;
     max-height: 85vh;
-    padding: 18px;
+    padding: 20px 18px;
     animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid var(--border);
+    background: var(--bg);
 }
 
 .AlertDialogContent:focus {
@@ -113,11 +112,12 @@ button {
     background: var(--bg-secondary);
     color: var(--secondary);
     border-radius: 90px;
+    transition: all ease-in-out 120ms;
 
     &:hover {
         cursor: pointer;
         color: var(--primary);
-        background: var(--bg-tertiary);
+        background: var(--bg);
 
     }
 

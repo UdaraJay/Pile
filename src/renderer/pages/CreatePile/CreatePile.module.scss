@@ -11,59 +11,33 @@
 .card {
     margin: 0 auto;
     margin-top: -64px;
-    max-width: 500px;
+    max-width: 400px;
+    background: var(--bg);
+    padding: 18px;
+    border-radius: 22px;
 }
 
 .header {
     display: flex;
-    align-items: center;
+    // align-items: center;
     flex-direction: column;
-    margin-bottom: 54px;
-
-    .logo {
-        display: block;
-        background: linear-gradient(to bottom, var(--base), var(--base-green));
-        height: 68px;
-        width: 53px;
-        border-radius: 90px;
-        margin-bottom: 4px;
-    }
+    margin-bottom: 12px;
 
     .name {
         font-family: "Porpora";
-        font-size: 1.6em;
-        margin-top: 16px;
+        font-size: 1.4em;
         color: var(--primary);
-
     }
 
-}
-
-.create {
-    display: block;
-    text-align: center;
-    font-size: 0.8em;
-    padding: 9px 12px;
-    font-weight: 500;
-    color: var(--base);
-    background: Var(--bg-secondary);
-    border-radius: 12px;
-    margin: 32px auto;
-    -webkit-app-region: none;
-
-    &:hover {
-        cursor: pointer;
-        color: var(--base-hover);
-        background: var(--bg-tertiary);
-    }
 }
 
 .form {
     -webkit-app-region: none;
 
+
     .input {
         display: flex;
-        align-items: center;
+        flex-direction: column;
         justify-content: flex-start;
         margin: 20px 0;
 
@@ -72,6 +46,7 @@
             font-size: 0.8em;
             color: var(--secondary);
             width: 240px;
+            margin-bottom: 12px;
 
             label {
                 display: block;
@@ -83,14 +58,14 @@
 
 
         input {
-            background: var(--bg-secondary);
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 9px 12px;
             line-height: 0.9;
             outline: none;
             font-size: 0.8em;
-            width: 200px;
+            background: var(--bg-secondary);
+            color: var(--primary);
 
             &:focus {
                 background: var(--bg-tertiary);
@@ -103,16 +78,17 @@
             font-size: 0.8em;
             padding: 9px 12px;
             font-weight: 500;
-            color: var(--base);
-            background: Var(--bg-secondary);
-            border-radius: 12px;
+            color: var(--secondary);
+            background: var(--bg-secondary);
+            border-radius: 8px;
             border: none;
             appearance: none;
             outline: none;
+            transition: all ease-in-out 120ms;
 
             &:hover {
                 cursor: pointer;
-                color: var(--base-hover);
+                color: var(--primary);
                 background: var(--bg-tertiary);
             }
         }
@@ -124,7 +100,7 @@
 .buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 40px;
+    margin-top: 30px;
     -webkit-app-region: none;
 
     .back {
@@ -137,6 +113,9 @@
         border-radius: 12px;
         width: 100px;
         transition: all ease-in-out 120ms;
+
+        margin-right: 12px;
+        ;
 
         &:hover {
             cursor: pointer;

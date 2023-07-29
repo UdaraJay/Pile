@@ -7,6 +7,7 @@ import StarterKit from '@tiptap/starter-kit';
 import CharacterCount from '@tiptap/extension-character-count';
 import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
+import Typography from '@tiptap/extension-typography';
 import Placeholder from '@tiptap/extension-placeholder';
 import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,12 +19,16 @@ import TagList from './TagList';
 import Attachments from './Attachments';
 import usePost from 'renderer/hooks/usePost';
 import ProseMirrorStyles from './ProseMirror.scss';
+import useAI from 'renderer/hooks/useAI';
+import useThread from 'renderer/hooks/useThread';
 
 export default function Editor({
   postPath = null,
   editable = false,
   parentPostPath = null,
+  isAI = false,
   isReply = false,
+  closeReply = () => {},
   setEditable = () => {},
   reloadParentPost,
 }) {
@@ -37,12 +42,15 @@ export default function Editor({
     setContent,
     resetPost,
     deletePost,
-  } = usePost(postPath, { isReply, parentPostPath, reloadParentPost });
+  } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
+  const { getThread } = useThread();
+  const ai = useAI(parentPostPath);
 
   const isNew = !postPath;
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Typography,
       Placeholder.configure({
         placeholder: 'What are you thinking?',
       }),
@@ -61,6 +69,7 @@ export default function Editor({
   const elRef = useRef();
   const [deleteStep, setDeleteStep] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isAIResponding, setIsAiResponding] = useState(false);
   const [prevDragPos, setPrevDragPos] = useState(0);
 
   const handleMouseDown = (e) => {
@@ -81,6 +90,59 @@ export default function Editor({
   };
 
   useEffect(() => {
+    if (!editor) return;
+    generateAiResponse();
+  }, [editor, isAI]);
+
+  const handleSubmit = useCallback(async () => {
+    await savePost();
+
+    if (isNew) {
+      resetPost();
+      return;
+    }
+
+    closeReply();
+    setEditable(false);
+  }, [editor, isNew, post]);
+
+  const generateAiResponse = useCallback(async () => {
+    if (!editor) return;
+    if (isAIResponding) return;
+    const isEmpty = editor.state.doc.textContent.length === 0;
+    if (isAI && isEmpty) {
+      setEditable(false);
+      setIsAiResponding(true);
+      const thread = await getThread(parentPostPath);
+      let context = [];
+      context.push({
+        role: 'system',
+        content:
+          'You are a friendly AI within a journaling app. Continue with a thoughtful response to the following thread in plaintext. You can only respond to the users thread, there is no way for the user to directly talk to you.',
+      });
+      thread.forEach((post) => {
+        const message = { role: 'user', content: post.content };
+        context.push(message);
+      });
+
+      if (context.length === 0) return;
+
+      const stream = await ai.chat.completions.create({
+        model: 'gpt-4',
+        stream: true,
+        max_tokens: 110,
+        messages: context,
+      });
+
+      for await (const part of stream) {
+        const token = part.choices[0].delta.content;
+        editor.commands.insertContent(token);
+      }
+      setIsAiResponding(false);
+    }
+  }, [editor, isAI]);
+
+  useEffect(() => {
     if (editor) {
       if (post?.content != editor.getHTML()) {
         editor.commands.setContent(post.content);
@@ -97,17 +159,6 @@ export default function Editor({
     setDeleteStep(0);
   }, [editable]);
 
-  const handleSubmit = useCallback(async () => {
-    await savePost();
-
-    if (isNew) {
-      resetPost();
-      return;
-    }
-
-    setEditable(false);
-  }, [editor, isNew, post]);
-
   const handleOnDelete = useCallback(async () => {
     if (deleteStep == 0) {
       setDeleteStep(1);
@@ -122,6 +173,7 @@ export default function Editor({
   }, [editor]);
 
   const renderPostButton = () => {
+    if (isAI) return 'Save AI response';
     if (isReply) return 'Reply';
     if (isNew) return 'Post';
 
@@ -132,10 +184,6 @@ export default function Editor({
 
   return (
     <div className={`${styles.frame} ${isNew && styles.isNew}`}>
-      {/* <div className={styles.header}>
-        <TagList tags={post.data.tags} removeTag={removeTag} />
-      </div> */}
-
       {editable ? (
         <EditorContent
           key={'new'}
@@ -144,10 +192,10 @@ export default function Editor({
         />
       ) : (
         <div className={styles.uneditable}>
-          <EditorContent
-            key={'uneditable'}
+          <div
+            key="uneditable"
             className={`${styles.editor} ${isBig() && styles.editorBig}`}
-            editor={editor}
+            dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </div>
       )}
@@ -196,6 +244,12 @@ export default function Editor({
                 </button>
               </div>
               <div className={styles.right}>
+                {isReply && (
+                  <button className={styles.deleteButton} onClick={closeReply}>
+                    Close
+                  </button>
+                )}
+
                 {!isNew && (
                   <button
                     className={styles.deleteButton}

@@ -17,6 +17,8 @@ class AppUpdater {
   }
 }
 
+app.disableHardwareAcceleration();
+
 let mainWindow: BrowserWindow | null = null;
 
 if (process.env.NODE_ENV === 'production') {
@@ -81,7 +83,6 @@ const createWindow = async () => {
         : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
     frame: false,
-    // titleBarStyle: 'hiddenInset',
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 18, y: 16 },
     transparent: true,

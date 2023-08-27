@@ -19,7 +19,7 @@ import TagList from './TagList';
 import Attachments from './Attachments';
 import usePost from 'renderer/hooks/usePost';
 import ProseMirrorStyles from './ProseMirror.scss';
-import useAI from 'renderer/hooks/useAI';
+import { useAIContext } from 'renderer/context/AIContext';
 import useThread from 'renderer/hooks/useThread';
 
 export default function Editor({
@@ -44,7 +44,7 @@ export default function Editor({
     deletePost,
   } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
   const { getThread } = useThread();
-  const ai = useAI(parentPostPath);
+  const { ai, prompt } = useAIContext();
 
   const isNew = !postPath;
   const editor = useEditor({
@@ -99,6 +99,7 @@ export default function Editor({
 
     if (isNew) {
       resetPost();
+      closeReply();
       return;
     }
 
@@ -117,12 +118,15 @@ export default function Editor({
       let context = [];
       context.push({
         role: 'system',
-        content:
-          'You are a friendly AI within a journaling app. Continue with a thoughtful response to the following thread in plaintext. You can only respond to the users thread, there is no way for the user to directly talk to you.',
+        content: prompt,
       });
       thread.forEach((post) => {
         const message = { role: 'user', content: post.content };
         context.push(message);
+      });
+      context.push({
+        role: 'system',
+        content: 'You can only respond in plaintext, do NOT use HTML.',
       });
 
       if (context.length === 0) return;
@@ -130,13 +134,14 @@ export default function Editor({
       const stream = await ai.chat.completions.create({
         model: 'gpt-4',
         stream: true,
-        max_tokens: 110,
+        max_tokens: 200,
         messages: context,
       });
 
       for await (const part of stream) {
         const token = part.choices[0].delta.content;
         editor.commands.insertContent(token);
+        window.electron.ipc.sendMessage('haptic-vibrate');
       }
       setIsAiResponding(false);
     }
@@ -144,6 +149,7 @@ export default function Editor({
 
   useEffect(() => {
     if (editor) {
+      if (!post) return;
       if (post?.content != editor.getHTML()) {
         editor.commands.setContent(post.content);
       }
@@ -259,7 +265,7 @@ export default function Editor({
                   </button>
                 )}
                 <button
-                  tabindex="0"
+                  tabIndex="0"
                   className={styles.button}
                   onClick={handleSubmit}
                 >

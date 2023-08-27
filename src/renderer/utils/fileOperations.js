@@ -67,7 +67,6 @@ const getFiles = async (dir) => {
 };
 
 const saveFile = (path, file) => {
-  console.log('saving...', path, file);
   return new Promise((resolve, reject) => {
     window.electron.writeFile(path, file, (err) => {
       if (err) {
@@ -81,7 +80,6 @@ const saveFile = (path, file) => {
 };
 
 const deleteFile = (path) => {
-  console.log('deleting...', path);
   return new Promise((resolve, reject) => {
     window.electron.deleteFile(path, (err) => {
       if (err) {

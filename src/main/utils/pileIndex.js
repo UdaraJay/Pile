@@ -58,18 +58,21 @@ class PileIndex {
     return this.index;
   }
 
-  add(filePath) {
+  add(relativeFilePath) {
+    const filePath = path.join(this.pilePath, relativeFilePath);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContent);
-    this.index.set(filePath, data);
+
+    this.index.set(relativeFilePath, data);
 
     this.save();
 
     return this.index;
   }
 
-  remove(filePath) {
-    this.index.delete(filePath);
+  // TODO: we should deal with the relative path here
+  remove(relativeFilePath) {
+    this.index.delete(relativeFilePath);
     this.save();
 
     return this.index;

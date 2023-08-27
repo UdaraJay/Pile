@@ -1,9 +1,9 @@
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Post.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useEffect, useState, useRef } from 'react';
 import { DateTime } from 'luxon';
 import { postFormat } from 'renderer/utils/fileOperations';
 import Editor from '../../Editor';
@@ -14,17 +14,24 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Reply from './Reply';
 import { AIIcon, EditIcon, NeedleIcon, PaperIcon } from 'renderer/icons';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
+import Ball from './Ball';
+import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
 export default function Post({ postPath }) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
+  const { highlights } = useHighlightsContext();
   const { setClosestDate } = useTimelineContext();
-  const { post, cycleColor, refreshPost } = usePost(postPath);
+  const { post, cycleColor, refreshPost, setHighlight } = usePost(postPath);
   const [hovering, setHover] = useState(false);
   const [replying, setReplying] = useState(false);
   const [isAIResplying, setIsAiReplying] = useState(false);
   const [editable, setEditable] = useState(false);
 
-  const closeReply = () => setReplying(false);
+  const closeReply = () => {
+    setReplying(false);
+    setIsAiReplying(false);
+  };
+
   const toggleReplying = () => {
     if (replying) {
       // reset AI reply
@@ -41,45 +48,60 @@ export default function Post({ postPath }) {
   const containerRef = useRef();
 
   useEffect(() => {
-    const checkScroll = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const isNearTop = rect.top >= 0 && rect.top <= 52;
-      if (isNearTop) {
+    const container = containerRef.current;
+
+    const handleIntersection = (entries) => {
+      const entry = entries[0];
+      if (entry.isIntersecting) {
         if (post.data.isReply) return;
         setClosestDate(post.data.createdAt);
       }
     };
 
-    window.addEventListener('scroll', checkScroll);
+    const options = {
+      root: null,
+      rootMargin: '-100px 0px 0px 0px',
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, options);
+    if (container) {
+      observer.observe(container);
+    }
 
     return () => {
-      window.removeEventListener('scroll', checkScroll);
+      if (container) {
+        observer.unobserve(container);
+      }
     };
-  }, [post]);
+  }, [containerRef, post]);
 
   if (!post) return;
+  if (post.content == '' && post.data.attachments.length == 0) return;
 
   const created = DateTime.fromISO(post.data.createdAt);
   const replies = post?.data?.replies || [];
   const hasReplies = replies.length > 0;
   const isAI = post?.data?.isAI || false;
   const isReply = post?.data?.isReply || false;
-  const highlightColor = post.data.highlightColor ?? 'var(--border)';
+  const highlightColor = post.data.highlight
+    ? highlights.get(post.data.highlight).color
+    : 'var(--border)';
 
   const renderReplies = () => {
     return replies.map((reply, i) => {
       const isFirst = i === 0;
       const isLast = i === replies.length - 1;
       const path = getCurrentPilePath(reply);
+
       return (
         <Reply
           key={reply}
-          postPath={path}
+          postPath={reply}
           isLast={isLast && !hovering}
           isFirst={isFirst}
           replying={replying}
-          highlightColor={post.data.highlightColor}
+          highlightColor={highlightColor}
           parentPostPath={postPath}
           reloadParentPost={refreshPost}
         />
@@ -99,13 +121,19 @@ export default function Post({ postPath }) {
       <div className={styles.post}>
         <div className={styles.left}>
           {post.data.isReply && <div className={styles.connector}></div>}
-          <div
+          <Ball
+            isAI={isAI}
+            highlightColor={highlightColor}
+            cycleColor={cycleColor}
+            setHighlight={setHighlight}
+          />
+          {/* <div
             className={`${styles.ball} ${isAI && styles.ai}`}
             onClick={cycleColor}
             style={{
               backgroundColor: highlightColor,
             }}
-          ></div>
+          ></div> */}
 
           <div
             className={`${styles.line} ${
@@ -113,7 +141,7 @@ export default function Post({ postPath }) {
               styles.show
             }`}
             style={{
-              backgroundColor: highlightColor,
+              borderColor: highlightColor,
             }}
           ></div>
         </div>
@@ -164,7 +192,7 @@ export default function Post({ postPath }) {
                 }}
               >
                 <AIIcon className={styles.icon2} />
-                Generate
+                Reflect
               </div>
             </div>
           </motion.div>

@@ -67,6 +67,10 @@
         @media only screen and (max-width: 909px) {
             width: 100vw;
         }
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     .container {

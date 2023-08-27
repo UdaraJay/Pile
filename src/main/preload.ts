@@ -3,6 +3,7 @@
 import { app, contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import fs from 'fs';
 const fsPromises = require('fs').promises;
+import keytar from 'keytar';
 
 import path from 'path';
 
@@ -60,6 +61,7 @@ const electronHandler = {
   startDrag: (filePath: string) => {
     ipcRenderer.send('ondragstart', filePath);
   },
+
   // relativePath: (rootDirectory, fullPath) =>
   //   path.relative(rootDirectory, fullPath),
 };

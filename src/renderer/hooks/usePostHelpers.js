@@ -106,6 +106,16 @@ export const tagActionsCreator = (setPost, action) => {
   };
 };
 
+export const setHighlightCreator = (post, setPost, savePost) => {
+  return (highlight) => {
+    setPost((post) => ({
+      ...post,
+      data: { ...post.data, highlight: highlight },
+    }));
+    savePost({ highlight: highlight });
+  };
+};
+
 export const cycleColorCreator = (post, setPost, savePost, highlightColors) => {
   return () => {
     if (!post.data.highlightColor) {

@@ -18,7 +18,7 @@ function isToday(date) {
 }
 
 function DayComponent({ date }) {
-  const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S']; // Sunday, Monday, etc.
+  const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   const dayName = dayNames[date.getDay()];
   const dayNumber = date.getDate();
 
@@ -77,7 +77,7 @@ function WeekComponent({ startDate, endDate }) {
         return '4th week';
         break;
       default:
-        return weekOfMonth + 'th week';
+        return '';
     }
   };
 
@@ -93,6 +93,7 @@ function WeekComponent({ startDate, endDate }) {
 }
 
 const Timeline = () => {
+  const scrollRef = useRef(null);
   const scrubRef = useRef(null);
   const { closestDate } = useTimelineContext();
 
@@ -128,16 +129,32 @@ const Timeline = () => {
 
   useEffect(() => {
     if (!scrubRef.current) return;
+    if (!scrollRef.current) return;
     let oneDay = 24 * 60 * 60 * 1000;
     const now = new Date();
     const past = new Date(closestDate);
     let diffInMilliSeconds = Math.abs(now - past);
     let diffInDays = Math.round(diffInMilliSeconds / oneDay);
-    scrubRef.current.style.top = 22 * diffInDays + 10 + 'px';
+
+    let scrollOffset = 0;
+    const distanceFromTop = 22 * diffInDays + 10;
+
+    if (distanceFromTop > 400) {
+      scrollOffset = distanceFromTop - 300;
+    } else {
+      scrollOffset = 0;
+    }
+
+    scrollRef.current.scroll({
+      top: scrollOffset,
+      behavior: 'smooth',
+    });
+
+    scrubRef.current.style.top = distanceFromTop + 'px';
   }, [closestDate]);
 
   return (
-    <div className={styles.timeline}>
+    <div ref={scrollRef} className={styles.timeline}>
       {weeks}
       <div ref={scrubRef} className={styles.scrubber}></div>
     </div>

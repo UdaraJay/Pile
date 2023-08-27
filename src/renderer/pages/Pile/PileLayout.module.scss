@@ -20,12 +20,7 @@
     transition: all ease-in-out 220ms, border ease-in-out 500ms;
     width: 100%;
     background: var(--bg);
-    border-bottom: 1px solid transparent;
-
-    &.showBorder {
-        border-bottom-color: var(--border);
-        // box-shadow: 1px 0 10px rgba(0, 0, 0, 0.1);
-    }
+    background: linear-gradient(to bottom, var(--bg), 90%, transparent);
 
     .left {
         display: flex;
@@ -85,21 +80,34 @@
             align-items: center;
             justify-content: center;
             height: 32px;
-            width: 39px;
+            width: 36px;
             border-radius: 8px;
             transition: all ease-in-out 120ms;
             -webkit-app-region: none;
             background: transparent;
-            margin-right: -4px;
+            margin-right: -2px;
+
 
             &:last-child {
-                margin-right: 0;
+                margin-right: 8px;
             }
 
-            .icon {
+            .homeIcon {
                 color: var(--secondary);
-                height: 22px;
-                width: 22px;
+                height: 19px;
+                width: 19px;
+                transition: all ease-in-out 220ms;
+                transition-delay: 40ms;
+                opacity: 0.5;
+            }
+
+            .settingsIcon {
+                color: var(--secondary);
+                height: 17px;
+                width: 17px;
+                transition: all ease-in-out 220ms;
+                transition-delay: 40ms;
+                opacity: 0.5;
             }
 
             &.active {
@@ -110,6 +118,11 @@
                 cursor: pointer;
                 background: var(--bg-secondary);
                 color: var(--primary);
+
+                .homeIcon,
+                .settingsIcon {
+                    opacity: 1;
+                }
             }
 
             &:active {
@@ -193,6 +206,9 @@
         background: var(--bg);
         min-height: 100vh;
         transition: all ease-in-out 220ms;
+        height: 100vh;
+        overflow-y: overlay;
+        overflow-x: hidden;
 
         @media only screen and (max-width: 909px) {
             margin-left: 0;

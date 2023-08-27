@@ -8,6 +8,7 @@ import {
   tagActionsCreator,
   attachToPostCreator,
   detachFromPostCreator,
+  setHighlightCreator,
 } from './usePostHelpers';
 
 const highlightColors = [
@@ -22,6 +23,7 @@ const defaultPost = {
     title: '',
     createdAt: null,
     updatedAt: null,
+    highlight: null,
     highlightColor: null,
     tags: [],
     replies: [],
@@ -32,31 +34,36 @@ const defaultPost = {
 };
 
 function usePost(
-  postPath = null,
+  postPath = null, // relative path
   {
     isReply = false,
     isAI = false,
-    parentPostPath = null,
+    parentPostPath = null, // relative path
     reloadParentPost = () => {},
   } = {}
 ) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { addIndex, removeIndex, refreshIndex } = useIndexContext();
   const [updates, setUpdates] = useState(0);
-  const [path, setPath] = useState();
+  const [path, setPath] = useState(); // absolute path
   const [post, setPost] = useState({ ...defaultPost });
 
   useEffect(() => {
     if (!postPath) return;
-    refreshPost(postPath);
-    setPath(postPath);
-  }, [postPath]);
+    const fullPath = window.electron.joinPath(getCurrentPilePath(), postPath);
+    setPath(fullPath);
+  }, [postPath, currentPile]);
+
+  useEffect(() => {
+    if (!path) return;
+    refreshPost();
+  }, [path]);
 
   const refreshPost = useCallback(async () => {
-    if (!postPath) return;
-    const freshPost = await getPost(postPath);
+    if (!path) return;
+    const freshPost = await getPost(path);
     setPost(freshPost);
-  }, [postPath]);
+  }, [path]);
 
   const savePost = useCallback(
     async (dataOverrides) => {
@@ -88,7 +95,11 @@ function usePost(
           await addReplyToParent(parentPostPath, saveToPath);
         }
 
-        addIndex(saveToPath); // Add the file to the index
+        const postRelativePath = saveToPath.replace(
+          getCurrentPilePath() + '/',
+          ''
+        );
+        addIndex(postRelativePath); // Add the file to the index
         window.electron.ipc.invoke('tags-sync', saveToPath); // Sync tags
       } catch (error) {
         console.error(`Error writing file: ${saveToPath}`);
@@ -100,38 +111,41 @@ function usePost(
 
   const addReplyToParent = async (parentPostPath, replyPostPath) => {
     const relativeReplyPath = replyPostPath.split('/').slice(-3).join('/');
-    const parentPost = await getPost(parentPostPath);
+    const fullParentPostPath = getCurrentPilePath(parentPostPath);
+    const parentPost = await getPost(fullParentPostPath);
     const content = parentPost.content;
     const data = {
       ...parentPost.data,
       replies: [...parentPost.data.replies, relativeReplyPath],
     };
     const fileContents = await fileOperations.generateMarkdown(content, data);
-    await fileOperations.saveFile(parentPostPath, fileContents);
+    await fileOperations.saveFile(fullParentPostPath, fileContents);
     reloadParentPost(parentPostPath);
   };
 
   const deletePost = useCallback(async () => {
     if (!postPath) return null;
+    const fullPostPath = getCurrentPilePath(postPath);
 
     // if is reply, remove from parent
     if (post.data.isReply && parentPostPath) {
-      const parentPost = await getPost(parentPostPath);
+      const fullParentPostPath = getCurrentPilePath(parentPostPath);
+      const parentPost = await getPost(fullParentPostPath);
       const content = parentPost.content;
       const newReplies = parentPost.data.replies.filter((p) => {
-        return p !== postPath.split('/').slice(-3).join('/');
+        return p !== postPath;
       });
       const data = {
         ...parentPost.data,
         replies: newReplies,
       };
       const fileContents = await fileOperations.generateMarkdown(content, data);
-      await fileOperations.saveFile(parentPostPath, fileContents);
-      await reloadParentPost(parentPostPath);
+      await fileOperations.saveFile(fullParentPostPath, fileContents);
+      await reloadParentPost();
     }
 
     // delete file and remove from index
-    await fileOperations.deleteFile(postPath);
+    await fileOperations.deleteFile(fullPostPath);
     removeIndex(postPath);
   }, [postPath, reloadParentPost, parentPostPath, post]);
 
@@ -141,6 +155,7 @@ function usePost(
       updateData: (data) =>
         setPost((post) => ({ ...post, data: { ...post.data, ...data } })),
       cycleColor: cycleColorCreator(post, setPost, savePost, highlightColors),
+      setHighlight: setHighlightCreator(post, setPost, savePost),
       addTag: tagActionsCreator(setPost, 'add'),
       removeTag: tagActionsCreator(setPost, 'remove'),
       attachToPost: attachToPostCreator(setPost, getCurrentPilePath),

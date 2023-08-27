@@ -12,6 +12,7 @@ export const IndexContext = createContext();
 
 export const IndexContextProvider = ({ children }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
+  const [filters, setFilters] = useState();
   const [index, setIndex] = useState(new Map());
 
   useEffect(() => {

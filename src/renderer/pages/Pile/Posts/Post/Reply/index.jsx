@@ -11,6 +11,7 @@ import * as fileOperations from 'renderer/utils/fileOperations';
 import { usePilesContext } from 'renderer/context/PilesContext';
 import usePost from 'renderer/hooks/usePost';
 import { AnimatePresence, motion } from 'framer-motion';
+import { AIIcon } from 'renderer/icons';
 
 export default function Reply({
   postPath,
@@ -32,6 +33,7 @@ export default function Reply({
   const created = DateTime.fromISO(post.data.createdAt);
   const replies = post?.data?.replies || [];
   const isReply = post?.data?.isReply || false;
+  const isAI = post?.data?.isAI || false;
 
   return (
     <div>
@@ -42,16 +44,20 @@ export default function Reply({
           ></div>
 
           <div
-            className={styles.ball}
+            className={`${styles.ball} ${isAI && styles.ai}`}
             onDoubleClick={cycleColor}
             style={{
               backgroundColor: highlightColor ?? 'var(--border)',
             }}
-          ></div>
+          >
+            {isAI && <AIIcon className={styles.iconAI} />}
+          </div>
           <div
-            className={`${styles.line} ${(!isLast || replying) && styles.show}`}
+            className={`${styles.line} ${isAI && styles.ai} ${
+              (!isLast || replying) && styles.show
+            } `}
             style={{
-              backgroundColor: highlightColor ?? 'var(--border)',
+              borderColor: highlightColor ?? 'var(--border)',
             }}
           ></div>
         </div>
@@ -64,7 +70,7 @@ export default function Reply({
               </div>
             </div>
           </div>
-          <div className={styles.editor}>
+          <div className={`${styles.editor} ${isAI && styles.ai}`}>
             <Editor
               postPath={postPath}
               editable={editable}

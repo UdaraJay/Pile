@@ -71,7 +71,7 @@ export default function Home() {
         <div className={styles.footer}>
           <a href="https://un.ms" target="_blank">
             <div className={styles.unms}></div>
-            Crafted with care by Udara Jay.
+            Crafted by Udara.
           </a>
 
           <div className={styles.nav}>

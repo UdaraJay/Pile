@@ -1,6 +1,8 @@
 .root {
-    padding: 12px 0;
+    padding: 5px 0;
     height: auto;
+    scroll-padding: 60px;
+    scroll-snap-type: x proximity;
 }
 
 .post {
@@ -43,14 +45,29 @@
             }
 
             &.ai {
-                background: red;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: var(--secondary);
+                font-size: 10px;
+                line-height: 1;
+                font-weight: 500;
+
+                .iconAI {
+                    height: 15px;
+                    width: 15px;
+                    fill: var(--bg);
+                    mix-blend-mode: luminosity;
+                }
             }
         }
 
         .line {
             flex: 0 0 0;
-            width: 2px;
-            background: var(--border);
+            width: 0px;
+            background: none;
+            border: none;
+            border-right: 2px solid var(--border);
             opacity: 0;
             transition: all ease-in-out 120ms;
 
@@ -58,6 +75,10 @@
                 flex: 1 0 auto;
                 opacity: 1;
                 transition-delay: 15ms;
+            }
+
+            &.ai {
+                border-right-style: dotted;
             }
 
         }
@@ -115,12 +136,14 @@
                 }
             }
         }
-
-
     }
 
     .editor {
         width: 100%;
+
+        &.ai {
+            color: var(--secondary);
+        }
     }
 }
 
@@ -156,7 +179,7 @@
     .openReply {
         display: flex;
         align-items: center;
-        z-index: 1;
+        // z-index: 1;
         font-size: 0.9em;
         user-select: none;
         padding: 2px 13px 2px 2px;

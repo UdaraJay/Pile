@@ -4,8 +4,20 @@ import fs from 'fs';
 import pileHelper from './utils/PileHelper';
 import pileIndex from './utils/PileIndex';
 import pileTags from './utils/PileTags';
+import pileHighlights from './utils/pileHighlights';
+import keytar from 'keytar';
+const os = require('os');
 
 const matter = require('gray-matter');
+
+// AI key
+ipcMain.handle('get-ai-key', async (event) => {
+  return await keytar.getPassword('pile', 'aikey');
+});
+
+ipcMain.handle('set-ai-key', async (event, secretKey) => {
+  return await keytar.setPassword('pile', 'aikey', secretKey);
+});
 
 // Index operations
 ipcMain.handle('index-load', (event, pilePath) => {
@@ -26,6 +38,25 @@ ipcMain.handle('index-add', (event, filePath) => {
 ipcMain.handle('index-remove', (event, filePath) => {
   const index = pileIndex.remove(filePath);
   return index;
+});
+
+// Highlight operations
+ipcMain.handle('highlights-load', (event, pilePath) => {
+  const highlights = pileHighlights.load(pilePath);
+  return highlights;
+});
+
+ipcMain.handle('highlights-get', (event) => {
+  const highlights = pileHighlights.get();
+  return highlights;
+});
+
+ipcMain.handle('highlights-create', (event, highlight) => {
+  pileHighlights.create(highlight);
+});
+
+ipcMain.handle('highlights-delete', (event, highlight) => {
+  pileHighlights.delete(highlight);
 });
 
 // Tag operations

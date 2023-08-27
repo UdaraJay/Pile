@@ -77,7 +77,7 @@ export const PilesContextProvider = ({ children }) => {
     // If selected directory is not empty, create a new directory
     if (!window.electron.isDirEmpty(selectedPath)) {
       path = window.electron.joinPath(selectedPath, name);
-      window.electron.mkdir(pilePath, (err) => {
+      window.electron.mkdir(path, (err) => {
         if (err) {
           console.error('Error creating pile folder', err);
           return;

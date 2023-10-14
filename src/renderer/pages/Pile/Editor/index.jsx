@@ -141,7 +141,6 @@ export default function Editor({
       for await (const part of stream) {
         const token = part.choices[0].delta.content;
         editor.commands.insertContent(token);
-        window.electron.ipc.sendMessage('haptic-vibrate');
       }
       setIsAiResponding(false);
     }

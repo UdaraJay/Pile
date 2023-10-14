@@ -4,19 +4,19 @@
   "keywords": [
     "pile"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/UdaraJay/Pile",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/UdaraJay/Pile/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/UdaraJay/Pile.git"
   },
   "license": "MIT",
   "author": {
-    "name": "UNMS",
-    "email": "hello@un.ms",
-    "url": "https://pile.un.ms"
+    "name": "Udara",
+    "email": "me@udara.io",
+    "url": "https://udara.io/pile"
   },
   "contributors": [
     {

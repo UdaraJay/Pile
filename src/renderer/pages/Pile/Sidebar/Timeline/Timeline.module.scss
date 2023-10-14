@@ -17,6 +17,10 @@
     position: relative;
     padding: 0 8px 0 20px;
 
+    &:nth-child(odd) {
+        // border-left: 2px solid rgba(0, 0, 0, 0.5);
+    }
+
     .line {
         display: none;
         align-self: flex-end;
@@ -33,6 +37,9 @@
         color: var(--secondary);
         opacity: 0.5;
         user-select: none;
+        // transform: rotate(180deg);
+        // writing-mode: vertical-rl;
+
     }
 
     .start {
@@ -55,6 +62,25 @@
     color: var(--secondary);
     text-align: right;
     transition: all ease-in-out 120ms;
+
+    .counts {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-end;
+        margin-right: 5px;
+        max-width: 80px;
+
+        .count {
+            display: flex;
+            height: 4px;
+            width: 4px;
+            background: currentColor;
+            margin: 1px 2px 1px 0;
+            border-radius: 90px;
+            opacity: 0.9;
+        }
+    }
 
     .dayLine {
         width: 20px;

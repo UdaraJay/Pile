@@ -6,6 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { useEffect, useStatem, useRef } from 'react';
 import { DateTime } from 'luxon';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
+import { useIndexContext } from 'renderer/context/IndexContext';
 
 function isToday(date) {
   const today = new Date();
@@ -17,10 +18,37 @@ function isToday(date) {
   );
 }
 
+const countEntriesByDate = (map, targetDate) => {
+  let count = 0;
+  const targetDateString = targetDate.toISOString().substring(0, 10);
+  for (const [key, value] of map.entries()) {
+    const createdAtDate = new Date(value.createdAt)
+      .toISOString()
+      .substring(0, 10);
+    if (createdAtDate === targetDateString) {
+      count++;
+    }
+  }
+  return count;
+};
+
+const renderCount = (count) => {
+  const maxDots = Math.min(count, 48);
+  return (
+    <div className={styles.counts}>
+      {Array.from({ length: maxDots }, (_, i) => i).map((_, i) => (
+        <div className={styles.count} key={i}></div>
+      ))}
+    </div>
+  );
+};
+
 function DayComponent({ date }) {
+  const { index } = useIndexContext();
   const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   const dayName = dayNames[date.getDay()];
   const dayNumber = date.getDate();
+  const count = countEntriesByDate(index, date);
 
   return (
     <div
@@ -28,6 +56,7 @@ function DayComponent({ date }) {
         dayName == 'S' && styles.monday
       }`}
     >
+      {renderCount(count)}
       <div className={styles.dayLine}></div>
       <div className={styles.dayName}>{dayName}</div>
       <div className={styles.dayNumber}>{dayNumber}</div>
@@ -84,7 +113,7 @@ function WeekComponent({ startDate, endDate }) {
   return (
     <div className={styles.week}>
       <div className={styles.text}>
-        {monthName} {year} / Week {weekOfMonth}
+        {monthName.substring(0, 3)} {year}
       </div>
       {days.reverse()}
       <div className={styles.line}></div>

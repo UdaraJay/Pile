@@ -130,7 +130,6 @@
 .piles {
     font-size: 0.8em;
     border-radius: 12px;
-    // border: 1px solid var(--border);
     overflow: hidden;
 
     .pile {
@@ -157,6 +156,7 @@
             margin-top: 1px;
             font-size: 0.9em;
             color: var(--secondary);
+            text-overflow: ellipsis;
         }
 
         .right {

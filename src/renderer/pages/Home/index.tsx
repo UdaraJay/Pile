@@ -69,7 +69,7 @@ export default function Home() {
         <div className={styles.piles}>{renderPiles()}</div>
 
         <div className={styles.footer}>
-          <a href="https://un.ms" target="_blank">
+          <a href="https://udara.io/pile" target="_blank">
             <div className={styles.unms}></div>
             Crafted by Udara.
           </a>
@@ -78,7 +78,11 @@ export default function Home() {
             <Link to="/license" className={styles.link}>
               License
             </Link>
-            <a href="https://un.ms" target="_blank" className={styles.link}>
+            <a
+              href="https://udara.io/pile"
+              target="_blank"
+              className={styles.link}
+            >
               Tips & Tricks
             </a>
           </div>

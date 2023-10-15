@@ -64,7 +64,7 @@ export default class MenuBuilder {
         { label: 'Services', submenu: [] },
         { type: 'separator' },
         {
-          label: 'Hide ElectronReact',
+          label: 'Hide Pile',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
@@ -157,7 +157,7 @@ export default class MenuBuilder {
         {
           label: 'Learn More',
           click() {
-            shell.openExternal('https://un.ms');
+            shell.openExternal('https://udara.io/pile');
           },
         },
       ],

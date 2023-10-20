@@ -165,6 +165,7 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
+            align-self: flex-end;
             flex: 0 0 var(--sidebar-width);
             height: var(--nav-height);
             font-size: 0.8em;
@@ -173,23 +174,33 @@
             user-select: none;
             -webkit-app-region: drag;
 
-            .pile {
-                margin-top: -4px;
-                margin-right: 12px;
-                color: var(--secondary);
-            }
+            .part {
+                display: flex;
+                width: 160px;
+                text-overflow: ellipsis;
 
-            .count {
-                margin-top: -5px;
-                margin-right: 0.35em;
-                color: var(--secondary);
-                opacity: 0.7;
+                .count {
+                    flex: 1 0 auto;
+                    margin-top: -5px;
+                    margin-right: 0.35em;
+                    color: var(--secondary);
+                    opacity: 0.7;
 
-                span {
-                    background: var(--bg-secondary);
-                    padding: 2px 4px;
-                    border-radius: 7px;
-                    margin-right: 2px;
+                    span {
+                        background: var(--bg-secondary);
+                        padding: 2px 4px;
+                        border-radius: 7px;
+                        margin-right: 2px;
+                    }
+                }
+
+                .pile {
+                    flex: 0 1 auto;
+                    margin-top: -4px;
+                    margin-right: 12px;
+                    color: var(--secondary);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }

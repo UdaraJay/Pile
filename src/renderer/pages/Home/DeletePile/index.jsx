@@ -24,10 +24,7 @@ export default function DeletePile({ pile }) {
           <AlertDialog.Description className={styles.AlertDialogDescription}>
             This action removes the <b>{pile.name}</b> Pile from the list, but
             it won't actually delete the Pile's files stored at{' '}
-            <b>
-              {pile.path}/{pile.name}
-            </b>{' '}
-            from your computer.
+            <b>{pile.path}</b> from your computer.
             <br />
             <br />
             You can delete or backup your Pile folder, or import it back into

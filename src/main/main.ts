@@ -17,8 +17,6 @@ class AppUpdater {
   }
 }
 
-app.disableHardwareAcceleration();
-
 let mainWindow: BrowserWindow | null = null;
 
 if (process.env.NODE_ENV === 'production') {

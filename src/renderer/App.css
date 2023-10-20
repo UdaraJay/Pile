@@ -6,8 +6,7 @@
 /* Root variables for app theme, dark and light mode */
 :root {
   --brand: #00ff29;
-  --brand-bg: #003008;
-  --translucent: rgba(255, 255, 255, 0.5);
+  --translucent: rgba(193, 193, 193, 0.5);
   --sidebar-width: 250px;
   --nav-height: 52px;
 
@@ -35,8 +34,6 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --brand-bg: #00ff29;
-    --brand: #003008;
     --translucent: rgba(0, 0, 0, 0.5);
     --sidebar-width: 250px;
     --nav-height: 52px;

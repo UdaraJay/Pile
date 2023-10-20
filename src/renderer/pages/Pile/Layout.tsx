@@ -25,13 +25,20 @@ export default function PileLayout({ children }) {
       <div className={styles.main}>
         <div className={styles.sidebar}>
           <div className={styles.top}>
-            <div className={styles.count}>
-              <span>
-                <CountUp isCounting start={0} end={index.size} duration={3.2} />
-              </span>{' '}
-              entries in
+            <div className={styles.part}>
+              <div className={styles.count}>
+                <span>
+                  <CountUp
+                    isCounting
+                    start={0}
+                    end={index.size}
+                    duration={3.2}
+                  />
+                </span>{' '}
+                entries in
+              </div>
+              <div className={styles.pile}>{pileName}</div>
             </div>
-            <div className={styles.pile}>{pileName}</div>
           </div>
           <Sidebar />
         </div>

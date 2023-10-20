@@ -42,14 +42,32 @@
         }
     }
 
+    .holder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // border: 1px solid var(--border);
+        border-radius: 22px;
+        height: 72px;
+        width: 72px;
+        margin: 0 auto;
+        margin-bottom: 44px;
+        background: rgba(0, 0, 0, 0.25);
+        box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5);
+
+        @media (prefers-color-scheme: dark) {
+            background: rgba(0, 0, 0, 0.25);
+            box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+    }
+
     .icon {
         display: block;
         margin: 0 auto;
-        color: var(--brand-bg);
-        fill: #fff;
-        margin-bottom: 32px;
-        width: 80px;
-        height: 80px;
+        color: #fff;
+        fill: var(--secondary);
+        width: 45px;
+        height: 45px;
     }
 
     .logoLine {
@@ -110,7 +128,7 @@
 
     &:hover {
         cursor: pointer;
-        color: var(--primary);
+        color: var(--base);
         background: var(--bg);
     }
 
@@ -192,13 +210,14 @@
 
         &:hover {
             cursor: pointer;
-            color: var(--primary);
+            color: var(--base);
             background: var(--bg-secondary);
         }
 
         &:active {
             cursor: pointer;
             background: var(--bg-tertiary);
+            transform: scale(0.97);
         }
     }
 }

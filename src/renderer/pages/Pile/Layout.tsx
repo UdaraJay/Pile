@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import Settings from './Settings';
 import HighlightsDialog from './Highlights';
-import styles from './Pile.module.scss';
 
 export default function PileLayout({ children }) {
   const { pileName } = useParams();

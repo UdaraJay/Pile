@@ -1,12 +1,12 @@
 {
   "name": "pile",
-  "version": "0.7.18",
+  "version": "0.7.20",
   "description": "Pile: Everyday journal and thought companion.",
   "license": "MIT",
   "author": {
     "name": "Udara Jay",
     "email": "me@udara.io",
-    "url": "https://udara.io"
+    "url": "https://udara.io/pile"
   },
   "main": "./dist/main/main.js",
   "scripts": {

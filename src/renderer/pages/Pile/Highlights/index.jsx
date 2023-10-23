@@ -46,9 +46,7 @@ export default function HighlightsDialog() {
             }}
           >
             <Dialog.Close asChild>
-              <button className={styles.Button} onClick={}>
-                Save changes
-              </button>
+              <button className={styles.Button}>Save changes</button>
             </Dialog.Close>
           </div>
           <Dialog.Close asChild>

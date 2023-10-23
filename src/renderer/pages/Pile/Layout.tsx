@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import Settings from './Settings';
 import HighlightsDialog from './Highlights';
+import styles from './Pile.module.scss';
 
 export default function PileLayout({ children }) {
   const { pileName } = useParams();
@@ -35,9 +36,8 @@ export default function PileLayout({ children }) {
                     duration={3.2}
                   />
                 </span>{' '}
-                entries in
+                entries
               </div>
-              <div className={styles.pile}>{pileName}</div>
             </div>
           </div>
           <Sidebar />
@@ -49,7 +49,7 @@ export default function PileLayout({ children }) {
                 <SearchIcon className={styles.icon} />
                 <input placeholder={'Search this pile...'} />
               </div> */}
-              {now}
+              {pileName} <span style={{ padding: '6px' }}>·</span> {now}
             </div>
             <div className={styles.right}>
               <Settings />

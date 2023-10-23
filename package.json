@@ -32,7 +32,7 @@
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
     "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
-    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never",
+    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish always",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
@@ -115,6 +115,10 @@
     "use-count-up": "^3.0.1"
   },
   "devDependencies": {
+    "postcss": "^8.4.31",
+    "semver": "^7.5.2",
+    "@adobe/css-tools": "^4.3.1",
+    "@babel/traverse": "^7.23.2",
     "@electron/notarize": "^1.2.3",
     "@electron/rebuild": "^3.2.13",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
@@ -139,7 +143,7 @@
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.0",
     "detect-port": "^1.5.1",
-    "electron": "^25.0.1",
+    "electron": "^25.8.4",
     "electron-builder": "^24.2.1",
     "electron-devtools-installer": "^3.2.0",
     "electronmon": "^2.0.2",
@@ -244,8 +248,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "",
-      "repo": ""
+      "owner": "udarajay",
+      "repo": "pile"
     }
   },
   "devEngines": {

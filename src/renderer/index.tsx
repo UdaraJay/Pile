@@ -6,6 +6,8 @@ const root = createRoot(container);
 
 root.render(
   <Router>
-    <App />
+    <div style={{ background: 'var(--bg-translucent)' }}>
+      <App />
+    </div>
   </Router>
 );

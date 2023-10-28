@@ -25,22 +25,17 @@ export const PilesContextProvider = ({ children }) => {
 
   const getConfig = async () => {
     const configFilePath = window.electron.getConfigPath();
-    // Setup piles.json if doesn't exist
+
+    // Setup new piles.json if doesn't exist,
+    // or read in the existing
     if (!window.electron.existsSync(configFilePath)) {
       window.electron.writeFile(configFilePath, JSON.stringify([]), (err) => {
-        if (err) {
-          console.error('Error writing to config');
-          return;
-        }
-
+        if (err) return;
         setPiles([]);
       });
     } else {
       await window.electron.readFile(configFilePath, (err, data) => {
-        if (err) {
-          console.error('Error reading file', err);
-          return;
-        }
+        if (err) return;
         const jsonData = JSON.parse(data);
         setPiles(jsonData);
       });
@@ -107,12 +102,35 @@ export const PilesContextProvider = ({ children }) => {
     writeConfig(newPiles);
   };
 
+  // Update current pile
+  const updateCurrentPile = (newPile) => {
+    const newPiles = piles.map((pile) => {
+      if (currentPile.path === path) {
+        setCurrentPile(newPile);
+        return newPile;
+      }
+      return pile;
+    });
+    writeConfig(newPiles);
+  };
+
+  // THEMES
+  const getTheme = () => {
+    return currentPile.theme ?? 'light';
+  };
+
+  const setTheme = (theme = 'light') => {
+    const valid = ['light', 'dark', 'purple', 'green', 'night'];
+    if (!valid.includes(theme)) return;
+    const _pile = { ...currentPile, theme: theme };
+    updateCurrentPile(_pile);
+  };
+
   const pilesContextValue = {
     piles,
     getCurrentPilePath,
     createPile,
     currentPile,
-    changeCurrentPile,
     deletePile,
   };
 

@@ -52,7 +52,7 @@ export default function Editor({
       StarterKit,
       Typography,
       Placeholder.configure({
-        placeholder: 'What are you thinking?',
+        placeholder: isAI ? 'AI is thinking...' : 'What are you thinking?',
       }),
       CharacterCount.configure({
         limit: 100000,
@@ -192,7 +192,9 @@ export default function Editor({
       {editable ? (
         <EditorContent
           key={'new'}
-          className={`${styles.editor} ${isBig() ? styles.editorBig : ''}`}
+          className={`${styles.editor} ${isBig() && styles.editorBig} ${
+            isAIResponding && styles.responding
+          }`}
           editor={editor}
         />
       ) : (

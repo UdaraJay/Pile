@@ -12,13 +12,12 @@ const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-
     transition: {},
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: -20 },
+  hidden: { opacity: 0, y: -30 },
   show: {
     opacity: 1,
     y: 0,
@@ -35,7 +34,7 @@ export default function Posts() {
     return Array.from(index, ([postPath, data]) => {
       return (
         <motion.div key={postPath} variants={item}>
-          <Post key={postPath} postPath={postPath} />
+          <Post key={`post-${postPath}`} postPath={postPath} />
         </motion.div>
       );
     });

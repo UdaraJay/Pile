@@ -1,7 +1,4 @@
 .frame {
-    // position: fixed;
-    // top: 0;
-    // left: 0;
     position: relative;
     max-width: 100vw;
 }
@@ -10,17 +7,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.85em;
-    height: var(--nav-height);
-    -webkit-app-region: drag;
-    position: relative;
-    z-index: 4;
     position: sticky;
     top: 0;
-    transition: all ease-in-out 220ms, border ease-in-out 500ms;
+    z-index: 4;
     width: 100%;
+    height: var(--nav-height);
+    font-size: 0.85em;
     background: var(--bg);
+    transition: all ease-in-out 220ms, border ease-in-out 500ms;
     background: linear-gradient(to bottom, var(--bg), 90%, transparent);
+    -webkit-app-region: drag;
 
     .left {
         display: flex;
@@ -31,12 +27,10 @@
         transition: all ease-in-out 120ms;
         padding-bottom: 3px;
 
-
         .search {
             display: flex;
             margin-left: 12px;
             border-radius: 22px;
-            // width: 100%;
             width: 220px;
             align-items: center;
             -webkit-app-region: none;
@@ -153,7 +147,6 @@
         width: var(--sidebar-width);
         flex: 0 0 var(--sidebar-width);
         border-right: 1px solid rgba(0, 0, 0, 0.03);
-        transition: all ease-in-out 220ms;
 
         @media only screen and (max-width: 909px) {
             display: none;
@@ -200,14 +193,12 @@
     .content {
         position: relative;
         flex: 1 0 calc(100vw - var(--sidebar-width));
-        // width: calc(100vw - var(--sidebar-width));
         margin-left: var(--sidebar-width);
         font-size: 0.9em;
         background: var(--bg);
         box-shadow: -1px -1px 2px 0 rgba(0, 0, 0, 0.05);
         background: var(--bg);
         min-height: 100vh;
-        transition: all ease-in-out 220ms;
         height: 100vh;
         overflow-y: overlay;
         overflow-x: hidden;
@@ -220,7 +211,6 @@
         .left {
             display: flex;
             margin-left: 16px;
-            // margin-bottom: 4px;
             color: var(--secondary);
             opacity: 0.5;
             transition: all ease-in-out 120ms;

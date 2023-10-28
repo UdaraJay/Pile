@@ -218,11 +218,15 @@ export default function Post({ postPath }) {
                   }}
                 ></div>
                 <div
-                  className={styles.ball}
+                  className={`${styles.ball} ${isAIResplying && styles.ai}`}
                   style={{
                     backgroundColor: highlightColor,
                   }}
-                ></div>
+                >
+                  {isAIResplying && (
+                    <AIIcon className={`${styles.iconAI} ${styles.replying}`} />
+                  )}
+                </div>
               </div>
               <div className={styles.right}>
                 <div className={styles.editor}>

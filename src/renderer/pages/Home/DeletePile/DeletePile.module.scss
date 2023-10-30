@@ -44,6 +44,8 @@ button {
     padding: 20px 18px;
     animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
     background: var(--bg);
+    z-index: 99;
+    -webkit-app-region: none;
 }
 
 .AlertDialogContent:focus {
@@ -113,12 +115,13 @@ button {
     color: var(--secondary);
     border-radius: 90px;
     transition: all ease-in-out 120ms;
+    z-index: 99;
+    position: relative;
 
     &:hover {
         cursor: pointer;
         color: var(--primary);
-        background: var(--bg);
-
+        background: var(--bg-tertiary);
     }
 
     &:active {

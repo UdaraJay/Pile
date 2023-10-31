@@ -107,6 +107,21 @@ export default function Editor({
     setEditable(false);
   }, [editor, isNew, post]);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        handleSubmit();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleSubmit]); // Add handleSubmit to the dependency array
+
   const generateAiResponse = useCallback(async () => {
     if (!editor) return;
     if (isAIResponding) return;

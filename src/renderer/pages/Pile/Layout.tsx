@@ -3,25 +3,37 @@ import styles from './PileLayout.module.scss';
 import { HomeIcon } from 'renderer/icons';
 import Sidebar from './Sidebar/Timeline/index';
 import { CountUp } from 'use-count-up';
-import usePost from 'renderer/hooks/usePost';
 import { useIndexContext } from 'renderer/context/IndexContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import { DateTime } from 'luxon';
 import Settings from './Settings';
 import HighlightsDialog from './Highlights';
+import { usePilesContext } from 'renderer/context/PilesContext';
 
 export default function PileLayout({ children }) {
   const { pileName } = useParams();
   const { index, refreshIndex } = useIndexContext();
-
+  const { currentTheme } = usePilesContext();
   const now = DateTime.now().toLocaleString(DateTime.DATE_HUGE);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const themeStyles = useCallback(() => {
+    switch (currentTheme) {
+      case 'purple':
+        return styles.purpleTheme;
+      case 'yellow':
+        return styles.yellowTheme;
+      default:
+        break;
+    }
+  }, [currentTheme]);
+
   return (
-    <div className={styles.frame}>
+    <div className={`${styles.frame} ${themeStyles()}`}>
+      <div className={styles.bg}></div>
       <div className={styles.main}>
         <div className={styles.sidebar}>
           <div className={styles.top}>
@@ -61,6 +73,7 @@ export default function PileLayout({ children }) {
           {children}
         </div>
       </div>
+      <div id="dialog"></div>
     </div>
   );
 }

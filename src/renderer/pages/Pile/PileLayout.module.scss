@@ -1,6 +1,109 @@
 .frame {
     position: relative;
     max-width: 100vw;
+    color: var(--primary);
+}
+
+.purpleTheme {
+    --brand: #00ff29;
+    --translucent: rgba(173, 138, 193, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+    --primary: #57168c;
+    --secondary: #794d92;
+    --base: #d014e1;
+    --base-hover: #df38e5;
+    --base-yellow: #e6e04d;
+    --base-green: #4de64d;
+    --base-red: #ff2a2a;
+    --base-red-light: #ffdbdb;
+    --active: #e1ff8e;
+    --active-hover: #946d00;
+    --active-text: #fff;
+    --border: #be84dd;
+    --bg: #f9eeff;
+    --bg-secondary: rgb(195, 129, 226);
+    --bg-tertiary: rgb(207, 178, 225);
+    --bg-color-secondary-hover: rgb(226, 226, 226);
+
+    @media (prefers-color-scheme: dark) {
+        --translucent: rgba(13, 10, 35, 0.5);
+        --sidebar-width: 250px;
+        --nav-height: 52px;
+        --primary: #ffe9ff;
+        --secondary: #ab92ae;
+        --base: #d014e1;
+        --base-hover: #df38e5;
+        --base-yellow: #776b0e;
+        --base-green: #128212;
+        --base-red: rgb(255, 116, 85);
+        --base-red-light: #3d2323;
+        --active: #e6ffa3;
+        --active-hover: #e6ffa3;
+        --active-text: #fff;
+        --border: #5f4263;
+        --bg: #251b24;
+        --bg-secondary: #481e51;
+        --bg-tertiary: #5a1a5f;
+        --bg-color-secondary-hover: rgb(114, 95, 122);
+        --bg-translucent: rgba(32, 10, 35, 0.45);
+    }
+}
+
+.yellowTheme {
+    --brand: #00ff29;
+    --translucent: rgba(173, 138, 193, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+    --primary: #412109;
+    --secondary: #88511e;
+    --base: #f18e1c;
+    --base-hover: #c5751f;
+    --base-yellow: #e6e04d;
+    --base-green: #4de64d;
+    --base-red: #ff3512;
+    --base-red-light: #ffdbdb;
+    --active: #193bff;
+    --active-hover: #001e94;
+    --active-text: #fff;
+    --border: #f6a446;
+    --bg: #fff7ee;
+    --bg-secondary: rgb(196, 130, 69);
+    --bg-tertiary: rgb(225, 208, 178);
+    --bg-color-secondary-hover: rgb(226, 226, 226);
+
+    @media (prefers-color-scheme: dark) {
+        --translucent: rgba(13, 10, 35, 0.5);
+        --sidebar-width: 250px;
+        --nav-height: 52px;
+        --primary: #fff7e9;
+        --secondary: #aea392;
+        --base: #ff9634;
+        --base-hover: #df7000;
+        --base-yellow: #776b0e;
+        --base-green: #128212;
+        --base-red: rgb(255, 71, 71);
+        --base-red-light: #3d2323;
+        --active: #ff9500;
+        --active-hover: #df7000;
+        --active-text: #fff;
+        --border: #635342;
+        --bg: #25201b;
+        --bg-secondary: #51371e;
+        --bg-tertiary: #5f3b1a;
+        --bg-color-secondary-hover: rgb(122, 115, 95);
+        --bg-translucent: rgba(32, 10, 35, 0.45);
+    }
+}
+
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: var(--bg-secondary);
+    opacity: 0.3;
 }
 
 .nav {
@@ -181,6 +284,7 @@
 
                     span {
                         background: var(--bg-secondary);
+                        color: var(--primary);
                         padding: 2px 4px;
                         border-radius: 7px;
                         margin-right: 2px;
@@ -211,6 +315,7 @@
         .left {
             display: flex;
             margin-left: 16px;
+
             color: var(--secondary);
             opacity: 0.5;
             transition: all ease-in-out 120ms;

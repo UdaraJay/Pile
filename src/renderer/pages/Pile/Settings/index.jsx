@@ -3,10 +3,15 @@ import { SettingsIcon, CrossIcon } from 'renderer/icons';
 import { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAIContext } from 'renderer/context/AIContext';
+import {
+  availableThemes,
+  usePilesContext,
+} from 'renderer/context/PilesContext';
 
 export default function Settings() {
   const { ai, prompt, getKey, setKey } = useAIContext();
   const [key, setCurrentKey] = useState('');
+  const { currentTheme, setTheme } = usePilesContext();
 
   const retrieveKey = async () => {
     const k = await getKey();
@@ -27,6 +32,30 @@ export default function Settings() {
     }
   };
 
+  const renderThemes = () => {
+    return Object.keys(availableThemes).map((theme) => {
+      const colors = availableThemes[theme];
+      return (
+        <button
+          className={`${styles.theme} ${
+            currentTheme == theme && styles.current
+          }`}
+          onClick={() => {
+            setTheme(theme);
+          }}
+        >
+          <div
+            className={styles.color1}
+            style={{ background: colors.primary }}
+          ></div>
+          {/* <div
+            className={styles.color2}
+            style={{ background: colors.secondary }}
+          ></div> */}
+        </button>
+      );
+    });
+  };
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -34,13 +63,21 @@ export default function Settings() {
           <SettingsIcon className={styles.settingsIcon} />
         </div>
       </Dialog.Trigger>
-      <Dialog.Portal>
+      <Dialog.Portal container={document.getElementById('dialog')}>
         <Dialog.Overlay className={styles.DialogOverlay} />
         <Dialog.Content className={styles.DialogContent}>
           <Dialog.Title className={styles.DialogTitle}>Settings</Dialog.Title>
           <Dialog.Description className={styles.DialogDescription}>
             Configuration options for your Pile and AI
           </Dialog.Description>
+
+          <fieldset className={styles.Fieldset}>
+            <label className={styles.Label} htmlFor="name">
+              Appearance
+            </label>
+            <div className={styles.themes}>{renderThemes()}</div>
+          </fieldset>
+
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
               API key (OpenAI / UNMS)

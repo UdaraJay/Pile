@@ -1,5 +1,18 @@
-import { useState, createContext, useContext, useEffect } from 'react';
+import {
+  useState,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useLocation } from 'react-router-dom';
+
+export const availableThemes = {
+  light: { primary: '#4d80e6', secondary: '#fff' },
+  purple: { primary: '#d014e1', secondary: '#fff' },
+  yellow: { primary: '#ff9634', secondary: '#fff' },
+};
 
 export const PilesContext = createContext();
 
@@ -11,7 +24,7 @@ export const PilesContextProvider = ({ children }) => {
   // Initialize config file
   useEffect(() => {
     getConfig();
-  }, []);
+  }, [location]);
 
   // Set the current pile based on the url
   useEffect(() => {
@@ -105,26 +118,29 @@ export const PilesContextProvider = ({ children }) => {
   // Update current pile
   const updateCurrentPile = (newPile) => {
     const newPiles = piles.map((pile) => {
-      if (currentPile.path === path) {
-        setCurrentPile(newPile);
+      if (pile.path === currentPile.path) {
         return newPile;
       }
       return pile;
     });
     writeConfig(newPiles);
+    setCurrentPile(newPile);
   };
 
   // THEMES
-  const getTheme = () => {
-    return currentPile.theme ?? 'light';
-  };
+  const currentTheme = useMemo(() => {
+    return currentPile?.theme ?? 'light';
+  }, [currentPile]);
 
-  const setTheme = (theme = 'light') => {
-    const valid = ['light', 'dark', 'purple', 'green', 'night'];
-    if (!valid.includes(theme)) return;
-    const _pile = { ...currentPile, theme: theme };
-    updateCurrentPile(_pile);
-  };
+  const setTheme = useCallback(
+    (theme = 'light') => {
+      const valid = Object.keys(availableThemes);
+      if (!valid.includes(theme)) return;
+      const _pile = { ...currentPile, theme: theme };
+      updateCurrentPile(_pile);
+    },
+    [currentPile]
+  );
 
   const pilesContextValue = {
     piles,
@@ -132,6 +148,8 @@ export const PilesContextProvider = ({ children }) => {
     createPile,
     currentPile,
     deletePile,
+    currentTheme,
+    setTheme,
   };
 
   return (

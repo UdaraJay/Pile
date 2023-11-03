@@ -18,6 +18,7 @@ import usePost from 'renderer/hooks/usePost';
 import ProseMirrorStyles from './ProseMirror.scss';
 import { useAIContext } from 'renderer/context/AIContext';
 import useThread from 'renderer/hooks/useThread';
+import LinkPreviews from './LinkPreviews';
 
 export default function Editor({
   postPath = null,
@@ -203,6 +204,8 @@ export default function Editor({
           />
         </div>
       )}
+
+      <LinkPreviews post={post} />
 
       <motion.div
         initial={{ opacity: 0, x: 20 }}

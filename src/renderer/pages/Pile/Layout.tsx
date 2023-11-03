@@ -26,6 +26,8 @@ export default function PileLayout({ children }) {
         return styles.purpleTheme;
       case 'yellow':
         return styles.yellowTheme;
+      case 'green':
+        return styles.greenTheme;
       default:
         break;
     }

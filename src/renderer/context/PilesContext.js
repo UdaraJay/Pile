@@ -12,6 +12,7 @@ export const availableThemes = {
   light: { primary: '#4d80e6', secondary: '#fff' },
   purple: { primary: '#d014e1', secondary: '#fff' },
   yellow: { primary: '#ff9634', secondary: '#fff' },
+  green: { primary: '#22ff00', secondary: '#fff' },
 };
 
 export const PilesContext = createContext();

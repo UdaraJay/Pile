@@ -11,18 +11,18 @@
     --nav-height: 52px;
     --primary: #57168c;
     --secondary: #794d92;
-    --base: #d014e1;
-    --base-hover: #df38e5;
+    --base: #b846ff;
+    --base-hover: #c66aff;
     --base-yellow: #e6e04d;
     --base-green: #4de64d;
     --base-red: #ff2a2a;
     --base-red-light: #ffdbdb;
-    --active: #e1ff8e;
-    --active-hover: #946d00;
+    --active: #ff5e00;
+    --active-hover: #ff712a;
     --active-text: #fff;
     --border: #be84dd;
     --bg: #f9eeff;
-    --bg-secondary: rgb(195, 129, 226);
+    --bg-secondary: rgb(229, 174, 255);
     --bg-tertiary: rgb(207, 178, 225);
     --bg-color-secondary-hover: rgb(226, 226, 226);
 
@@ -92,6 +92,52 @@
         --bg-secondary: #51371e;
         --bg-tertiary: #5f3b1a;
         --bg-color-secondary-hover: rgb(122, 115, 95);
+        --bg-translucent: rgba(32, 10, 35, 0.45);
+    }
+}
+
+.greenTheme {
+    --brand: #00ff29;
+    --translucent: rgba(173, 138, 193, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+    --primary: #1b4109;
+    --secondary: #40881e;
+    --base: #22ff00;
+    --base-hover: #c5751f;
+    --base-yellow: #e6e04d;
+    --base-green: #4de64d;
+    --base-red: #ff3512;
+    --base-red-light: #ffdbdb;
+    --active: #193bff;
+    --active-hover: #001e94;
+    --active-text: #fff;
+    --border: #81f646;
+    --bg: #eeffee;
+    --bg-secondary: rgb(75, 196, 69);
+    --bg-tertiary: rgb(178, 225, 180);
+    --bg-color-secondary-hover: rgb(226, 226, 226);
+
+    @media (prefers-color-scheme: dark) {
+        --translucent: rgba(13, 10, 35, 0.5);
+        --sidebar-width: 250px;
+        --nav-height: 52px;
+        --primary: #f5fff0;
+        --secondary: #95ae92;
+        --base: #149800;
+        --base-hover: #10c500;
+        --base-yellow: #776b0e;
+        --base-green: #128212;
+        --base-red: rgb(255, 71, 71);
+        --base-red-light: #3d2323;
+        --active: #ffaa00;
+        --active-hover: #df7000;
+        --active-text: #fff;
+        --border: #3e7138;
+        --bg: #212621;
+        --bg-secondary: #20381e;
+        --bg-tertiary: #2d3d29;
+        --bg-color-secondary-hover: rgb(97, 122, 95);
         --bg-translucent: rgba(32, 10, 35, 0.45);
     }
 }

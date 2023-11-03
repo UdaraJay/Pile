@@ -6,8 +6,9 @@ import pileIndex from './utils/PileIndex';
 import pileTags from './utils/PileTags';
 import pileHighlights from './utils/pileHighlights';
 import keytar from 'keytar';
-const os = require('os');
+import { getLinkPreview } from './utils/link-preview';
 
+const os = require('os');
 const matter = require('gray-matter');
 
 // AI key
@@ -17,6 +18,17 @@ ipcMain.handle('get-ai-key', async (event) => {
 
 ipcMain.handle('set-ai-key', async (event, secretKey) => {
   return await keytar.setPassword('pile', 'aikey', secretKey);
+});
+
+// Link preview
+ipcMain.handle('get-link-preview', async (event, url) => {
+  const preview = await getLinkPreview(url)
+    .then((data) => {
+      return data;
+    })
+    .catch(() => null);
+
+  return preview;
 });
 
 // Index operations
@@ -107,7 +119,7 @@ ipcMain.handle('get-files', async (event, dirPath) => {
 });
 
 ipcMain.handle('get-file', async (event, filePath) => {
-  const content = await pileHelper.getFile(filePath);
+  const content = await pileHelper.getFile(filePath).catch(() => null);
   return content;
 });
 

@@ -97,6 +97,9 @@
     "@tiptap/pm": "^2.0.3",
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
+    "abort-controller": "^3.0.0",
+    "cheerio": "^1.0.0-rc.12",
+    "cross-fetch": "^4.0.0",
     "dotenv": "^16.3.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
@@ -110,6 +113,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
+    "url": "^0.11.3",
     "use-count-up": "^3.0.1"
   },
   "devDependencies": {

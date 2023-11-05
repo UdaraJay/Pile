@@ -24,12 +24,28 @@ export const getPost = async (postPath) => {
 };
 
 export const attachToPostCreator =
-  (setPost, getCurrentPilePath) => async () => {
+  (setPost, getCurrentPilePath) => async (imageData) => {
     const storePath = getCurrentPilePath();
 
-    const newAttachments = await window.electron.ipc.invoke('open-file', {
-      storePath: storePath,
-    });
+    let newAttachments = [];
+    if (imageData) {
+      // save image data to a file
+      const newFilePath = await window.electron.ipc.invoke('save-file', {
+        fileData: imageData,
+        storePath: storePath,
+      });
+
+      if (newFilePath) {
+        newAttachments.push(newFilePath);
+      } else {
+        console.error('Failed to save the pasted image.');
+      }
+    } else {
+      newAttachments = await window.electron.ipc.invoke('open-file', {
+        storePath: storePath,
+      });
+    }
+
 
     // Attachments are stored relative to the base path from the
     // base directory of the pile

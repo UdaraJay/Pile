@@ -68,6 +68,7 @@ export default function Editor({
   const [isDragging, setIsDragging] = useState(false);
   const [isAIResponding, setIsAiResponding] = useState(false);
   const [prevDragPos, setPrevDragPos] = useState(0);
+  const [isActive, setIsActive] = useState(false);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -93,7 +94,6 @@ export default function Editor({
 
   const handleSubmit = useCallback(async () => {
     await savePost();
-
     if (isNew) {
       resetPost();
       closeReply();
@@ -103,6 +103,59 @@ export default function Editor({
     closeReply();
     setEditable(false);
   }, [editor, isNew, post]);
+
+  useEffect(() => {
+    if (!editor || !editable) return;
+
+    const handleKeyDown = (event) => {
+      if (isActive && editable && (event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        handleSubmit();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isActive, editable, handleSubmit]);
+
+  useEffect(() => {
+    if (!editor || !editable) return;
+
+    const handlePaste = (event) => {
+      if (isActive && editable) {
+        const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.type.indexOf('image') === 0) {
+            const file = item.getAsFile();
+            // Handle the image file here (e.g., upload, display, etc.)
+            const reader = new FileReader();
+            reader.onload = () => {
+              const imageData = reader.result;
+              attachToPost(imageData);
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+
+    return () => {
+      document.removeEventListener('paste', handlePaste);
+    };
+  }, [isActive, editable]);
+
+  const handleFocus = () => {
+    setIsActive(true);
+  };
+
+  const handleBlur = () => {
+    setIsActive(false);
+  };
 
   const generateAiResponse = useCallback(async () => {
     if (!editor) return;
@@ -185,9 +238,11 @@ export default function Editor({
   if (!post) return;
 
   return (
-    <div className={`${styles.frame} ${isNew && styles.isNew}`}>
+    <div  className={`${styles.frame} ${isNew && styles.isNew}`}>
       {editable ? (
         <EditorContent
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           key={'new'}
           className={`${styles.editor} ${isBig() && styles.editorBig} ${
             isAIResponding && styles.responding

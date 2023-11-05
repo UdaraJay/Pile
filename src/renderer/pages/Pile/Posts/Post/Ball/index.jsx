@@ -16,9 +16,10 @@ const Ball = ({
   const [person, setPerson] = React.useState('pedro');
 
   const renderHightlights = () => {
-    return Array.from(highlights, ([highlight, data]) => {
+    return Array.from(highlights, ([highlight, data], index) => {
       return (
         <DropdownMenu.Item
+          key={index}
           className={styles.DropdownMenuItem}
           onSelect={() => setHighlight(highlight)}
         >

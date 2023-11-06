@@ -32,7 +32,7 @@
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
     "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
-    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never",
+    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac --win --publish never",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
@@ -92,14 +92,14 @@
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@tiptap/extension-character-count": "^2.0.3",
+    "@tiptap/extension-link": "^2.1.12",
     "@tiptap/extension-placeholder": "^2.0.3",
     "@tiptap/extension-typography": "^2.0.4",
     "@tiptap/pm": "^2.0.3",
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
-    "abort-controller": "^3.0.0",
+    "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12",
-    "cross-fetch": "^4.0.0",
     "dotenv": "^16.3.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
@@ -113,8 +113,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
-    "url": "^0.11.3",
-    "use-count-up": "^3.0.1"
+    "use-count-up": "^3.0.1",
+    "worker-loader": "^3.0.8"
   },
   "devDependencies": {
     "@adobe/css-tools": "^4.3.1",
@@ -144,7 +144,7 @@
     "css-minimizer-webpack-plugin": "^5.0.0",
     "detect-port": "^1.5.1",
     "electron": "^25.8.4",
-    "electron-builder": "^24.2.1",
+    "electron-builder": "^24.7.0",
     "electron-devtools-installer": "^3.2.0",
     "electronmon": "^2.0.2",
     "eslint": "^8.42.0",
@@ -230,8 +230,15 @@
       ]
     },
     "win": {
+      "publisherName": "Pile",
       "target": [
-        "portable"
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
       ]
     },
     "linux": {

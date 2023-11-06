@@ -6,7 +6,9 @@ import pileIndex from './utils/PileIndex';
 import pileTags from './utils/PileTags';
 import pileHighlights from './utils/pileHighlights';
 import keytar from 'keytar';
-import { getLinkPreview } from './utils/link-preview';
+// import { getLinkPreview } from './utils/link-preview';
+
+import { getLinkPreview } from './utils/linkPreview';
 
 const os = require('os');
 const matter = require('gray-matter');
@@ -27,7 +29,6 @@ ipcMain.handle('get-link-preview', async (event, url) => {
       return data;
     })
     .catch(() => null);
-
   return preview;
 });
 
@@ -104,8 +105,12 @@ ipcMain.on('change-folder', (event, newPath) => {
 });
 
 ipcMain.handle('matter-parse', async (event, file) => {
-  const post = matter(file);
-  return post;
+  try {
+    const post = matter(file);
+    return post;
+  } catch (error) {
+    return null;
+  }
 });
 
 ipcMain.handle('matter-stringify', async (event, { content, data }) => {

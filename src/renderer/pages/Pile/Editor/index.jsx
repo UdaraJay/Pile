@@ -55,6 +55,28 @@ export default function Editor({
         limit: 100000,
       }),
     ],
+    editorProps: {
+      handlePaste: function(view, event, slice) {
+        const items = Array.from(event.clipboardData?.items || []);
+        for (const item of items) {
+          if (item.type.indexOf("image") === 0) {
+            const file = item.getAsFile();
+            const fileName = file.name; // Retrieve the filename
+            const fileExtension = fileName.split('.').pop(); // Extract the file extension
+            // Handle the image file here (e.g., upload, display, etc.)
+            const reader = new FileReader();
+            reader.onload = () => {
+              const imageData = reader.result;
+              attachToPost(imageData, fileExtension);
+            };
+            reader.readAsDataURL(file);
+
+            return true; // handled
+          }
+        }
+        return false; // not handled use default behaviour
+      }
+    },
     autofocus: true,
     editable: editable,
     content: post?.content || '',
@@ -119,37 +141,6 @@ export default function Editor({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isActive, editable, handleSubmit]);
-
-  useEffect(() => {
-    if (!editor || !editable) return;
-
-    const handlePaste = (event) => {
-      if (isActive && editable) {
-        const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          if (item.type.indexOf('image') === 0) {
-            const file = item.getAsFile();
-            const fileName = file.name; // Retrieve the filename
-            const fileExtension = fileName.split('.').pop(); // Extract the file extension
-            // Handle the image file here (e.g., upload, display, etc.)
-            const reader = new FileReader();
-            reader.onload = () => {
-              const imageData = reader.result;
-              attachToPost(imageData, fileExtension);
-            };
-            reader.readAsDataURL(file);
-          }
-        }
-      }
-    };
-
-    document.addEventListener('paste', handlePaste);
-
-    return () => {
-      document.removeEventListener('paste', handlePaste);
-    };
-  }, [isActive, editable]);
 
   const handleFocus = () => {
     setIsActive(true);

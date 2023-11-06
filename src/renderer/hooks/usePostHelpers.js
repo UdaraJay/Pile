@@ -24,7 +24,7 @@ export const getPost = async (postPath) => {
 };
 
 export const attachToPostCreator =
-  (setPost, getCurrentPilePath) => async (imageData) => {
+  (setPost, getCurrentPilePath) => async (imageData, fileExtension) => {
     const storePath = getCurrentPilePath();
 
     let newAttachments = [];
@@ -32,6 +32,7 @@ export const attachToPostCreator =
       // save image data to a file
       const newFilePath = await window.electron.ipc.invoke('save-file', {
         fileData: imageData,
+        fileExtension: fileExtension,
         storePath: storePath,
       });
 

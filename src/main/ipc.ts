@@ -126,7 +126,7 @@ ipcMain.on('open-file-dialog', async (event) => {
   }
 });
 
-ipcMain.handle('save-file', async (event, { fileData, storePath }) => {
+ipcMain.handle('save-file', async (event, { fileData, fileExtension, storePath }) => {
   try {
     const currentDate = new Date();
     const year = String(currentDate.getFullYear()).slice(-2);
@@ -135,8 +135,7 @@ ipcMain.handle('save-file', async (event, { fileData, storePath }) => {
     const hours = String(currentDate.getHours()).padStart(2, '0');
     const minutes = String(currentDate.getMinutes()).padStart(2, '0');
     const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-    const extension = 'png'; // Replace with the desired file extension
-    const fileName = `${year}${month}${day}-${hours}${minutes}${seconds}.${extension}`;
+    const fileName = `${year}${month}${day}-${hours}${minutes}${seconds}.${fileExtension}`;
     const fullStorePath = path.join(
       storePath,
       String(currentDate.getFullYear()),

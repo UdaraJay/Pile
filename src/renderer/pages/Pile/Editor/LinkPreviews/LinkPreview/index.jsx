@@ -31,15 +31,17 @@ export default function LinkPreview({ url }) {
 
     if (match && match[2].length === 11) {
       return (
-        <iframe
-          width="100%"
-          height="auto"
-          src={`https://www.youtube.com/embed/${match[2]}?si=w-plylbVGS7t7O4b"`}
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+        <div className={styles.youtube}>
+          <iframe
+            width="100%"
+            height="auto"
+            src={`https://www.youtube.com/embed/${match[2]}?si=w-plylbVGS7t7O4b"`}
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
+            allowfullscreen
+          />
+        </div>
       );
     } else {
       return null;
@@ -47,14 +49,6 @@ export default function LinkPreview({ url }) {
   };
 
   const renderImage = () => {
-    if (isUrlYouTubeVideo(url)) {
-      const embed = createYouTubeEmbed(url);
-
-      if (embed) {
-        return <div className={styles.iframe}>{embed}</div>;
-      }
-    }
-
     if (preview.images.length == 0) return;
     const image = preview.images[0];
 
@@ -65,14 +59,35 @@ export default function LinkPreview({ url }) {
     );
   };
 
+  if (isUrlYouTubeVideo(url)) {
+    return createYouTubeEmbed(url);
+  }
+
   return (
-    <div className={styles.card}>
-      {renderImage()}
-      <div className={styles.content}>
-        <a href={url} target="_blank" className={styles.title}>
-          {preview.title}
-        </a>
-      </div>
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{
+          opacity: 0,
+          transform: 'scale(0.9)',
+          transformOrigin: 'top left',
+        }}
+        animate={{ opacity: 1, transform: 'scale(1)' }}
+        exit={{ opacity: 0, transform: 'scale(0.9)' }}
+        transition={{ delay: 0.3 }}
+      >
+        <div className={styles.card}>
+          {renderImage()}
+          <div className={styles.content}>
+            <a href={url} target="_blank" className={styles.title}>
+              {preview.title}
+            </a>
+          </div>
+          <div className={styles.footer}>
+            <img className={styles.favicon} src={preview.favicon} />{' '}
+            {preview?.host}
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

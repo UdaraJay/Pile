@@ -130,11 +130,13 @@ export default function Editor({
           const item = items[i];
           if (item.type.indexOf('image') === 0) {
             const file = item.getAsFile();
+            const fileName = file.name; // Retrieve the filename
+            const fileExtension = fileName.split('.').pop(); // Extract the file extension
             // Handle the image file here (e.g., upload, display, etc.)
             const reader = new FileReader();
             reader.onload = () => {
               const imageData = reader.result;
-              attachToPost(imageData);
+              attachToPost(imageData, fileExtension);
             };
             reader.readAsDataURL(file);
           }

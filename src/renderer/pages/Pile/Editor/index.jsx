@@ -3,6 +3,7 @@ import styles from './Editor.module.scss';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { Extension } from '@tiptap/core';
 import { useEditor, EditorContent } from '@tiptap/react';
+import Link from '@tiptap/extension-link';
 import StarterKit from '@tiptap/starter-kit';
 import CharacterCount from '@tiptap/extension-character-count';
 import Typography from '@tiptap/extension-typography';
@@ -49,6 +50,7 @@ export default function Editor({
     extensions: [
       StarterKit,
       Typography,
+      Link,
       Placeholder.configure({
         placeholder: isAI ? 'AI is thinking...' : 'What are you thinking?',
       }),

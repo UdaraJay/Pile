@@ -1,33 +1,19 @@
 .card {
-    flex: 0 0 auto;
-    max-width: 260px;
+    flex: 1 0 auto;
+    max-width: 360px;
     background: var(--bg-secondary);
     border-radius: 17px;
     margin: 8px;
-    transition: all ease-in-out 120ms;
+    transition: all ease-in-out 220ms;
 
     &:hover {
         cursor: pointer;
         background: var(--bg-tertiary);
     }
 
-    .iframe {
-        padding: 3px;
-
-        iframe {
-            width: 100%;
-            height: auto;
-            border-radius: 14px 14px 3px 3px;
-            margin: 0;
-        }
-    }
-
     .image {
-        padding: 3px;
-        background: var(--bg-tertiary);
+        padding: 3px 3px 0 3px;
         border-radius: 17px 17px 0 0;
-        max-height: 140px;
-        overflow: hidden;
 
         img {
             width: 100%;
@@ -35,11 +21,10 @@
             border-radius: 14px 14px 3px 3px;
             margin: 0;
         }
-
     }
 
     .content {
-        padding: 5px 12px 12px 12px;
+        padding: 6px 12px 10px 12px;
 
         .title {
             font-weight: 500;
@@ -54,6 +39,47 @@
             max-height: 50px;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+    }
+
+    .footer {
+        display: flex;
+        align-items: center;
+        padding: 4px 12px 11px 12px;
+        font-weight: 400;
+        font-size: 0.9em;
+        color: var(--secondary);
+
+        .favicon {
+            height: 18px;
+            width: 18px;
+            margin-right: 6px;
+        }
+    }
+}
+
+.youtube {
+    margin: 8px;
+    padding: 3px 3px 0px 3px;
+    border-radius: 17px;
+    background: var(--bg-secondary);
+    width: 100%;
+    max-width: 560px;
+
+    &:hover {
+        background: var(--bg-tertiary);
+    }
+
+    iframe {
+        width: 100%;
+        height: 340px;
+        border-radius: 14px;
+        margin: 0;
+        padding: 0;
+        border: none;
+
+        &::after {
+            display: none;
         }
     }
 }

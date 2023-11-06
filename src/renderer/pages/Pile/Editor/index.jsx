@@ -44,6 +44,32 @@ export default function Editor({
   const { ai, prompt } = useAIContext();
 
   const isNew = !postPath;
+
+  const EnterSubmitExtension = Extension.create({
+    name: 'customExtension',
+
+    addCommands() {
+      return {
+        triggerSubmit: () => ({ state, dispatch }) => {
+          // This will trigger a 'submit' event on the editor
+          const event = new CustomEvent('submit');
+          document.dispatchEvent(event);
+
+          return true;
+        },
+      };
+    },
+
+    addKeyboardShortcuts() {
+      return {
+        'Enter': ({ editor }) => {
+          editor.commands.triggerSubmit();
+          return true;
+        },
+      };
+    },
+  });
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -54,6 +80,7 @@ export default function Editor({
       CharacterCount.configure({
         limit: 100000,
       }),
+      EnterSubmitExtension,
     ],
     editorProps: {
       handlePaste: function(view, event, slice) {
@@ -90,7 +117,6 @@ export default function Editor({
   const [isDragging, setIsDragging] = useState(false);
   const [isAIResponding, setIsAiResponding] = useState(false);
   const [prevDragPos, setPrevDragPos] = useState(0);
-  const [isActive, setIsActive] = useState(false);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -126,29 +152,20 @@ export default function Editor({
     setEditable(false);
   }, [editor, isNew, post]);
 
+  // Listen for the 'submit' event and call handleSubmit when it's triggered
   useEffect(() => {
-    if (!editor || !editable) return;
-
-    const handleKeyDown = (event) => {
-      if (isActive && editable && (event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+    const handleEvent = () => {
+      if (editor?.isFocused) {
         handleSubmit();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('submit', handleEvent);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('submit', handleEvent);
     };
-  }, [isActive, editable, handleSubmit]);
-
-  const handleFocus = () => {
-    setIsActive(true);
-  };
-
-  const handleBlur = () => {
-    setIsActive(false);
-  };
+  }, [handleSubmit, editor]);
 
   const generateAiResponse = useCallback(async () => {
     if (!editor) return;
@@ -234,8 +251,6 @@ export default function Editor({
     <div  className={`${styles.frame} ${isNew && styles.isNew}`}>
       {editable ? (
         <EditorContent
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           key={'new'}
           className={`${styles.editor} ${isBig() && styles.editorBig} ${
             isAIResponding && styles.responding

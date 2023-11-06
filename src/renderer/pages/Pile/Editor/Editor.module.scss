@@ -20,14 +20,20 @@
     p {
         line-height: 1.45;
 
-
-
         &:first-child {
             margin-top: 0;
         }
 
         &:last-child {
             margin-bottom: 0;
+        }
+    }
+
+    a {
+        color: var(--secondary);
+
+        &:hover {
+            color: var(--base);
         }
     }
 

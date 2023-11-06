@@ -20,8 +20,18 @@ class PileIndex {
     return sortedMap;
   }
 
+  resetIndex() {
+    this.index.clear();
+  }
+
   load(pilePath) {
     if (!pilePath) return;
+
+    // a different pile is being loaded
+    if (pilePath !== this.pilePath) {
+      this.resetIndex();
+    }
+
     this.pilePath = pilePath;
     const indexFilePath = path.join(this.pilePath, this.fileName);
 
@@ -34,6 +44,10 @@ class PileIndex {
 
       return sortedIndex;
     } else {
+      // clear previous loaded index because there is
+      // no index file and a new index is being initialized
+      this.index.clear();
+
       // save to initialize an empty index
       this.save();
       return this.index;
@@ -79,6 +93,7 @@ class PileIndex {
   }
 
   save() {
+    console.log('SAVE', this.pilePath, this.index);
     if (!this.pilePath) return;
     if (!fs.existsSync(this.pilePath)) {
       fs.mkdirSync(this.pilePath, { recursive: true });
@@ -92,8 +107,8 @@ class PileIndex {
     const entries = this.index.entries();
 
     if (!entries) return;
-    let strMap = JSON.stringify(Array.from(entries));
 
+    let strMap = JSON.stringify(Array.from(entries));
     fs.writeFileSync(filePath, strMap);
   }
 }

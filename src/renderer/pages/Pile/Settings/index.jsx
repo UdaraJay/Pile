@@ -96,7 +96,7 @@ export default function Settings() {
             </label>
             <textarea
               className={styles.Textarea}
-              placeholder="Paste an OpenAI API key to enable AI reflections"
+              placeholder="Enter your own prompt for AI reflections"
               value={prompt}
               readOnly
             />

@@ -185,6 +185,8 @@ input {
     font-size: 14px;
     line-height: 1.35;
     min-height: 150px;
+    width: 100%; /* Ensure the width is 100%, no less, no more */
+    resize: none; /* Prevent resizing */
     color: var(--primary);
     background: var(--bg-tertiary);
     border: none;

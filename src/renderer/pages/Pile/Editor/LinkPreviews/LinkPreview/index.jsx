@@ -1,7 +1,14 @@
 import styles from './LinkPreview.module.scss';
 import { useCallback, useState, useEffect } from 'react';
-import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
+import {
+  DiscIcon,
+  PhotoIcon,
+  TrashIcon,
+  TagIcon,
+  ChainIcon,
+} from 'renderer/icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLinksContext } from 'renderer/context/LinksContext';
 
 const isUrlYouTubeVideo = (url) => {
   // Regular expression to check for various forms of YouTube URLs
@@ -11,11 +18,20 @@ const isUrlYouTubeVideo = (url) => {
 };
 
 export default function LinkPreview({ url }) {
+  const { getLink } = useLinksContext();
+  const [expanded, setExpanded] = useState(false);
   const [preview, setPreview] = useState(null);
 
+  const toggleExpand = () => setExpanded(!expanded);
+
   const getPreview = async (url) => {
-    const data = await window.electron.ipc.invoke('get-link-preview', url);
+    const data = await getLink(url);
     setPreview(data);
+  };
+
+  const updateSummary = (e) => {
+    const summary = e.target.value;
+    const _preview = { ...preview, aiCard: { ...preview.aiCard, summary } };
   };
 
   useEffect(() => {
@@ -37,9 +53,9 @@ export default function LinkPreview({ url }) {
             height="auto"
             src={`https://www.youtube.com/embed/${match[2]}?si=w-plylbVGS7t7O4b"`}
             title="YouTube video player"
-            frameborder="0"
+            frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
-            allowfullscreen
+            allowFullScreen
           />
         </div>
       );
@@ -49,8 +65,22 @@ export default function LinkPreview({ url }) {
   };
 
   const renderImage = () => {
-    if (preview.images.length == 0) return;
+    if (!preview?.images || preview.images.length == 0) return;
+
     const image = preview.images[0];
+
+    // if (preview.aiCard && preview.aiCard.images.length > 0) {
+    //   console.log('preview.aiCard.images', preview.aiCard.images);
+    //   const images = preview.aiCard.images;
+
+    //   return (
+    //     <div className={styles.image}>
+    //       {images.map((image) => (
+    //         <img src={image.src} alt={image.alt} />
+    //       ))}
+    //     </div>
+    //   );
+    // }
 
     return (
       <div className={styles.image}>
@@ -62,6 +92,44 @@ export default function LinkPreview({ url }) {
   if (isUrlYouTubeVideo(url)) {
     return createYouTubeEmbed(url);
   }
+
+  const renderAICard = () => {
+    // check if AI card is reliable and has enough content.
+    if (!preview.aiCard) return;
+
+    const highlights = () => {};
+
+    return (
+      <div className={styles.aiCard}>
+        <div className={styles.summary}>{preview?.aiCard?.summary}</div>
+
+        {/* Highlights */}
+        {preview?.aiCard?.highlights?.length > 0 && (
+          <ul className={`${styles.highlights} ${expanded && styles.show}`}>
+            {preview.aiCard.highlights.map((highlight, i) => (
+              <li key={`preview-${i}`}>{highlight}</li>
+            ))}
+            <div
+              key={'overlay'}
+              className={`${styles.overlay} ${expanded && styles.hidden}`}
+            ></div>
+          </ul>
+        )}
+
+        {/* Buttons */}
+        {preview?.aiCard?.buttons?.length > 0 && (
+          <div className={styles.buttons}>
+            {preview.aiCard.buttons.map((btn, i) => (
+              <a key={`button-${i}`} href={btn.href} target="_blank">
+                <ChainIcon className={styles.icon} />
+                {btn.title}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <AnimatePresence>
@@ -75,15 +143,21 @@ export default function LinkPreview({ url }) {
         exit={{ opacity: 0, transform: 'scale(0.9)' }}
         transition={{ delay: 0.3 }}
       >
-        <div className={styles.card}>
+        <div className={styles.card} onClick={toggleExpand}>
           {renderImage()}
           <div className={styles.content}>
             <a href={url} target="_blank" className={styles.title}>
               {preview.title}
             </a>
           </div>
+          {renderAICard()}
           <div className={styles.footer}>
             <img className={styles.favicon} src={preview.favicon} />{' '}
+            {preview?.aiCard?.category && (
+              <span className={styles.category}>
+                {preview?.aiCard?.category}
+              </span>
+            )}
             {preview?.host}
           </div>
         </div>

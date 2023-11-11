@@ -8,7 +8,7 @@ const axios = axiosBase.create({
 });
 
 // Setting the headers directly on the instance
-axios.defaults.headers.common['User-Agent'] = 'Pile/1.0';
+axios.defaults.headers.common['User-Agent'] = 'Mozilla/5.0 Pile/1.0';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const getLinkPreview = async (url) => {
@@ -69,6 +69,94 @@ export const getLinkPreview = async (url) => {
     }
 
     return meta;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+const getContentHeuristics = (html) => {
+  const $ = cheerio.load(html);
+  let maxDensity = 0;
+  let mainContent = '';
+
+  $('*').each(function () {
+    const text = $(this).clone().children().remove().end().text();
+    const wordCount = text.split(/\s+/).length;
+    const density = wordCount / $(this).text().length;
+
+    // Check if the element has a higher text density and contains more words than the current max
+    if (density > maxDensity && wordCount > 200) {
+      // 200 is arbitrary
+      maxDensity = density;
+      mainContent = text;
+    }
+  });
+
+  return mainContent.trim().replace(/\s\s+/g, ' ');
+};
+
+export const getLinkContent = async (url) => {
+  try {
+    const response = await axios.get(url);
+    const $ = cheerio.load(response.data);
+
+    // Some content we want to filter out
+    $(
+      'script, style, iframe, noscript, nav, header, footer, .nav, .menu, .footer'
+    ).remove();
+
+    let contentSections = [];
+
+    // Targets likely to hold main text content
+    const sectionSelectors = 'div, section, article, main, [role="main"]';
+
+    $(sectionSelectors).each(function () {
+      const sectionText = $(this).text().trim();
+      const textLength = sectionText.replace(/\s+/g, ' ').length;
+
+      // If the section contains a significant amount of text, consider it as content
+      if (textLength > 200) {
+        contentSections.push({
+          html: $(this).html(), // Keep the HTML to preserve images and links
+          textLength: textLength,
+        });
+      }
+    });
+
+    // Sort sections by text length, descending
+    contentSections.sort((a, b) => b.textLength - a.textLength);
+
+    // Concatenate the HTML of the top sections to form the main content
+    let mainContentHtml = contentSections
+      .slice(0, 3)
+      .map((section) => section.html)
+      .join(' '); // Adjust the number of sections as needed
+
+    // Load the concatenated HTML into Cheerio for final cleaning
+    const mainContent = cheerio.load(mainContentHtml);
+
+    // Extract the clean text content
+    const textContent = mainContent.text().replace(/\s+/g, ' ').trim();
+
+    // Extract image sources
+    const imageSources = mainContent('img')
+      .map((i, el) => mainContent(el).attr('src'))
+      .get();
+
+    // Extract links
+    const links = mainContent('a')
+      .map((i, el) => ({
+        href: mainContent(el).attr('href'),
+        text: mainContent(el).text().trim(),
+      }))
+      .get();
+
+    return {
+      text: textContent,
+      images: imageSources.slice(0, 10),
+      links: links.slice(0, 10),
+    };
   } catch (error) {
     console.error(error);
     return null;

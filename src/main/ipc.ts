@@ -4,12 +4,10 @@ import fs from 'fs';
 import pileHelper from './utils/PileHelper';
 import pileIndex from './utils/PileIndex';
 import pileTags from './utils/PileTags';
+import pileLinks from './utils/PileLinks';
 import pileHighlights from './utils/pileHighlights';
 import keytar from 'keytar';
-// import { getLinkPreview } from './utils/link-preview';
-
-import { getLinkPreview } from './utils/linkPreview';
-
+import { getLinkPreview, getLinkContent } from './utils/linkPreview';
 const os = require('os');
 const matter = require('gray-matter');
 
@@ -25,6 +23,15 @@ ipcMain.handle('set-ai-key', async (event, secretKey) => {
 // Link preview
 ipcMain.handle('get-link-preview', async (event, url) => {
   const preview = await getLinkPreview(url)
+    .then((data) => {
+      return data;
+    })
+    .catch(() => null);
+  return preview;
+});
+
+ipcMain.handle('get-link-content', async (event, url) => {
+  const preview = await getLinkContent(url)
     .then((data) => {
       return data;
     })
@@ -51,6 +58,17 @@ ipcMain.handle('index-add', (event, filePath) => {
 ipcMain.handle('index-remove', (event, filePath) => {
   const index = pileIndex.remove(filePath);
   return index;
+});
+
+// Links operations
+ipcMain.handle('links-get', (event, pilePath, url) => {
+  const data = pileLinks.get(pilePath, url);
+  return data;
+});
+
+ipcMain.handle('links-set', (event, pilePath, url, data) => {
+  const status = pileLinks.set(pilePath, url, data);
+  return status;
 });
 
 // Highlight operations

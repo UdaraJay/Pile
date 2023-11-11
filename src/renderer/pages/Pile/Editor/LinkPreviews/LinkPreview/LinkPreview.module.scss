@@ -1,15 +1,15 @@
 .card {
     flex: 1 0 auto;
-    max-width: 360px;
+    max-width: 400px;
     background: var(--bg-secondary);
     border-radius: 17px;
     margin: 8px;
     transition: all ease-in-out 220ms;
 
-    &:hover {
-        cursor: pointer;
-        background: var(--bg-tertiary);
-    }
+    // &:hover {
+    //     cursor: pointer;
+    //     background: var(--bg-tertiary);
+    // }
 
     .image {
         padding: 3px 3px 0 3px;
@@ -18,34 +18,112 @@
         img {
             width: 100%;
             height: auto;
+            max-height: 280px;
             border-radius: 14px 14px 3px 3px;
             margin: 0;
+            object-fit: cover;
         }
     }
 
     .content {
-        padding: 6px 12px 10px 12px;
+        padding: 7px 12px 5px 12px;
 
         .title {
+            font-size: 1.05em;
+            line-height: 1.4;
             font-weight: 500;
             color: var(--preview);
-        }
+            transition: all ease-in-out 120ms;
 
-        .description {
-            margin: 3px 0 0 0;
-            font-size: 0.9em;
-            line-height: 1.35;
-            color: var(--secondary);
+            &:hover {
+                cursor: pointer;
+                color: var(--active);
+            }
+        }
+    }
+
+    .aiCard {
+        color: var(--secondary);
+        padding: 0 12px 12px 12px;
+        line-height: 1.35;
+        font-size: 0.9em;
+        transition: max-height ease-in-out 200ms;
+
+        .highlights {
+            display: block;
+            position: relative;
+            margin: 10px 0 0 0;
+            padding: 5px 0 0 1em;
+            height: auto;
             max-height: 50px;
             overflow: hidden;
-            text-overflow: ellipsis;
+            border-top: 1px solid var(--border);
+            transition: max-height ease-in-out 200ms;
+
+            &:hover {
+                cursor: pointer;
+                max-height: 100px;
+            }
+
+            &.show {
+                max-height: 100%;
+            }
+
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                transition: opacity ease-in-out 200ms;
+                background: linear-gradient(transparent, var(--bg-secondary));
+
+                &.hidden {
+                    pointer-events: none;
+                    opacity: 0;
+                }
+            }
+
+            li {
+                padding: 4px 0 4px 0;
+                list-style: outside;
+            }
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 10px 0 5px 0;
+            gap: 15px;
+
+            a {
+                display: flex;
+                align-items: center;
+                color: var(--active-text);
+                background: var(--active);
+                height: 28px;
+                line-height: 28px;
+                padding: 0 12px 0 7px;
+                border-radius: 90px;
+
+                .icon {
+                    height: 20px;
+                    width: 20px;
+                    margin: -2px 3px 0 0;
+                }
+
+                &:hover {
+                    background: var(--active-hover);
+                }
+
+            }
         }
     }
 
     .footer {
         display: flex;
         align-items: center;
-        padding: 4px 12px 11px 12px;
+        padding: 4px 12px 12px 12px;
         font-weight: 400;
         font-size: 0.9em;
         color: var(--secondary);
@@ -53,7 +131,18 @@
         .favicon {
             height: 18px;
             width: 18px;
-            margin-right: 6px;
+            margin-right: 9px;
+            border-radius: 2px;
+        }
+
+        .category {
+            text-transform: capitalize;
+
+            &::after {
+                content: '·';
+                margin: 0 6px;
+                opacity: 0.7;
+            }
         }
     }
 }

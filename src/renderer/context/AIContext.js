@@ -22,6 +22,9 @@ export const AIContext = createContext();
 export const AIContextProvider = ({ children }) => {
   const [ai, setAi] = useState(null);
 
+  // this keeps track of async tasks that the user is notified about
+  const [pendingJobs, setPendingJobs] = useState([]);
+
   const prompt =
     'You are an AI within a journaling app. Your job is to help the user reflect on their thoughts in a thoughtful and kind manner. The user can never directly address you or directly respond to you. Try not to repeat what the user said, instead try to seed new ideas, encourage or debate. Keep your responses concise, but meaningful.';
 
@@ -49,7 +52,23 @@ export const AIContextProvider = ({ children }) => {
     return window.electron.ipc.invoke('set-ai-key', secretKey);
   };
 
-  const AIContextValue = { ai, prompt, setKey, getKey };
+  const getCompletion = async (model = 'gpt-3', context) => {
+    const response = await ai.chat.completions.create({
+      model: 'gpt-4',
+      max_tokens: 200,
+      messages: context,
+    });
+
+    return response;
+  };
+
+  const AIContextValue = {
+    ai,
+    prompt,
+    setKey,
+    getKey,
+    getCompletion,
+  };
 
   return (
     <AIContext.Provider value={AIContextValue}>{children}</AIContext.Provider>

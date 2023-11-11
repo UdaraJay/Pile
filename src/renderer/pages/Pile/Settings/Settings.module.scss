@@ -149,6 +149,22 @@ input {
     margin-top: 14px;
 }
 
+.disclaimer {
+    font-size: 0.8em;
+    color: var(--secondary);
+    margin-top: 10px;
+    line-height: 1.4;
+    opacity: 0.75;
+
+    a {
+        color: var(--active);
+
+        &:hover {
+            color: var(--active-hover);
+        }
+    }
+}
+
 .Label {
     font-size: 12px;
     color: var(--secondary);

@@ -19,6 +19,7 @@ const Ball = ({
     return Array.from(highlights, ([highlight, data]) => {
       return (
         <DropdownMenu.Item
+          key={`highlight-${highlight}`}
           className={styles.DropdownMenuItem}
           onSelect={() => setHighlight(highlight)}
         >

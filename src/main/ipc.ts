@@ -20,6 +20,10 @@ ipcMain.handle('set-ai-key', async (event, secretKey) => {
   return await keytar.setPassword('pile', 'aikey', secretKey);
 });
 
+ipcMain.handle('delete-ai-key', async (event) => {
+  return await keytar.deletePassword('pile', 'aikey');
+});
+
 // Link preview
 ipcMain.handle('get-link-preview', async (event, url) => {
   const preview = await getLinkPreview(url)

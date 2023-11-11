@@ -35,7 +35,7 @@ export default function Settings() {
   };
 
   const renderThemes = () => {
-    return Object.keys(availableThemes).map((theme) => {
+    return Object.keys(availableThemes).map((theme, index) => {
       const colors = availableThemes[theme];
       return (
         <button

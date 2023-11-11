@@ -120,7 +120,12 @@ export default function LinkPreview({ url }) {
         {preview?.aiCard?.buttons?.length > 0 && (
           <div className={styles.buttons}>
             {preview.aiCard.buttons.map((btn, i) => (
-              <a key={`button-${i}`} href={btn.href} target="_blank">
+              <a
+                key={`button-${i}`}
+                href={btn.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ChainIcon className={styles.icon} />
                 {btn.title}
               </a>
@@ -145,7 +150,12 @@ export default function LinkPreview({ url }) {
       <div className={styles.card} onClick={toggleExpand}>
         {renderImage()}
         <div className={styles.content}>
-          <a href={url} target="_blank" className={styles.title}>
+          <a
+            href={url}
+            target="_blank"
+            className={styles.title}
+            rel="noopener noreferrer"
+          >
             {preview.title}
           </a>
         </div>

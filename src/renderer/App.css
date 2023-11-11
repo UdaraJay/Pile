@@ -14,6 +14,7 @@
   --secondary: #626262;
 
   --base: #4d80e6;
+  --base-text: rgb(246, 247, 255);
   --base-hover: #2b5bbb;
   --base-yellow: #e6e04d;
   --base-green: #4de64d;
@@ -42,6 +43,7 @@
     --secondary: #c1c1c1;
 
     --base: #4d88ff;
+    --base-text: hsl(213, 100%, 93%);
     --base-hover: #82acff;
     --base-yellow: #776b0e;
     --base-green: #128212;

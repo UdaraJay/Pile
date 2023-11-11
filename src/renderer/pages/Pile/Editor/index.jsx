@@ -5,9 +5,9 @@ import { Extension } from '@tiptap/core';
 import { useEditor, EditorContent } from '@tiptap/react';
 import Link from '@tiptap/extension-link';
 import StarterKit from '@tiptap/starter-kit';
-import CharacterCount from '@tiptap/extension-character-count';
 import Typography from '@tiptap/extension-typography';
 import Placeholder from '@tiptap/extension-placeholder';
+import CharacterCount from '@tiptap/extension-character-count';
 import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { postFormat } from 'renderer/utils/fileOperations';
@@ -55,7 +55,7 @@ export default function Editor({
         placeholder: isAI ? 'AI is thinking...' : 'What are you thinking?',
       }),
       CharacterCount.configure({
-        limit: 100000,
+        limit: 10000,
       }),
     ],
     autofocus: true,

@@ -8,11 +8,15 @@ import {
 import { useLocation } from 'react-router-dom';
 import { usePilesContext } from './PilesContext';
 import { useAIContext } from './AIContext';
+import { useToastsContext } from './ToastsContext';
+
 export const LinksContext = createContext();
 
 export const LinksContextProvider = ({ children }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { ai, getCompletion } = useAIContext();
+  const { addNotification, updateNotification, removeNotification } =
+    useToastsContext();
 
   const getLink = useCallback(
     async (url) => {
@@ -23,11 +27,14 @@ export const LinksContextProvider = ({ children }) => {
         url
       );
 
+      addNotification(url, 'thinking', 'Generating preview...');
+
       // return cached preview if available
       if (preview) {
         return preview;
       }
 
+      updateNotification(url, 'waiting', 'Generating preview...');
       // otherwise generate a new preview
       const _preview = await getPreview(url);
       const aiCard = await generateMeta(url).catch(() => {

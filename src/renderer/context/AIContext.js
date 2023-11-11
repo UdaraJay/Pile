@@ -52,6 +52,10 @@ export const AIContextProvider = ({ children }) => {
     return window.electron.ipc.invoke('set-ai-key', secretKey);
   };
 
+  const deleteKey = () => {
+    return window.electron.ipc.invoke('delete-ai-key');
+  };
+
   const getCompletion = async (model = 'gpt-3', context) => {
     const response = await ai.chat.completions.create({
       model: 'gpt-4',
@@ -67,6 +71,7 @@ export const AIContextProvider = ({ children }) => {
     prompt,
     setKey,
     getKey,
+    deleteKey,
     getCompletion,
   };
 

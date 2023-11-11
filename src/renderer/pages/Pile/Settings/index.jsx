@@ -9,7 +9,7 @@ import {
 } from 'renderer/context/PilesContext';
 
 export default function Settings() {
-  const { ai, prompt, getKey, setKey } = useAIContext();
+  const { ai, prompt, getKey, setKey, deleteKey } = useAIContext();
   const [key, setCurrentKey] = useState('');
   const { currentTheme, setTheme } = usePilesContext();
 
@@ -27,7 +27,9 @@ export default function Settings() {
   };
 
   const handleSaveChanges = () => {
-    if (key != '') {
+    if (key == '') {
+      deleteKey();
+    } else {
       setKey(key);
     }
   };

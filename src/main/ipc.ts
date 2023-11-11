@@ -1,10 +1,10 @@
 import { ipcMain, app, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import pileHelper from './utils/PileHelper';
-import pileIndex from './utils/PileIndex';
-import pileTags from './utils/PileTags';
-import pileLinks from './utils/PileLinks';
+import pileHelper from './utils/pileHelper';
+import pileIndex from './utils/pileIndex';
+import pileTags from './utils/pileTags';
+import pileLinks from './utils/pileLinks';
 import pileHighlights from './utils/pileHighlights';
 import keytar from 'keytar';
 import { getLinkPreview, getLinkContent } from './utils/linkPreview';

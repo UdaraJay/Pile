@@ -132,36 +132,32 @@ export default function LinkPreview({ url }) {
   };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{
-          opacity: 0,
-          transform: 'scale(0.9)',
-          transformOrigin: 'top left',
-        }}
-        animate={{ opacity: 1, transform: 'scale(1)' }}
-        exit={{ opacity: 0, transform: 'scale(0.9)' }}
-        transition={{ delay: 0.3 }}
-      >
-        <div className={styles.card} onClick={toggleExpand}>
-          {renderImage()}
-          <div className={styles.content}>
-            <a href={url} target="_blank" className={styles.title}>
-              {preview.title}
-            </a>
-          </div>
-          {renderAICard()}
-          <div className={styles.footer}>
-            <img className={styles.favicon} src={preview.favicon} />{' '}
-            {preview?.aiCard?.category && (
-              <span className={styles.category}>
-                {preview?.aiCard?.category}
-              </span>
-            )}
-            {preview?.host}
-          </div>
+    <motion.div
+      initial={{
+        opacity: 0,
+        transform: 'scale(0.9)',
+        transformOrigin: 'top left',
+      }}
+      animate={{ opacity: 1, transform: 'scale(1)' }}
+      exit={{ opacity: 0, transform: 'scale(0.9)' }}
+      transition={{ delay: 0.3 }}
+    >
+      <div className={styles.card} onClick={toggleExpand}>
+        {renderImage()}
+        <div className={styles.content}>
+          <a href={url} target="_blank" className={styles.title}>
+            {preview.title}
+          </a>
         </div>
-      </motion.div>
-    </AnimatePresence>
+        {renderAICard()}
+        <div className={styles.footer}>
+          <img className={styles.favicon} src={preview.favicon} />{' '}
+          {preview?.aiCard?.category && (
+            <span className={styles.category}>{preview?.aiCard?.category}</span>
+          )}
+          {preview?.host}
+        </div>
+      </div>
+    </motion.div>
   );
 }

@@ -46,7 +46,6 @@ export default function Posts() {
     }
 
     return Array.from(index, ([postPath, data]) => {
-      console.log('postPath', postPath, data);
       return (
         <motion.div key={postPath} variants={item}>
           <Post key={`post-${postPath}`} postPath={postPath} />

@@ -37,7 +37,7 @@ export default function Settings() {
       const colors = availableThemes[theme];
       return (
         <button
-          key={index}
+          key={`theme-${theme}`}
           className={`${styles.theme} ${
             currentTheme == theme && styles.current
           }`}
@@ -81,7 +81,7 @@ export default function Settings() {
 
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
-              API key (OpenAI / UNMS)
+              API key (OpenAI)
             </label>
             <input
               className={styles.Input}
@@ -90,6 +90,17 @@ export default function Settings() {
               placeholder="Paste an OpenAI API key to enable AI reflections"
             />
           </fieldset>
+          <div className={styles.disclaimer}>
+            Before you enable the AI-powered features within this app, we
+            strongly recommend that you configure your own{' '}
+            <a
+              href="https://platform.openai.com/account/limits"
+              target="_blank"
+            >
+              spending limit within OpenAI's interface
+            </a>{' '}
+            to prevent unexpected costs.
+          </div>
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
               Prompt (locked)

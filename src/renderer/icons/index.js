@@ -37,3 +37,4 @@ export * from './img/NeedleIcon';
 export * from './img/EditIcon';
 export * from './img/AIIcon';
 export * from './img/PileIcon';
+export * from './img/ChainIcon';

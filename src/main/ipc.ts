@@ -126,6 +126,38 @@ ipcMain.on('open-file-dialog', async (event) => {
   }
 });
 
+ipcMain.handle('save-file', async (event, { fileData, fileExtension, storePath }) => {
+  try {
+    const currentDate = new Date();
+    const year = String(currentDate.getFullYear()).slice(-2);
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    const fileName = `${year}${month}${day}-${hours}${minutes}${seconds}.${fileExtension}`;
+    const fullStorePath = path.join(
+      storePath,
+      String(currentDate.getFullYear()),
+      currentDate.toLocaleString('default', { month: 'short' }),
+      'media'
+    );
+    const newFilePath = path.join(fullStorePath, fileName);
+
+    // Convert Data URL to Buffer
+    const dataUrlParts = fileData.split(';base64,');
+    const fileBuffer = Buffer.from(dataUrlParts[1], 'base64');
+
+    await fs.promises.mkdir(fullStorePath, { recursive: true });
+    await fs.promises.writeFile(newFilePath, fileBuffer);
+    return newFilePath;
+
+  } catch (error) {
+    console.error('Failed to save the file:', error);
+  }
+});
+
+
 ipcMain.handle('open-file', async (event, data) => {
   let attachments: string[] = [];
   const storePath = data.storePath;

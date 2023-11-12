@@ -44,6 +44,32 @@ export default function Editor({
   const { ai, prompt } = useAIContext();
 
   const isNew = !postPath;
+
+  const EnterSubmitExtension = Extension.create({
+    name: 'customExtension',
+
+    addCommands() {
+      return {
+        triggerSubmit: () => ({ state, dispatch }) => {
+          // This will trigger a 'submit' event on the editor
+          const event = new CustomEvent('submit');
+          document.dispatchEvent(event);
+
+          return true;
+        },
+      };
+    },
+
+    addKeyboardShortcuts() {
+      return {
+        'Enter': ({ editor }) => {
+          editor.commands.triggerSubmit();
+          return true;
+        },
+      };
+    },
+  });
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -54,7 +80,30 @@ export default function Editor({
       CharacterCount.configure({
         limit: 100000,
       }),
+      EnterSubmitExtension,
     ],
+    editorProps: {
+      handlePaste: function(view, event, slice) {
+        const items = Array.from(event.clipboardData?.items || []);
+        for (const item of items) {
+          if (item.type.indexOf("image") === 0) {
+            const file = item.getAsFile();
+            const fileName = file.name; // Retrieve the filename
+            const fileExtension = fileName.split('.').pop(); // Extract the file extension
+            // Handle the image file here (e.g., upload, display, etc.)
+            const reader = new FileReader();
+            reader.onload = () => {
+              const imageData = reader.result;
+              attachToPost(imageData, fileExtension);
+            };
+            reader.readAsDataURL(file);
+
+            return true; // handled
+          }
+        }
+        return false; // not handled use default behaviour
+      }
+    },
     autofocus: true,
     editable: editable,
     content: post?.content || '',
@@ -93,7 +142,6 @@ export default function Editor({
 
   const handleSubmit = useCallback(async () => {
     await savePost();
-
     if (isNew) {
       resetPost();
       closeReply();
@@ -103,6 +151,21 @@ export default function Editor({
     closeReply();
     setEditable(false);
   }, [editor, isNew, post]);
+
+  // Listen for the 'submit' event and call handleSubmit when it's triggered
+  useEffect(() => {
+    const handleEvent = () => {
+      if (editor?.isFocused) {
+        handleSubmit();
+      }
+    };
+
+    document.addEventListener('submit', handleEvent);
+
+    return () => {
+      document.removeEventListener('submit', handleEvent);
+    };
+  }, [handleSubmit, editor]);
 
   const generateAiResponse = useCallback(async () => {
     if (!editor) return;
@@ -185,7 +248,7 @@ export default function Editor({
   if (!post) return;
 
   return (
-    <div className={`${styles.frame} ${isNew && styles.isNew}`}>
+    <div  className={`${styles.frame} ${isNew && styles.isNew}`}>
       {editable ? (
         <EditorContent
           key={'new'}

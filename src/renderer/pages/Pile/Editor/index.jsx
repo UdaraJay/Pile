@@ -3,10 +3,11 @@ import styles from './Editor.module.scss';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { Extension } from '@tiptap/core';
 import { useEditor, EditorContent } from '@tiptap/react';
+import Link from '@tiptap/extension-link';
 import StarterKit from '@tiptap/starter-kit';
-import CharacterCount from '@tiptap/extension-character-count';
 import Typography from '@tiptap/extension-typography';
 import Placeholder from '@tiptap/extension-placeholder';
+import CharacterCount from '@tiptap/extension-character-count';
 import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { postFormat } from 'renderer/utils/fileOperations';
@@ -18,6 +19,7 @@ import usePost from 'renderer/hooks/usePost';
 import ProseMirrorStyles from './ProseMirror.scss';
 import { useAIContext } from 'renderer/context/AIContext';
 import useThread from 'renderer/hooks/useThread';
+import LinkPreviews from './LinkPreviews';
 
 export default function Editor({
   postPath = null,
@@ -74,11 +76,12 @@ export default function Editor({
     extensions: [
       StarterKit,
       Typography,
+      Link,
       Placeholder.configure({
         placeholder: isAI ? 'AI is thinking...' : 'What are you thinking?',
       }),
       CharacterCount.configure({
-        limit: 100000,
+        limit: 10000,
       }),
       EnterSubmitExtension,
     ],
@@ -266,6 +269,8 @@ export default function Editor({
           />
         </div>
       )}
+
+      <LinkPreviews post={post} />
 
       <motion.div
         initial={{ opacity: 0, x: 20 }}

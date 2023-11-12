@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: center;
     height: 32px;
-    width: 36px;
+    min-width: 36px;
     border-radius: 8px;
     transition: all ease-in-out 120ms;
     -webkit-app-region: none;
@@ -147,6 +147,22 @@ input {
     display: flex;
     flex-direction: column;
     margin-top: 14px;
+}
+
+.disclaimer {
+    font-size: 0.8em;
+    color: var(--secondary);
+    margin-top: 10px;
+    line-height: 1.4;
+    opacity: 0.75;
+
+    a {
+        color: var(--active);
+
+        &:hover {
+            color: var(--active-hover);
+        }
+    }
 }
 
 .Label {

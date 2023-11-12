@@ -18,8 +18,7 @@ export const getPost = async (postPath) => {
     const post = { content: parsed.content, data: parsed.data };
     return post;
   } catch (error) {
-    console.error(`Error reading/parsing file: ${postPath}`);
-    console.error(error);
+    // TODO: check and cleanup after these files
   }
 };
 

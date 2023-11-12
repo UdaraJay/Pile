@@ -5,6 +5,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useAIContext } from 'renderer/context/AIContext';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
+// UNDER CONSTRUCTION
 export default function HighlightsDialog() {
   const { open, onOpenChange } = useHighlightsContext();
 

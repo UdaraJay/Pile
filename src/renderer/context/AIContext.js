@@ -7,16 +7,6 @@ import {
 } from 'react';
 import OpenAI from 'openai';
 
-const processKey = (k) => {
-  if (k.startsWith('unms-')) {
-    k = k.substring(5);
-    const reversedStr = k.split('').reverse().join('');
-    return 'sk-' + reversedStr;
-  }
-
-  return k;
-};
-
 export const AIContext = createContext();
 
 export const AIContextProvider = ({ children }) => {
@@ -34,10 +24,10 @@ export const AIContextProvider = ({ children }) => {
 
     if (!key) return;
 
-    const processedKey = processKey(key);
     const openaiInstance = new OpenAI({
-      apiKey: processedKey,
+      apiKey: key,
     });
+
     setAi(openaiInstance);
   };
 
@@ -49,7 +39,28 @@ export const AIContextProvider = ({ children }) => {
     return window.electron.ipc.invoke('set-ai-key', secretKey);
   };
 
-  const AIContextValue = { ai, prompt, setKey, getKey };
+  const deleteKey = () => {
+    return window.electron.ipc.invoke('delete-ai-key');
+  };
+
+  const getCompletion = async (model = 'gpt-3', context) => {
+    const response = await ai.chat.completions.create({
+      model: 'gpt-4',
+      max_tokens: 200,
+      messages: context,
+    });
+
+    return response;
+  };
+
+  const AIContextValue = {
+    ai,
+    prompt,
+    setKey,
+    getKey,
+    deleteKey,
+    getCompletion,
+  };
 
   return (
     <AIContext.Provider value={AIContextValue}>{children}</AIContext.Provider>

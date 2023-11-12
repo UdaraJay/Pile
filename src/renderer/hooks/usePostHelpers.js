@@ -45,8 +45,6 @@ export const attachToPostCreator =
         storePath: storePath,
       });
     }
-
-
     // Attachments are stored relative to the base path from the
     // base directory of the pile
     const correctedPaths = newAttachments.map((path) => {

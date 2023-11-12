@@ -76,6 +76,27 @@ const Editor = memo(
       },
     });
 
+    const handleFile = (file) => {
+      if (file && file.type.indexOf('image') === 0) {
+        const fileName = file.name; // Retrieve the filename
+        const fileExtension = fileName.split('.').pop(); // Extract the file extension
+        // Handle the image file here (e.g., upload, display, etc.)
+        const reader = new FileReader();
+        reader.onload = () => {
+          const imageData = reader.result;
+          attachToPost(imageData, fileExtension);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const handleDataTransferItem = (item) => {
+      const file = item.getAsFile();
+      if (file) {
+        handleFile(file);
+      }
+    };
+
     const editor = useEditor({
       extensions: [
         StarterKit,
@@ -92,23 +113,33 @@ const Editor = memo(
       editorProps: {
         handlePaste: function (view, event, slice) {
           const items = Array.from(event.clipboardData?.items || []);
-          for (const item of items) {
-            if (item.type.indexOf('image') === 0) {
-              const file = item.getAsFile();
-              const fileName = file.name; // Retrieve the filename
-              const fileExtension = fileName.split('.').pop(); // Extract the file extension
-              // Handle the image file here (e.g., upload, display, etc.)
-              const reader = new FileReader();
-              reader.onload = () => {
-                const imageData = reader.result;
-                attachToPost(imageData, fileExtension);
-              };
-              reader.readAsDataURL(file);
+          let imageHandled = false; // flag to track if an image was handled
 
-              return true; // handled
-            }
+          if (items) {
+            items.forEach((item) => {
+              // Check if the item type is an image
+              if (item.type && item.type.indexOf('image') === 0) {
+                handleDataTransferItem(item);
+                imageHandled = true;
+              }
+            });
           }
-          return false; // not handled use default behaviour
+          return imageHandled;
+        },
+        handleDrop: function (view, event, slice, moved) {
+          let imageHandled = false; // flag to track if an image was handled
+          if (
+            !moved &&
+            event.dataTransfer &&
+            event.dataTransfer.files &&
+            event.dataTransfer.files[0]
+          ) {
+            // if dropping external files
+            const files = Array.from(event.dataTransfer.files);
+            files.forEach(handleFile);
+            return imageHandled; // handled
+          }
+          return imageHandled; // not handled use default behaviour
         },
       },
       autofocus: true,

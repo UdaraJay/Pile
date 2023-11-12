@@ -57,18 +57,18 @@ export default function PileLayout({ children }) {
               {pileName} <span style={{ padding: '6px' }}>·</span> {now}
             </div>
             <div className={styles.right}>
+              <Toasts />
               <Settings />
-              <HighlightsDialog />
               <Link to="/" className={`${styles.iconHolder}`}>
                 <HomeIcon className={styles.homeIcon} />
               </Link>
+              {/* <HighlightsDialog /> */}
             </div>
           </div>
           {children}
         </div>
       </div>
       <div id="dialog"></div>
-      <Toasts />
     </div>
   );
 }

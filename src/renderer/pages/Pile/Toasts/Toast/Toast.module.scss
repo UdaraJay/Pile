@@ -1,18 +1,24 @@
 .toast {
     display: inline-flex;
     align-items: center;
-    margin: 0 auto;
-    margin-bottom: 7px;
-    background: var(--base);
-    backdrop-filter: blur(30px);
-    padding: 7px 18px 7px 12px;
-    border-radius: 90px;
-    font-size: 0.8em;
-    text-align: center;
+    text-align: right;
+    font-size: 0.8rem;
 
     .icon {
         height: 18px;
         width: 18px;
-        margin-right: 8px;
+        margin-left: 10px;
+    }
+
+    &.info {
+        color: var(--primary);
+    }
+
+    &.waiting {
+        color: var(--secondary);
+    }
+
+    &.thinking {
+        color: var(--active);
     }
 }

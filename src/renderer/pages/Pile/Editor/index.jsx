@@ -20,6 +20,7 @@ import ProseMirrorStyles from './ProseMirror.scss';
 import { useAIContext } from 'renderer/context/AIContext';
 import useThread from 'renderer/hooks/useThread';
 import LinkPreviews from './LinkPreviews';
+import { useToastsContext } from 'renderer/context/ToastsContext';
 
 export default function Editor({
   postPath = null,
@@ -44,27 +45,29 @@ export default function Editor({
   } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
   const { getThread } = useThread();
   const { ai, prompt } = useAIContext();
+  const { addNotification, removeNotification } = useToastsContext();
 
   const isNew = !postPath;
 
   const EnterSubmitExtension = Extension.create({
-    name: 'customExtension',
-
+    name: 'EnterSubmitExtension',
     addCommands() {
       return {
-        triggerSubmit: () => ({ state, dispatch }) => {
-          // This will trigger a 'submit' event on the editor
-          const event = new CustomEvent('submit');
-          document.dispatchEvent(event);
+        triggerSubmit:
+          () =>
+          ({ state, dispatch }) => {
+            // This will trigger a 'submit' event on the editor
+            const event = new CustomEvent('submit');
+            document.dispatchEvent(event);
 
-          return true;
-        },
+            return true;
+          },
       };
     },
 
     addKeyboardShortcuts() {
       return {
-        'Enter': ({ editor }) => {
+        Enter: ({ editor }) => {
           editor.commands.triggerSubmit();
           return true;
         },
@@ -86,10 +89,10 @@ export default function Editor({
       EnterSubmitExtension,
     ],
     editorProps: {
-      handlePaste: function(view, event, slice) {
+      handlePaste: function (view, event, slice) {
         const items = Array.from(event.clipboardData?.items || []);
         for (const item of items) {
-          if (item.type.indexOf("image") === 0) {
+          if (item.type.indexOf('image') === 0) {
             const file = item.getAsFile();
             const fileName = file.name; // Retrieve the filename
             const fileExtension = fileName.split('.').pop(); // Extract the file extension
@@ -105,7 +108,7 @@ export default function Editor({
           }
         }
         return false; // not handled use default behaviour
-      }
+      },
     },
     autofocus: true,
     editable: editable,
@@ -170,11 +173,23 @@ export default function Editor({
     };
   }, [handleSubmit, editor]);
 
+  // This has to ensure that it only calls the AI generate function
+  // on entries added for the AI that are empty.
   const generateAiResponse = useCallback(async () => {
     if (!editor) return;
     if (isAIResponding) return;
+
     const isEmpty = editor.state.doc.textContent.length === 0;
+
+    // isAI makes sure AI responses are only generated for
+    // AI entries that are empty.
     if (isAI && isEmpty) {
+      addNotification({
+        id: 'reflecting',
+        type: 'thinking',
+        message: 'talking to AI',
+        dismissTime: 10000,
+      });
       setEditable(false);
       setIsAiResponding(true);
       const thread = await getThread(parentPostPath);
@@ -187,6 +202,7 @@ export default function Editor({
         const message = { role: 'user', content: post.content };
         context.push(message);
       });
+
       context.push({
         role: 'system',
         content: 'You can only respond in plaintext, do NOT use HTML.',
@@ -205,6 +221,7 @@ export default function Editor({
         const token = part.choices[0].delta.content;
         editor.commands.insertContent(token);
       }
+      removeNotification('reflecting');
       setIsAiResponding(false);
     }
   }, [editor, isAI]);
@@ -251,7 +268,7 @@ export default function Editor({
   if (!post) return;
 
   return (
-    <div  className={`${styles.frame} ${isNew && styles.isNew}`}>
+    <div className={`${styles.frame} ${isNew && styles.isNew}`}>
       {editable ? (
         <EditorContent
           key={'new'}
@@ -271,37 +288,39 @@ export default function Editor({
       )}
 
       <LinkPreviews post={post} />
-
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.75 }}
-      >
-        <div
-          className={`${styles.media} ${
-            post?.data?.attachments.length > 0 ? styles.open : ''
-          }`}
+      <AnimatePresence>
+        <motion.div
+          key="attachments"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.75 }}
         >
           <div
-            className={`${styles.scroll} ${isNew && styles.new}`}
-            ref={elRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            className={`${styles.media} ${
+              post?.data?.attachments.length > 0 ? styles.open : ''
+            }`}
           >
-            <div className={styles.container}>
-              <Attachments
-                post={post}
-                editable={editable}
-                onRemoveAttachment={detachFromPost}
-              />
+            <div
+              className={`${styles.scroll} ${isNew && styles.new}`}
+              ref={elRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+              <div className={styles.container}>
+                <AnimatePresence>
+                  <Attachments
+                    post={post}
+                    editable={editable}
+                    onRemoveAttachment={detachFromPost}
+                  />
+                </AnimatePresence>
+              </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      <AnimatePresence>
         {editable && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}

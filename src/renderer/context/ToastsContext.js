@@ -10,45 +10,49 @@ import {
 export const ToastsContext = createContext();
 
 export const ToastsContextProvider = ({ children }) => {
-  // this keeps track of async tasks that the user is notified about
-  // by the AI. This can include general app notifications as well.
-  const [notifications, setNotifications] = useState([]);
-  const notificationTimeoutsRef = useRef({});
+  const [notificationsQueue, setNotificationsQueue] = useState([]);
 
-  useEffect(() => {
-    return () => {
-      Object.values(notificationTimeoutsRef.current).forEach(clearTimeout);
-    };
-  }, []);
+  const notificationTimeoutRef = useRef();
 
-  const addNotification = (
-    targetId,
-    type = 'info',
-    message,
-    autoDismiss = true
-  ) => {
-    const newNotification = { id: targetId, type, message, autoDismiss };
-
-    setNotifications((currentNotifications) => [
-      ...currentNotifications,
-      newNotification,
-    ]);
-
-    if (autoDismiss) {
-      if (notificationTimeoutsRef.current[targetId]) {
-        clearTimeout(notificationTimeoutsRef.current[targetId]);
-      }
-
-      notificationTimeoutsRef.current[targetId] = setTimeout(() => {
-        removeNotification(targetId);
-        delete notificationTimeoutsRef.current[targetId];
-      }, 30000);
+  const processQueue = () => {
+    if (notificationsQueue.length > 0) {
+      // Set a timeout to dismiss the first notification
+      notificationTimeoutRef.current = setTimeout(() => {
+        setNotificationsQueue((currentQueue) => currentQueue.slice(1));
+      }, notificationsQueue[0].dismissTime || 5000); // Default 5 seconds
     }
   };
 
+  useEffect(() => {
+    // Clear any existing timeouts
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+      notificationTimeoutRef.current = null;
+    }
+
+    processQueue();
+
+    // Clean up timeout on unmount
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, [notificationsQueue]);
+
+  const addNotification = ({
+    id,
+    type = 'info',
+    message,
+    dismissTime = 5000,
+  }) => {
+    const newNotification = { id, type, message, dismissTime };
+    setNotificationsQueue((currentQueue) => [...currentQueue, newNotification]);
+  };
+
   const updateNotification = (targetId, newType, newMessage) => {
-    setNotifications((currentNotifications) =>
-      currentNotifications.map((notification) =>
+    setNotificationsQueue((currentQueue) =>
+      currentQueue.map((notification) =>
         notification.id === targetId
           ? { ...notification, type: newType, message: newMessage }
           : notification
@@ -57,19 +61,24 @@ export const ToastsContextProvider = ({ children }) => {
   };
 
   const removeNotification = (targetId) => {
-    setNotifications((currentNotifications) =>
-      currentNotifications.filter(
-        (notification) => notification.id !== targetId
-      )
+    setNotificationsQueue((currentQueue) =>
+      currentQueue.filter((notification) => notification.id !== targetId)
     );
-    if (notificationTimeoutsRef.current[targetId]) {
-      clearTimeout(notificationTimeoutsRef.current[targetId]);
-      delete notificationTimeoutsRef.current[targetId];
+
+    // If the notification being removed is the first in the queue, we need to clear the timeout
+    // and process the next notification if available
+    if (
+      notificationsQueue.length > 0 &&
+      notificationsQueue[0].id === targetId
+    ) {
+      clearTimeout(notificationTimeoutRef.current);
+      notificationTimeoutRef.current = null;
+      processQueue();
     }
   };
 
   const ToastsContextValue = {
-    notifications,
+    notifications: notificationsQueue,
     addNotification,
     updateNotification,
     removeNotification,

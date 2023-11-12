@@ -2,19 +2,32 @@ import styles from './Toast.module.scss';
 import { motion } from 'framer-motion';
 import { useToastsContext } from 'renderer/context/ToastsContext';
 import Logo from 'renderer/pages/Home/logo';
-import Thinking from './Thinking';
+import Thinking from './Loaders/Thinking';
+import Waiting from './Loaders/Waiting';
+import Info from './Loaders/Info';
 
 export default function Toast({ notification }) {
+  const renderIcon = (type) => {
+    switch (type) {
+      case 'thinking':
+        return <Thinking className={styles.icon} />;
+      case 'waiting':
+        return <Waiting className={styles.icon} />;
+      default:
+        return <Info className={styles.icon} />;
+    }
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.8 }}
+      initial={{ opacity: 0, y: -30, scale: 0.8 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 30, scale: 0 }}
-      transition={{ delay: 1 }}
+      exit={{ opacity: 0, y: 0, scale: 0.9 }}
+      transition={{ delay: 0.1 }}
     >
-      <div className={styles.toast}>
-        <Thinking className={styles.icon} />
+      <div className={`${styles.toast} ${styles[notification.type]}`}>
         {notification.message}
+        {renderIcon(notification.type)}
       </div>
     </motion.div>
   );

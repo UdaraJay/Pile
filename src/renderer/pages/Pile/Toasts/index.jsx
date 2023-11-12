@@ -8,14 +8,20 @@ export default function Toasts() {
   const { notifications, addNotification } = useToastsContext();
 
   const renderNotifications = () => {
-    return notifications.map((n) => {
-      return <Toast key={n.id} notification={n} />;
+    if (notifications.length === 0) return;
+
+    return notifications.map((n, i) => {
+      if (i == 0) {
+        return <Toast key={n.id} notification={n} />;
+      }
     });
   };
 
   return (
     <div className={styles.container}>
-      <AnimatePresence>{renderNotifications()}</AnimatePresence>
+      <AnimatePresence initial={false} mode={'wait'}>
+        {renderNotifications()}
+      </AnimatePresence>
     </div>
   );
 }

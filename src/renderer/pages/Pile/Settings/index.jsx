@@ -51,10 +51,6 @@ export default function Settings() {
             className={styles.color1}
             style={{ background: colors.primary }}
           ></div>
-          {/* <div
-            className={styles.color2}
-            style={{ background: colors.secondary }}
-          ></div> */}
         </button>
       );
     });

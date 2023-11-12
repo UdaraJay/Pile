@@ -31,6 +31,20 @@ export default function Posts() {
   const { index } = useIndexContext();
 
   const renderPosts = useMemo(() => {
+    if (index.size === 0) {
+      return (
+        <div className={styles.empty}>
+          <div className={styles.wrapper}>
+            <div className={styles.none}>Say Something?</div>
+            <div className={styles.tip}>
+              Pile is ideal for journaling in bursts– type down what you're
+              thinking right now, come back to it over time.
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return Array.from(index, ([postPath, data]) => {
       return (
         <motion.div key={postPath} variants={item}>

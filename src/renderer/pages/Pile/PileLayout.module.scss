@@ -12,6 +12,7 @@
     --primary: #57168c;
     --secondary: #794d92;
     --base: #b846ff;
+    --base-text: hsl(288, 75%, 13%);
     --base-hover: #c66aff;
     --base-yellow: #e6e04d;
     --base-green: #4de64d;
@@ -33,14 +34,15 @@
         --primary: #ffe9ff;
         --secondary: #ab92ae;
         --base: #d014e1;
+        --base-text: hsl(295, 100%, 93%);
         --base-hover: #df38e5;
         --base-yellow: #776b0e;
         --base-green: #128212;
         --base-red: rgb(255, 116, 85);
         --base-red-light: #3d2323;
-        --active: #e6ffa3;
-        --active-hover: #e6ffa3;
-        --active-text: #fff;
+        --active: #ccf263;
+        --active-hover: #ecffb8;
+        --active-text: #251b24;
         --border: #5f4263;
         --bg: #251b24;
         --bg-secondary: #481e51;
@@ -58,6 +60,7 @@
     --primary: #412109;
     --secondary: #88511e;
     --base: #f18e1c;
+    --base-text: hsl(35, 100%, 93%);
     --base-hover: #c5751f;
     --base-yellow: #e6e04d;
     --base-green: #4de64d;
@@ -79,14 +82,15 @@
         --primary: #fff7e9;
         --secondary: #aea392;
         --base: #ff9634;
+        --base-text: hsl(34, 76%, 15%);
         --base-hover: #df7000;
         --base-yellow: #776b0e;
         --base-green: #128212;
         --base-red: rgb(255, 71, 71);
         --base-red-light: #3d2323;
-        --active: #ff9500;
-        --active-hover: #df7000;
-        --active-text: #fff;
+        --active: #ffa72b;
+        --active-hover: rgb(255, 184, 85);
+        --active-text: #2a2420;
         --border: #635342;
         --bg: #25201b;
         --bg-secondary: #51371e;
@@ -104,6 +108,7 @@
     --primary: #1b4109;
     --secondary: #40881e;
     --base: #22ff00;
+    --base-text: hsl(118, 66%, 22%);
     --base-hover: #c5751f;
     --base-yellow: #e6e04d;
     --base-green: #4de64d;
@@ -125,6 +130,7 @@
         --primary: #f5fff0;
         --secondary: #95ae92;
         --base: #149800;
+        --base-text: hsl(133, 100%, 93%);
         --base-hover: #10c500;
         --base-yellow: #776b0e;
         --base-green: #128212;
@@ -223,13 +229,12 @@
             align-items: center;
             justify-content: center;
             height: 32px;
-            width: 36px;
+            min-width: 36px;
             border-radius: 8px;
             transition: all ease-in-out 120ms;
             -webkit-app-region: none;
             background: transparent;
             margin-right: -2px;
-
 
             &:last-child {
                 margin-right: 8px;

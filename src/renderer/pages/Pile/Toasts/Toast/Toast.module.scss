@@ -1,0 +1,32 @@
+.toast {
+    display: inline-flex;
+    align-items: center;
+    text-align: right;
+    font-size: 0.8rem;
+
+    .icon {
+        height: 18px;
+        width: 18px;
+        margin-left: 10px;
+    }
+
+    &.info {
+        color: var(--primary);
+    }
+
+    &.waiting {
+        color: var(--secondary);
+    }
+
+    &.thinking {
+        color: var(--active);
+    }
+
+    &.success {
+        color: var(--base);
+    }
+
+    &.attached {
+        color: var(--base);
+    }
+}

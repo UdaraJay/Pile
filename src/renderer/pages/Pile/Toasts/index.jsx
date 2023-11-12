@@ -19,9 +19,7 @@ export default function Toasts() {
 
   return (
     <div className={styles.container}>
-      <AnimatePresence initial={false} mode={'wait'}>
-        {renderNotifications()}
-      </AnimatePresence>
+      <AnimatePresence mode={'wait'}>{renderNotifications()}</AnimatePresence>
     </div>
   );
 }

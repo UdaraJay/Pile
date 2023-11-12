@@ -5,6 +5,7 @@ import Logo from 'renderer/pages/Home/logo';
 import Thinking from './Loaders/Thinking';
 import Waiting from './Loaders/Waiting';
 import Info from './Loaders/Info';
+import { PaperclipIcon, SmileIcon } from 'renderer/icons';
 
 export default function Toast({ notification }) {
   const renderIcon = (type) => {
@@ -13,6 +14,10 @@ export default function Toast({ notification }) {
         return <Thinking className={styles.icon} />;
       case 'waiting':
         return <Waiting className={styles.icon} />;
+      case 'success':
+        return null;
+      case 'attached':
+        return <PaperclipIcon className={styles.icon} />;
       default:
         return <Info className={styles.icon} />;
     }

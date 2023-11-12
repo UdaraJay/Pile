@@ -27,16 +27,20 @@ export const LinksContextProvider = ({ children }) => {
         url
       );
 
-      addNotification(url, 'thinking', 'Generating preview...');
-
       // return cached preview if available
       if (preview) {
         return preview;
       }
 
-      updateNotification(url, 'waiting', 'Generating preview...');
+      addNotification({
+        id: url,
+        type: 'waiting',
+        message: 'Creating link preview',
+      });
+
       // otherwise generate a new preview
       const _preview = await getPreview(url);
+      updateNotification(url, 'thinking', 'Generating preview...');
       const aiCard = await generateMeta(url).catch(() => {
         console.log(
           'Failed to generate AI link preview, a basic preview will be used.'
@@ -47,10 +51,10 @@ export const LinksContextProvider = ({ children }) => {
       const linkPreview = {
         url: url,
         createdAt: new Date().toISOString(),
-        title: _preview.title ?? '',
-        images: _preview.images ?? [],
-        favicon: _preview.favicon ?? '',
-        host: _preview.host ?? '',
+        title: _preview?.title ?? '',
+        images: _preview?.images ?? [],
+        favicon: _preview?.favicon ?? '',
+        host: _preview?.host ?? '',
         description: aiCard?.summary ?? '',
         summary: '',
         aiCard: aiCard ?? null,
@@ -58,6 +62,8 @@ export const LinksContextProvider = ({ children }) => {
 
       // cache it
       setLink(url, linkPreview);
+
+      removeNotification(url);
 
       return linkPreview;
     },

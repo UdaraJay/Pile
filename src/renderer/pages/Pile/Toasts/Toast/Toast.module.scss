@@ -21,4 +21,12 @@
     &.thinking {
         color: var(--active);
     }
+
+    &.success {
+        color: var(--base);
+    }
+
+    &.attached {
+        color: var(--base);
+    }
 }

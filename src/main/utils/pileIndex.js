@@ -71,7 +71,7 @@ class PileIndex {
     const filePath = path.join(this.pilePath, relativeFilePath);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContent);
-
+    console.log('index', data);
     this.index.set(relativeFilePath, data);
 
     this.save();

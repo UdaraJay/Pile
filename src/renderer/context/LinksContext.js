@@ -45,6 +45,7 @@ export const LinksContextProvider = ({ children }) => {
         console.log(
           'Failed to generate AI link preview, a basic preview will be used.'
         );
+        updateNotification(url, 'failed', 'AI link preview failed');
         return null;
       });
 

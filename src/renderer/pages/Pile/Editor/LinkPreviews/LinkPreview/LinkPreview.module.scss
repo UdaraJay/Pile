@@ -1,9 +1,9 @@
 .card {
     flex: 1 0 auto;
-    // max-width: 400px;
     background: var(--bg-secondary);
     border-radius: 17px;
     margin: 8px;
+    max-width: 450px;
     transition: all ease-in-out 220ms;
 
     // &:hover {

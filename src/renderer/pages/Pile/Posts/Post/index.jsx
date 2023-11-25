@@ -109,6 +109,7 @@ export default function Post({ postPath }) {
     });
   };
 
+  // Replies are handled at the sub-component level
   if (isReply) return;
 
   return (

@@ -2,6 +2,8 @@
     position: relative;
     max-width: 100vw;
     color: var(--primary);
+    filter: blur(0px);
+    -webkit-filter: blur(0px);
 }
 
 .purpleTheme {

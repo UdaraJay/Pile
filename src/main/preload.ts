@@ -1,10 +1,7 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
-import { app, contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import fs from 'fs';
-const fsPromises = require('fs').promises;
-import keytar from 'keytar';
-
 import path from 'path';
 
 export type Channels = 'ipc-example';
@@ -58,12 +55,6 @@ const electronHandler = {
     fs.writeFile(path, data, 'utf-8', callback),
   joinPath: (...args: any) => path.join(...args),
   mkdir: (...args: any) => fs.mkdir(...args),
-  startDrag: (filePath: string) => {
-    ipcRenderer.send('ondragstart', filePath);
-  },
-
-  // relativePath: (rootDirectory, fullPath) =>
-  //   path.relative(rootDirectory, fullPath),
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

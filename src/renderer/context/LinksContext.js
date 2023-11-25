@@ -36,6 +36,7 @@ export const LinksContextProvider = ({ children }) => {
         id: url,
         type: 'waiting',
         message: 'Creating link preview',
+        dismissTime: 12000,
       });
 
       // otherwise generate a new preview

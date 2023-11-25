@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const matter = require('gray-matter');
+const { Document, VectorStoreIndex } = require('llamaindex');
 
 class PileIndex {
   constructor() {
@@ -71,7 +72,6 @@ class PileIndex {
     const filePath = path.join(this.pilePath, relativeFilePath);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContent);
-    console.log('index', data);
     this.index.set(relativeFilePath, data);
 
     this.save();
@@ -79,7 +79,13 @@ class PileIndex {
     return this.index;
   }
 
-  // TODO: we should deal with the relative path here
+  update(relativeFilePath, data) {
+    this.index.set(relativeFilePath, data);
+    this.save();
+
+    return this.index;
+  }
+
   remove(relativeFilePath) {
     this.index.delete(relativeFilePath);
     this.save();

@@ -45,7 +45,40 @@ export const IndexContextProvider = ({ children }) => {
     });
   }, []);
 
-  const indexContextValue = { index, refreshIndex, addIndex, removeIndex };
+  const initVectorIndex = useCallback(async () => {
+    const pilePath = getCurrentPilePath();
+    window.electron.ipc.invoke('vectorindex-init', pilePath);
+  }, [currentPile]);
+
+  const rebuildVectorIndex = useCallback(async () => {
+    const pilePath = getCurrentPilePath();
+    window.electron.ipc.invoke('vectorindex-rebuild', pilePath);
+  }, [currentPile]);
+
+  const query = useCallback(
+    async (text) => window.electron.ipc.invoke('vectorindex-query', text),
+    [currentPile]
+  );
+
+  const getVectorIndex = useCallback(async () => {
+    const pilePath = getCurrentPilePath();
+    const vIndex = await window.electron.ipc.invoke(
+      'vectorindex-get',
+      pilePath
+    );
+    return vIndex;
+  }, [currentPile]);
+
+  const indexContextValue = {
+    index,
+    refreshIndex,
+    addIndex,
+    removeIndex,
+    initVectorIndex,
+    rebuildVectorIndex,
+    getVectorIndex,
+    query,
+  };
 
   return (
     <IndexContext.Provider value={indexContextValue}>

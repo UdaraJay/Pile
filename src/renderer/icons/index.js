@@ -38,3 +38,5 @@ export * from './img/EditIcon';
 export * from './img/AIIcon';
 export * from './img/PileIcon';
 export * from './img/ChainIcon';
+export * from './img/WarningIcon';
+export * from './img/ReflectIcon';

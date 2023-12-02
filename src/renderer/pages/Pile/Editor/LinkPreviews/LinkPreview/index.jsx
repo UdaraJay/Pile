@@ -69,19 +69,6 @@ export default function LinkPreview({ url }) {
 
     const image = preview.images[0];
 
-    // if (preview.aiCard && preview.aiCard.images.length > 0) {
-    //   console.log('preview.aiCard.images', preview.aiCard.images);
-    //   const images = preview.aiCard.images;
-
-    //   return (
-    //     <div className={styles.image}>
-    //       {images.map((image) => (
-    //         <img src={image.src} alt={image.alt} />
-    //       ))}
-    //     </div>
-    //   );
-    // }
-
     return (
       <div className={styles.image}>
         <img src={image} />

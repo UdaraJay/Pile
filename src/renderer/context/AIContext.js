@@ -45,7 +45,7 @@ export const AIContextProvider = ({ children }) => {
 
   const getCompletion = async (model = 'gpt-3', context) => {
     const response = await ai.chat.completions.create({
-      model: 'gpt-4',
+      model: model,
       max_tokens: 200,
       messages: context,
     });

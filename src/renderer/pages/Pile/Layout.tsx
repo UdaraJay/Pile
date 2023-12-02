@@ -9,12 +9,13 @@ import Settings from './Settings';
 import HighlightsDialog from './Highlights';
 import { usePilesContext } from 'renderer/context/PilesContext';
 import Toasts from './Toasts';
+import Reflections from './Reflections';
 
 export default function PileLayout({ children }) {
   const { pileName } = useParams();
   const { index, refreshIndex } = useIndexContext();
   const { currentTheme } = usePilesContext();
-  const now = DateTime.now().toLocaleString(DateTime.DATE_HUGE);
+  const now = DateTime.now().toFormat('cccc, LLL dd, yyyy');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -50,14 +51,11 @@ export default function PileLayout({ children }) {
         <div className={styles.content}>
           <div className={styles.nav}>
             <div className={styles.left}>
-              {/* <div className={styles.search}>
-                <SearchIcon className={styles.icon} />
-                <input placeholder={'Search this pile...'} />
-              </div> */}
               {pileName} <span style={{ padding: '6px' }}>·</span> {now}
             </div>
             <div className={styles.right}>
               <Toasts />
+              <Reflections />
               <Settings />
               <Link to="/" className={`${styles.iconHolder}`}>
                 <HomeIcon className={styles.homeIcon} />
@@ -68,6 +66,7 @@ export default function PileLayout({ children }) {
           {children}
         </div>
       </div>
+      <div id="reflections"></div>
       <div id="dialog"></div>
     </div>
   );

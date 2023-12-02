@@ -198,6 +198,9 @@ export default function Editor({
         role: 'system',
         content: prompt,
       });
+
+      // todo: if post content contains links then attach their summary
+      // as context as well
       thread.forEach((post) => {
         const message = { role: 'user', content: post.content };
         context.push(message);

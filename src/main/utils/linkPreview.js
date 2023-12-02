@@ -34,8 +34,8 @@ export const getLinkPreview = async (url) => {
     let meta = {
       title: '',
       images: [],
-      host: parsedUrl.host, // Extract the host domain from the URL
-      favicon: '', // Initialize favicon with an empty string
+      host: parsedUrl.host,
+      favicon: '',
     };
 
     // Extract the title
@@ -59,14 +59,9 @@ export const getLinkPreview = async (url) => {
       if (rel && (rel.includes('icon') || rel === 'shortcut icon') && href) {
         // Resolve the favicon URL relative to the host URL
         meta.favicon = new URL(href, parsedUrl.origin).href;
-        return false; // Break out of the loop after finding the favicon
+        return false;
       }
     });
-
-    // If no favicon is found in the loop, you can set a default path
-    if (!meta.favicon) {
-      meta.favicon = parsedUrl.origin + '/favicon.ico';
-    }
 
     return meta;
   } catch (error) {
@@ -85,9 +80,10 @@ const getContentHeuristics = (html) => {
     const wordCount = text.split(/\s+/).length;
     const density = wordCount / $(this).text().length;
 
-    // Check if the element has a higher text density and contains more words than the current max
+    // Check if the element has a higher text density and
+    // contains more words than the current max.
+    // 200 is arbitrary
     if (density > maxDensity && wordCount > 200) {
-      // 200 is arbitrary
       maxDensity = density;
       mainContent = text;
     }
@@ -127,11 +123,13 @@ export const getLinkContent = async (url) => {
     // Sort sections by text length, descending
     contentSections.sort((a, b) => b.textLength - a.textLength);
 
-    // Concatenate the HTML of the top sections to form the main content
+    // Concatenate the HTML of the top sections to form the main content.
+    // Adjust the number of sections as needed,
+    // 3 does well enough for most websites
     let mainContentHtml = contentSections
       .slice(0, 3)
       .map((section) => section.html)
-      .join(' '); // Adjust the number of sections as needed
+      .join(' ');
 
     // Load the concatenated HTML into Cheerio for final cleaning
     const mainContent = cheerio.load(mainContentHtml);

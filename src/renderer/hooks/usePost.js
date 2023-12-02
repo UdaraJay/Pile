@@ -99,7 +99,7 @@ function usePost(
           getCurrentPilePath() + '/',
           ''
         );
-        addIndex(postRelativePath); // Add the file to the index
+        addIndex(postRelativePath, parentPostPath); // Add the file to the index
         window.electron.ipc.invoke('tags-sync', saveToPath); // Sync tags
       } catch (error) {
         console.error(`Error writing file: ${saveToPath}`);
@@ -127,7 +127,7 @@ function usePost(
     if (!postPath) return null;
     const fullPostPath = getCurrentPilePath(postPath);
 
-    // if is reply, remove from parent
+    // if reply, remove from parent
     if (post.data.isReply && parentPostPath) {
       const fullParentPostPath = getCurrentPilePath(parentPostPath);
       const parentPost = await getPost(fullParentPostPath);

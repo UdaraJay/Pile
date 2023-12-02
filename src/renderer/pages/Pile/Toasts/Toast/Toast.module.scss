@@ -26,6 +26,10 @@
         color: var(--base);
     }
 
+    &.failed {
+        color: var(--base-red);
+    }
+
     &.attached {
         color: var(--base);
     }

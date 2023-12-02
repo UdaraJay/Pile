@@ -5,6 +5,10 @@ ipcMain.handle('vectorindex-init', (event, pilePath) =>
   pileVectorIndex.initialize(pilePath)
 );
 
+ipcMain.handle('vectorindex-add', (event, pilePath, entryPath, parentPath) =>
+  pileVectorIndex.add(pilePath, entryPath, parentPath)
+);
+
 ipcMain.handle('vectorindex-get', (event, pilePath) =>
   pileVectorIndex.getVectorIndex(pilePath)
 );

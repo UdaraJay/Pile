@@ -33,11 +33,26 @@ export const IndexContextProvider = ({ children }) => {
     setIndex(newMap);
   }, []);
 
-  const addIndex = useCallback(async (filePath) => {
-    window.electron.ipc.invoke('index-add', filePath).then((index) => {
-      setIndex(index);
-    });
-  }, []);
+  const addIndex = useCallback(
+    async (newEntryPath, parentPath = null) => {
+      const pilePath = getCurrentPilePath();
+
+      await window.electron.ipc
+        .invoke('index-add', newEntryPath)
+        .then((index) => {
+          setIndex(index);
+        });
+
+      // Sync to vector store
+      await window.electron.ipc.invoke(
+        'vectorindex-add',
+        pilePath,
+        newEntryPath,
+        parentPath
+      );
+    },
+    [currentPile]
+  );
 
   const removeIndex = useCallback(async (filePath) => {
     window.electron.ipc.invoke('index-remove', filePath).then((index) => {

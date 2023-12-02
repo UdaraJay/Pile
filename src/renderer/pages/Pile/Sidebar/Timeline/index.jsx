@@ -22,10 +22,15 @@ const countEntriesByDate = (map, targetDate) => {
   let count = 0;
   const targetDateString = targetDate.toISOString().substring(0, 10);
   for (const [key, value] of map.entries()) {
-    const createdAtDate = new Date(value.createdAt)
+    const createdAtDate = new Date(value.createdAt);
+    const localDateString = new Date(
+      createdAtDate.getFullYear(),
+      createdAtDate.getMonth(),
+      createdAtDate.getDate()
+    )
       .toISOString()
       .substring(0, 10);
-    if (createdAtDate === targetDateString) {
+    if (localDateString === targetDateString) {
       count++;
     }
   }

@@ -36,6 +36,7 @@ export const LinksContextProvider = ({ children }) => {
         id: url,
         type: 'waiting',
         message: 'Creating link preview',
+        dismissTime: 12000,
       });
 
       // otherwise generate a new preview
@@ -45,6 +46,7 @@ export const LinksContextProvider = ({ children }) => {
         console.log(
           'Failed to generate AI link preview, a basic preview will be used.'
         );
+        updateNotification(url, 'failed', 'AI link preview failed');
         return null;
       });
 

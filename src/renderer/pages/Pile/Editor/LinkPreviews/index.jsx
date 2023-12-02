@@ -37,5 +37,9 @@ export default function LinkPreviews({ post, editable = false }) {
     return links.map((url, i) => <LinkPreview key={`link-${url}`} url={url} />);
   };
 
-  return <div className={styles.cards}>{renderLinks()}</div>;
+  return (
+    <div className={styles.cards}>
+      <AnimatePresence>{renderLinks()}</AnimatePresence>
+    </div>
+  );
 }

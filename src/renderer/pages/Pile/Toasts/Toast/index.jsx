@@ -5,8 +5,7 @@ import Logo from 'renderer/pages/Home/logo';
 import Thinking from './Loaders/Thinking';
 import Waiting from './Loaders/Waiting';
 import Info from './Loaders/Info';
-import { PaperclipIcon, SmileIcon } from 'renderer/icons';
-
+import { PaperclipIcon, SmileIcon, WarningIcon } from 'renderer/icons';
 export default function Toast({ notification }) {
   const renderIcon = (type) => {
     switch (type) {
@@ -18,6 +17,8 @@ export default function Toast({ notification }) {
         return null;
       case 'attached':
         return <PaperclipIcon className={styles.icon} />;
+      case 'failed':
+        return <WarningIcon className={styles.icon} />;
       default:
         return <Info className={styles.icon} />;
     }

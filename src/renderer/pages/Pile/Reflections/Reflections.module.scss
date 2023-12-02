@@ -103,31 +103,7 @@ input {
     }
 }
 
-.IconButton {
-    font-family: inherit;
-    border-radius: 12px;
-    height: 32px;
-    width: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 0px;
-    right: 10px;
-    transition: all ease-in-out 120ms;
-    stroke-width: 2px;
-    background: var(--bg-tertiary);
-    color: var(--secondary);
 
-    &:hover {
-        cursor: pointer;
-        color: var(--primary);
-    }
-
-    &:active {
-        transform: scale(0.9);
-    }
-}
 
 .textarea {
     display: block;
@@ -160,15 +136,8 @@ input {
 
 .buttons {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
     margin-top: 32px;
-
-    .left {}
-
-    .right {
-        display: flex;
-        align-items: center;
-    }
 
     .ask {
         display: flex;
@@ -218,16 +187,58 @@ input {
         }
     }
 
+
 }
+
+.close {
+    font-family: inherit;
+    border-radius: 90px;
+    height: 32px;
+    width: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all ease-in-out 120ms;
+    stroke-width: 2px;
+    background: var(--bg-tertiary);
+    color: var(--secondary);
+    margin-left: 12px;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+
+    &:hover {
+        cursor: pointer;
+        color: var(--primary);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+}
+
+
+.answer {
+    padding-bottom: 50px;
+    padding-right: 50px;
+    border-bottom: 1px dashed var(--border);
+    margin: 60px 0 50px 0;
+    color: var(--secondary);
+}
+
+
 
 .text {
     font-size: 1.6em;
     line-height: 1.45;
-    color: var(--secondary);
-    margin: 60px 0 50px 0;
-    padding-bottom: 50px;
-    padding-right: 50px;
-    border-bottom: 1px dashed var(--border);
+}
+
+.text_context {
+    font-size: 0.95em;
+    margin-top: 20px;
+    line-height: 1.45;
+    max-width: 380px;
+    opacity: 0.7;
 }
 
 .post {

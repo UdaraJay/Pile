@@ -28,18 +28,14 @@ export default function Status() {
     useIndexContext();
 
   useEffect(() => {
-    console.log('statusFromMain', statusFromMain);
     if (statusFromMain) {
-      console.log('Setting status:', statusFromMain);
       setStatus(statusFromMain);
 
       const timer = setTimeout(() => {
-        console.log('Clearing status after timeout');
         setStatus('');
       }, 3000);
 
       return () => {
-        console.log('Clearing timer');
         clearTimeout(timer);
       };
     }
@@ -54,8 +50,7 @@ export default function Status() {
       return;
     }
     // 2. Initialize the vector store
-    // 3. If the index is empty and there are more than 1 entires -> Ask the user for permission to
-    // rebuild the index
+    // 3. If the index is empty and there are more than 1 entires
   };
 
   useEffect(() => {

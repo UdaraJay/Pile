@@ -12,7 +12,13 @@ import { usePilesContext } from 'renderer/context/PilesContext';
 import usePost from 'renderer/hooks/usePost';
 import { AnimatePresence, motion } from 'framer-motion';
 import Reply from './Reply';
-import { AIIcon, EditIcon, NeedleIcon, PaperIcon } from 'renderer/icons';
+import {
+  AIIcon,
+  EditIcon,
+  NeedleIcon,
+  PaperIcon,
+  ReflectIcon,
+} from 'renderer/icons';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
@@ -192,7 +198,7 @@ export default function Post({ postPath }) {
                   toggleReplying();
                 }}
               >
-                <AIIcon className={styles.icon2} />
+                <ReflectIcon className={styles.icon2} />
                 Reflect
               </div>
             </div>

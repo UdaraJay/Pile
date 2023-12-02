@@ -63,10 +63,6 @@ export const getLinkPreview = async (url) => {
       }
     });
 
-    if (!meta.favicon) {
-      meta.favicon = parsedUrl.origin + '/favicon.ico';
-    }
-
     return meta;
   } catch (error) {
     console.error(error);

@@ -77,6 +77,8 @@ export default function Reflections() {
     });
   };
 
+  console.log('response', response);
+
   return (
     <>
       <Dialog.Root>
@@ -100,20 +102,25 @@ export default function Reflections() {
                 placeholder="Pose me any riddle or wonderment you wish"
               />
               <div className={styles.buttons}>
-                <div className={styles.left}>
+                <button
+                  className={`${styles.ask} ${querying && styles.processing}`}
+                  onClick={onSubmit}
+                  disabled={querying}
+                >
+                  {querying ? (
+                    <Thinking className={styles.spinner} />
+                  ) : (
+                    'Reflect'
+                  )}
+                </button>
+                <Dialog.Close asChild>
                   <button
-                    className={`${styles.ask} ${querying && styles.processing}`}
-                    onClick={onSubmit}
-                    disabled={querying}
+                    className={styles.close}
+                    aria-label="Close Reflections"
                   >
-                    {querying ? (
-                      <Thinking className={styles.spinner} />
-                    ) : (
-                      'Reflect'
-                    )}
+                    <CrossIcon />
                   </button>
-                  {/* <button onClick={rebuildVectorIndex}>Rebuild</button> */}
-                </div>
+                </Dialog.Close>
               </div>
 
               <AnimatePresence>
@@ -124,21 +131,19 @@ export default function Reflections() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                   >
-                    <div className={styles.text}>{response.response}</div>
+                    <div className={styles.answer}>
+                      <div className={styles.text}>{response.response}</div>
+                      <div className={styles.text_context}>
+                        *This answer is written by AI, using the entries below.
+                        AI can make mistakes. Consider checking important
+                        information.
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
               {renderResponse()}
-
-              {/* <Dialog.Close asChild>
-                <button
-                  className={styles.IconButton}
-                  aria-label="Close Reflections"
-                >
-                  <CrossIcon />
-                </button>
-              </Dialog.Close> */}
             </div>
           </Dialog.Content>
           <div className={styles.DialogContentOverlay}></div>

@@ -1,174 +1,184 @@
-.card {
-    flex: 1 0 auto;
-    background: var(--bg-secondary);
-    border-radius: 17px;
-    margin: 8px;
-    max-width: 450px;
-    transition: all ease-in-out 220ms;
+   .placeholder {
+       flex: 1 0 auto;
+       background: var(--bg-secondary);
+       border-radius: 17px;
+       margin: 8px;
+       width: 450px;
+       height: 450px;
+       transition: all ease-in-out 220ms;
+   }
 
-    // &:hover {
-    //     cursor: pointer;
-    //     background: var(--bg-tertiary);
-    // }
+   .card {
+       flex: 1 0 auto;
+       background: var(--bg-secondary);
+       border-radius: 17px;
+       margin: 8px;
+       max-width: 450px;
+       transition: all ease-in-out 220ms;
 
-    .image {
-        padding: 3px 3px 0 3px;
-        border-radius: 17px 17px 0 0;
+       // &:hover {
+       //     cursor: pointer;
+       //     background: var(--bg-tertiary);
+       // }
 
-        img {
-            width: 100%;
-            height: auto;
-            max-height: 280px;
-            border-radius: 14px 14px 3px 3px;
-            margin: 0;
-            object-fit: cover;
-        }
-    }
+       .image {
+           padding: 3px 3px 0 3px;
+           border-radius: 17px 17px 0 0;
 
-    .content {
-        padding: 7px 12px 5px 12px;
+           img {
+               width: 100%;
+               height: auto;
+               max-height: 280px;
+               border-radius: 14px 14px 3px 3px;
+               margin: 0;
+               object-fit: cover;
+           }
+       }
 
-        .title {
-            font-size: 1.05em;
-            line-height: 1.4;
-            font-weight: 500;
-            color: var(--preview);
-            transition: all ease-in-out 120ms;
+       .content {
+           padding: 7px 12px 5px 12px;
 
-            &:hover {
-                cursor: pointer;
-                color: var(--active);
-            }
-        }
-    }
+           .title {
+               font-size: 1.05em;
+               line-height: 1.4;
+               font-weight: 500;
+               color: var(--preview);
+               transition: all ease-in-out 120ms;
 
-    .aiCard {
-        color: var(--secondary);
-        padding: 0 12px 12px 12px;
-        line-height: 1.35;
-        font-size: 0.9em;
-        transition: max-height ease-in-out 200ms;
+               &:hover {
+                   cursor: pointer;
+                   color: var(--active);
+               }
+           }
+       }
 
-        .highlights {
-            display: block;
-            position: relative;
-            margin: 10px 0 0 0;
-            padding: 5px 0 0 1em;
-            height: auto;
-            max-height: 50px;
-            overflow: hidden;
-            border-top: 1px solid var(--border);
-            transition: max-height ease-in-out 200ms;
+       .aiCard {
+           color: var(--secondary);
+           padding: 0 12px 12px 12px;
+           line-height: 1.35;
+           font-size: 0.9em;
+           transition: max-height ease-in-out 200ms;
 
-            &:hover {
-                cursor: pointer;
-                max-height: 100px;
-            }
+           .highlights {
+               display: block;
+               position: relative;
+               margin: 10px 0 0 0;
+               padding: 5px 0 0 1em;
+               height: auto;
+               max-height: 50px;
+               overflow: hidden;
+               border-top: 1px solid var(--border);
+               transition: max-height ease-in-out 200ms;
 
-            &.show {
-                max-height: 100%;
-            }
+               &:hover {
+                   cursor: pointer;
+                   max-height: 100px;
+               }
 
-            .overlay {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                transition: opacity ease-in-out 200ms;
-                background: linear-gradient(transparent, var(--bg-secondary));
+               &.show {
+                   max-height: 100%;
+               }
 
-                &.hidden {
-                    pointer-events: none;
-                    opacity: 0;
-                }
-            }
+               .overlay {
+                   position: absolute;
+                   top: 0;
+                   left: 0;
+                   height: 100%;
+                   width: 100%;
+                   transition: opacity ease-in-out 200ms;
+                   background: linear-gradient(transparent, var(--bg-secondary));
 
-            li {
-                padding: 4px 0 4px 0;
-                list-style: outside;
-            }
-        }
+                   &.hidden {
+                       pointer-events: none;
+                       opacity: 0;
+                   }
+               }
 
-        .buttons {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 10px 0 5px 0;
-            gap: 15px;
+               li {
+                   padding: 4px 0 4px 0;
+                   list-style: outside;
+               }
+           }
 
-            a {
-                display: flex;
-                align-items: center;
-                color: var(--active-text);
-                background: var(--active);
-                height: 28px;
-                line-height: 28px;
-                padding: 0 12px 0 7px;
-                border-radius: 90px;
+           .buttons {
+               display: flex;
+               flex-wrap: wrap;
+               margin: 10px 0 5px 0;
+               gap: 15px;
 
-                .icon {
-                    height: 20px;
-                    width: 20px;
-                    margin: -2px 3px 0 0;
-                }
+               a {
+                   display: flex;
+                   align-items: center;
+                   color: var(--active-text);
+                   background: var(--active);
+                   height: 28px;
+                   line-height: 28px;
+                   padding: 0 12px 0 7px;
+                   border-radius: 90px;
 
-                &:hover {
-                    background: var(--active-hover);
-                }
+                   .icon {
+                       height: 20px;
+                       width: 20px;
+                       margin: -2px 3px 0 0;
+                   }
 
-            }
-        }
-    }
+                   &:hover {
+                       background: var(--active-hover);
+                   }
 
-    .footer {
-        display: flex;
-        align-items: center;
-        padding: 4px 12px 12px 12px;
-        font-weight: 400;
-        font-size: 0.9em;
-        color: var(--secondary);
+               }
+           }
+       }
 
-        .favicon {
-            height: 18px;
-            width: 18px;
-            margin-right: 9px;
-            border-radius: 2px;
-        }
+       .footer {
+           display: flex;
+           align-items: center;
+           padding: 4px 12px 12px 12px;
+           font-weight: 400;
+           font-size: 0.9em;
+           color: var(--secondary);
 
-        .category {
-            text-transform: capitalize;
+           .favicon {
+               height: 18px;
+               width: 18px;
+               margin-right: 9px;
+               border-radius: 2px;
+           }
 
-            &::after {
-                content: '·';
-                margin: 0 6px;
-                opacity: 0.7;
-            }
-        }
-    }
-}
+           .category {
+               text-transform: capitalize;
 
-.youtube {
-    margin: 8px;
-    padding: 3px 3px 0px 3px;
-    border-radius: 17px;
-    background: var(--bg-secondary);
-    width: 100%;
-    max-width: 560px;
+               &::after {
+                   content: '·';
+                   margin: 0 6px;
+                   opacity: 0.7;
+               }
+           }
+       }
+   }
 
-    &:hover {
-        background: var(--bg-tertiary);
-    }
+   .youtube {
+       margin: 8px;
+       padding: 3px 3px 0px 3px;
+       border-radius: 17px;
+       background: var(--bg-secondary);
+       width: 100%;
+       max-width: 560px;
 
-    iframe {
-        width: 100%;
-        height: 340px;
-        border-radius: 14px;
-        margin: 0;
-        padding: 0;
-        border: none;
+       &:hover {
+           background: var(--bg-tertiary);
+       }
 
-        &::after {
-            display: none;
-        }
-    }
-}
+       iframe {
+           width: 100%;
+           height: 340px;
+           border-radius: 14px;
+           margin: 0;
+           padding: 0;
+           border: none;
+
+           &::after {
+               display: none;
+           }
+       }
+   }

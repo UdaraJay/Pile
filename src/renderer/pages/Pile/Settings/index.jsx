@@ -89,8 +89,8 @@ export default function Settings() {
             />
           </fieldset>
           <div className={styles.disclaimer}>
-            Before you enable the AI-powered features within this app, we
-            strongly recommend that you configure your own{' '}
+            Before you use the AI-powered features within this app, we{' '}
+            <b>strongly recommend</b> that you configure a{' '}
             <a
               href="https://platform.openai.com/account/limits"
               target="_blank"

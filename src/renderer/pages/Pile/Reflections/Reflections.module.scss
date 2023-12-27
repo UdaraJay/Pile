@@ -124,7 +124,7 @@ input {
 
     &::placeholder {
         color: var(--secondary);
-        background: linear-gradient(to bottom right, var(--secondary), var(--bg-tertiary));
+        background: linear-gradient(to bottom right, var(--primary), var(--bg-tertiary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }

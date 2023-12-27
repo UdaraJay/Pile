@@ -23,7 +23,7 @@ import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
-export default function Post({ postPath }) {
+export default function Post({ postPath, refreshHeight = () => {} }) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
   const { setClosestDate } = useTimelineContext();
@@ -32,6 +32,18 @@ export default function Post({ postPath }) {
   const [replying, setReplying] = useState(false);
   const [isAIResplying, setIsAiReplying] = useState(false);
   const [editable, setEditable] = useState(false);
+
+  // Update the height when hovering
+  // Note: maybe there's a more dynamic way to do this, however the
+  // transitions make timing the height changes visually challenging.
+  useEffect(() => {
+    if (hovering) {
+      refreshHeight(30);
+    } else {
+      const timeoutId = setTimeout(refreshHeight, 150);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [hovering]);
 
   const closeReply = () => {
     setReplying(false);
@@ -173,38 +185,40 @@ export default function Post({ postPath }) {
 
       {renderReplies()}
 
-      <AnimatePresence>
-        {(replying || hovering) && !isReply && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className={styles.actions}>
-              <div
-                className={styles.openReply}
-                style={{ backgroundColor: highlightColor }}
-                onClick={toggleReplying}
-              >
-                <NeedleIcon className={styles.icon} />
-                Add another post
+      <div className={styles.actionsHolder}>
+        <AnimatePresence>
+          {(replying || hovering) && !isReply && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className={styles.actions}>
+                <div
+                  className={styles.openReply}
+                  style={{ backgroundColor: highlightColor }}
+                  onClick={toggleReplying}
+                >
+                  <NeedleIcon className={styles.icon} />
+                  Add another post
+                </div>
+                <div
+                  className={styles.openReply}
+                  style={{ backgroundColor: highlightColor }}
+                  onClick={() => {
+                    setIsAiReplying(true);
+                    toggleReplying();
+                  }}
+                >
+                  <ReflectIcon className={styles.icon2} />
+                  Reflect
+                </div>
               </div>
-              <div
-                className={styles.openReply}
-                style={{ backgroundColor: highlightColor }}
-                onClick={() => {
-                  setIsAiReplying(true);
-                  toggleReplying();
-                }}
-              >
-                <ReflectIcon className={styles.icon2} />
-                Reflect
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <AnimatePresence>
         {replying && (

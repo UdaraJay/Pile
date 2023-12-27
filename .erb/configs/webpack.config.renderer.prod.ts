@@ -136,8 +136,6 @@ const configuration: webpack.Configuration = {
     new webpack.DefinePlugin({
       'process.type': '"renderer"',
     }),
-
-    million.webpack({ auto: true, mute: true }),
   ],
 };
 

@@ -1,8 +1,6 @@
 .root {
     padding: 5px 0;
     height: auto;
-    scroll-padding: 60px;
-    scroll-snap-type: x proximity;
 }
 
 .post {
@@ -188,6 +186,12 @@
     .right {
         margin-top: 22px;
     }
+}
+
+.actionsHolder {
+    display: flex;
+    // height: 37px;
+    // min-height: 37px;
 }
 
 .actions {

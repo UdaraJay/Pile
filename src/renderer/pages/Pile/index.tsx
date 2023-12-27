@@ -5,7 +5,7 @@ import Posts from './Posts';
 export default function Pile() {
   return (
     <PileLayout>
-      <NewPost />
+      {/* <NewPost /> */}
       <Posts />
     </PileLayout>
   );

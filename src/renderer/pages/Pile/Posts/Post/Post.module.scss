@@ -1,6 +1,13 @@
 .root {
+    position: relative;
     padding: 5px 0;
     height: auto;
+
+    &.focused {
+        background: var(--bg);
+        z-index: 99;
+        box-shadow: 0 30px 80px 40px var(--bg);
+    }
 }
 
 .post {
@@ -215,8 +222,9 @@
         align-items: center;
         font-size: 0.95em;
         user-select: none;
-        padding: 2px 0 2px 0;
-        transition: all ease-in-out 120ms;
+        padding: 2px 12px 2px 3px;
+
+        transition: all ease-in-out 80ms;
         border-radius: 90px;
         color: var(--base);
         line-height: 1;
@@ -226,6 +234,7 @@
             cursor: pointer;
             filter: contrast(1.15);
             color: var(--base-hover);
+            background: var(--bg-secondary);
         }
 
         &:active {
@@ -249,9 +258,10 @@
             align-items: center;
             height: 20px;
             width: 20px;
+            margin: 2px 0;
             margin-right: 6px;
             margin-left: 5px;
-            margin-top: -1px;
+            // margin-top: -1px;
             fill: currentColor;
             transition: all ease-in-out 120ms;
         }

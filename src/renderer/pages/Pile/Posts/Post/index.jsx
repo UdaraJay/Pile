@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, memo } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Post.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -23,7 +23,7 @@ import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
-export default function Post({ postPath, refreshHeight = () => {} }) {
+const Post = ({ postPath, refreshHeight = () => {} }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
   const { setClosestDate } = useTimelineContext();
@@ -32,6 +32,10 @@ export default function Post({ postPath, refreshHeight = () => {} }) {
   const [replying, setReplying] = useState(false);
   const [isAIResplying, setIsAiReplying] = useState(false);
   const [editable, setEditable] = useState(false);
+
+  useEffect(() => {
+    refreshHeight();
+  }, []);
 
   const closeReply = () => {
     setReplying(false);
@@ -121,7 +125,9 @@ export default function Post({ postPath, refreshHeight = () => {} }) {
   return (
     <div
       ref={containerRef}
-      className={styles.root}
+      className={`${styles.root} ${
+        (replying || isAIResplying) && styles.focused
+      }`}
       onMouseEnter={handleRootMouseEnter}
       onMouseLeave={handleRootMouseLeave}
     >
@@ -248,4 +254,6 @@ export default function Post({ postPath, refreshHeight = () => {} }) {
       </AnimatePresence>
     </div>
   );
-}
+};
+
+export default Post;

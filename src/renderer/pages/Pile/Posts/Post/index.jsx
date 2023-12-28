@@ -33,18 +33,6 @@ export default function Post({ postPath, refreshHeight = () => {} }) {
   const [isAIResplying, setIsAiReplying] = useState(false);
   const [editable, setEditable] = useState(false);
 
-  // Update the height when hovering
-  // Note: maybe there's a more dynamic way to do this, however the
-  // transitions make timing the height changes visually challenging.
-  useEffect(() => {
-    if (hovering) {
-      refreshHeight(30);
-    } else {
-      const timeoutId = setTimeout(refreshHeight, 150);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [hovering]);
-
   const closeReply = () => {
     setReplying(false);
     setIsAiReplying(false);
@@ -116,7 +104,7 @@ export default function Post({ postPath, refreshHeight = () => {} }) {
         <Reply
           key={reply}
           postPath={reply}
-          isLast={isLast && !hovering}
+          isLast={isLast}
           isFirst={isFirst}
           replying={replying}
           highlightColor={highlightColor}
@@ -146,18 +134,9 @@ export default function Post({ postPath, refreshHeight = () => {} }) {
             cycleColor={cycleColor}
             setHighlight={setHighlight}
           />
-          {/* <div
-            className={`${styles.ball} ${isAI && styles.ai}`}
-            onClick={cycleColor}
-            style={{
-              backgroundColor: highlightColor,
-            }}
-          ></div> */}
-
           <div
             className={`${styles.line} ${
-              (post.data.replies.length > 0 || replying || hovering) &&
-              styles.show
+              (post.data.replies.length > 0 || replying) && styles.show
             }`}
             style={{
               borderColor: highlightColor,
@@ -197,15 +176,16 @@ export default function Post({ postPath, refreshHeight = () => {} }) {
               <div className={styles.actions}>
                 <div
                   className={styles.openReply}
-                  style={{ backgroundColor: highlightColor }}
+                  // style={{ color: highlightColor }}
                   onClick={toggleReplying}
                 >
                   <NeedleIcon className={styles.icon} />
-                  Add another post
+                  Add another entry
                 </div>
+                <div className={styles.sep}>/</div>
                 <div
                   className={styles.openReply}
-                  style={{ backgroundColor: highlightColor }}
+                  // style={{ color: highlightColor }}
                   onClick={() => {
                     setIsAiReplying(true);
                     toggleReplying();

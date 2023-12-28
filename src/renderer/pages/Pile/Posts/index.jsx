@@ -50,7 +50,7 @@ const Row = memo(
       const observer = new MutationObserver(
         debounce(() => {
           refreshHeight();
-        }, 500)
+        }, 600)
       );
 
       observer.observe(rowRef.current, { childList: true, subtree: true });
@@ -83,30 +83,54 @@ const Row = memo(
 export default function Posts() {
   const { index, updateIndex } = useIndexContext();
   const [windowWidth, windowHeight] = useWindowResize();
+  const [data, setData] = useState([]);
 
-  // Dummy entry appended to the front to account for the
-  // NewPost component at the top of the list.
-  const data = [[null, { height: 150 }], ...Array.from(index)];
+  // Index is updated when an entry is added/deleted.
+  // We use this to generate the data array which consists of
+  // all the items that are going to be rendered on the virtual list.
+  useEffect(() => {
+    const onlyParentEntries = Array.from(index)
+      .filter(([key, metadata]) => !metadata.isReply)
+      .reduce((acc, [key, value]) => acc.set(key, value), new Map());
+
+    if (onlyParentEntries.size === data.length - 1) {
+      return;
+    }
+
+    // Dummy entry appended to the front to account for the
+    // NewPost component at the top of the list.
+    setData([[null, { height: 150 }], ...Array.from(onlyParentEntries)]);
+  }, [index]);
+
+  useEffect(() => {
+    console.log('data', data);
+  }, [data]);
+
   const listRef = useRef();
   const sizeMap = useRef({});
 
   const setSize = useCallback(
     (index, size) => {
+      if (index == 0) return;
       const [postPath, metadata] = data[index];
       if (!metadata.height || metadata.height !== size) {
         updateIndex(postPath, { ...metadata, height: size });
       }
-      sizeMap.current = { ...sizeMap.current, [index]: size };
+      sizeMap.current = { ...sizeMap.current, [postPath]: size };
       listRef.current.resetAfterIndex(index, true);
     },
     [data]
   );
 
-  const getSize = (index) => {
-    if (index == 0) return 150;
-    if (sizeMap.current[index]) return sizeMap.current[index];
-    return data[index][1].height ?? 0;
-  };
+  const getSize = useCallback(
+    (index) => {
+      if (index == 0) return 150;
+      const [postPath, metadata] = data[index];
+      if (sizeMap.current[postPath]) return sizeMap.current[postPath];
+      return data[index][1].height ?? 0;
+    },
+    [data]
+  );
 
   const scrollToItem = (index) => {
     this.listRef.current.scrollToItem(index, 'center');

@@ -16,11 +16,6 @@
        max-width: 450px;
        transition: all ease-in-out 220ms;
 
-       // &:hover {
-       //     cursor: pointer;
-       //     background: var(--bg-tertiary);
-       // }
-
        .image {
            padding: 3px 3px 0 3px;
            border-radius: 17px 17px 0 0;
@@ -69,13 +64,16 @@
                overflow: hidden;
                border-top: 1px solid var(--border);
                transition: max-height ease-in-out 200ms;
+               opacity: 0.8;
 
                &:hover {
                    cursor: pointer;
-                   max-height: 100px;
+                   //   max-height: 100px;
+                   opacity: 1;
                }
 
                &.show {
+                   opacity: 1;
                    max-height: 100%;
                }
 

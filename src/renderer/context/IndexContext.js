@@ -55,6 +55,12 @@ export const IndexContextProvider = ({ children }) => {
   );
 
   const updateIndex = useCallback(async (filePath, data) => {
+    // setIndex((prevMap) => {
+    //   const newMap = new Map(prevMap);
+    //   newMap.set(filePath, data);
+    //   return newMap;
+    // });
+
     window.electron.ipc.invoke('index-update', filePath, data).then((index) => {
       // setIndex(index);
     });

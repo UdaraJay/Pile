@@ -208,11 +208,11 @@
     display: flex;
     align-items: center;
     vertical-align: middle;
-    padding: 0 16px 0 53px;
+    padding: 0 16px 0 51px;
     margin: 0 -5px;
 
     .sep {
-        margin: 0 6px 0 10px;
+        margin: 0 5px 0 4px;
         color: var(--secondary);
         opacity: 0.25;
     }
@@ -222,7 +222,7 @@
         align-items: center;
         font-size: 0.95em;
         user-select: none;
-        padding: 2px 12px 2px 3px;
+        padding: 2px 10px 2px 3px;
 
         transition: all ease-in-out 80ms;
         border-radius: 90px;

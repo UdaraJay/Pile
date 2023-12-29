@@ -23,7 +23,7 @@ import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
-const Post = ({ postPath, refreshHeight = () => {} }) => {
+const Post = memo(({ postPath }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
   const { setClosestDate } = useTimelineContext();
@@ -32,10 +32,6 @@ const Post = ({ postPath, refreshHeight = () => {} }) => {
   const [replying, setReplying] = useState(false);
   const [isAIResplying, setIsAiReplying] = useState(false);
   const [editable, setEditable] = useState(false);
-
-  useEffect(() => {
-    refreshHeight();
-  }, []);
 
   const closeReply = () => {
     setReplying(false);
@@ -254,6 +250,6 @@ const Post = ({ postPath, refreshHeight = () => {} }) => {
       </AnimatePresence>
     </div>
   );
-};
+});
 
 export default Post;

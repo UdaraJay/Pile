@@ -4,12 +4,6 @@ Pile is a desktop app for reflective journaling. It's about simplicity, keeping 
 
 ![Pile app screenshot](./assets/cover.png)
 
-## Why use Pile?
-
-- **Local Storage**: Keep your journal entries stored securely on your computer, offering you greater flexibility and ownership.
-- **Markdown Support**: Entries are stored as markdown files (\*currently includes some HTML), keeping your journal clean and accessible with tools other than Pile.
-- **Create Piles**: Organize your thoughts by creating separate _Piles_ for different aspects of your day-to-day life, _or_ use one Pile as a general journal for everything.
-
 ## Getting started
 
 1. Download the latest version of Pile by going to the [Pile releases page](https://github.com/UdaraJay/Pile/releases/).
@@ -20,9 +14,12 @@ Pile is a desktop app for reflective journaling. It's about simplicity, keeping 
 
 Enhance your journaling experience by integrating OpenAI's GPT AI reflections into Pile. If you have access to OpenAI's GPT-4 API, you can use your API key to:
 
-- **Reflect on text**: Click "reflect" on any written text to get AI-generated insights and thoughts.
+- **Reflect on entries**: Click "reflect" on any written entry to get AI-generated insights and thoughts as a reply in the thread.
+- **Search or ask questions**: Click the "reflect" icon on the top-right of the window to search or ask question about your entire journal.
 
-👉 To do this, head over to [platform.openai.com/api-keys](https://platform.openai.com/api-keys) and create a new API key. Click the settings icon on the top-right corner of Pile and enter your secret API key into the API key field.
+To setup the AI features: head over to [platform.openai.com/api-keys](https://platform.openai.com/api-keys) and create a new API key. Click the settings icon on the top-right corner of Pile and enter your secret API key into the API key field. 
+
+Before you use the AI-powered features within this app, we strongly recommend that you [configure a spending limit within OpenAI's interface](https://platform.openai.com/account/limits) to prevent unexpected costs.
 
 ## Contributing
 

@@ -1,6 +1,15 @@
 .posts {
     display: block;
-    scroll-snap-type: x proximity;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.row {
+    position: relative;
 }
 
 .empty {

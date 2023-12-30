@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, memo } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Post.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -23,10 +23,10 @@ import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
-export default function Post({ postPath }) {
+const Post = memo(({ postPath }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
-  const { setClosestDate } = useTimelineContext();
+  // const { setClosestDate } = useTimelineContext();
   const { post, cycleColor, refreshPost, setHighlight } = usePost(postPath);
   const [hovering, setHover] = useState(false);
   const [replying, setReplying] = useState(false);
@@ -53,34 +53,34 @@ export default function Post({ postPath }) {
 
   const containerRef = useRef();
 
-  useEffect(() => {
-    const container = containerRef.current;
+  // useEffect(() => {
+  //   const container = containerRef.current;
 
-    const handleIntersection = (entries) => {
-      const entry = entries[0];
-      if (entry.isIntersecting) {
-        if (post.data.isReply) return;
-        setClosestDate(post.data.createdAt);
-      }
-    };
+  //   const handleIntersection = (entries) => {
+  //     const entry = entries[0];
+  //     if (entry.isIntersecting) {
+  //       if (post.data.isReply) return;
+  //       setClosestDate(post.data.createdAt);
+  //     }
+  //   };
 
-    const options = {
-      root: null,
-      rootMargin: '-100px 0px 0px 0px',
-      threshold: 0,
-    };
+  //   const options = {
+  //     root: null,
+  //     rootMargin: '-100px 0px 0px 0px',
+  //     threshold: 0,
+  //   };
 
-    const observer = new IntersectionObserver(handleIntersection, options);
-    if (container) {
-      observer.observe(container);
-    }
+  //   const observer = new IntersectionObserver(handleIntersection, options);
+  //   if (container) {
+  //     observer.observe(container);
+  //   }
 
-    return () => {
-      if (container) {
-        observer.unobserve(container);
-      }
-    };
-  }, [containerRef, post]);
+  //   return () => {
+  //     if (container) {
+  //       observer.unobserve(container);
+  //     }
+  //   };
+  // }, [containerRef, post]);
 
   if (!post) return;
   if (post.content == '' && post.data.attachments.length == 0) return;
@@ -104,7 +104,7 @@ export default function Post({ postPath }) {
         <Reply
           key={reply}
           postPath={reply}
-          isLast={isLast && !hovering}
+          isLast={isLast}
           isFirst={isFirst}
           replying={replying}
           highlightColor={highlightColor}
@@ -121,7 +121,9 @@ export default function Post({ postPath }) {
   return (
     <div
       ref={containerRef}
-      className={styles.root}
+      className={`${styles.root} ${
+        (replying || isAIResplying) && styles.focused
+      }`}
       onMouseEnter={handleRootMouseEnter}
       onMouseLeave={handleRootMouseLeave}
     >
@@ -134,18 +136,9 @@ export default function Post({ postPath }) {
             cycleColor={cycleColor}
             setHighlight={setHighlight}
           />
-          {/* <div
-            className={`${styles.ball} ${isAI && styles.ai}`}
-            onClick={cycleColor}
-            style={{
-              backgroundColor: highlightColor,
-            }}
-          ></div> */}
-
           <div
             className={`${styles.line} ${
-              (post.data.replies.length > 0 || replying || hovering) &&
-              styles.show
+              (post.data.replies.length > 0 || replying) && styles.show
             }`}
             style={{
               borderColor: highlightColor,
@@ -173,38 +166,41 @@ export default function Post({ postPath }) {
 
       {renderReplies()}
 
-      <AnimatePresence>
-        {(replying || hovering) && !isReply && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className={styles.actions}>
-              <div
-                className={styles.openReply}
-                style={{ backgroundColor: highlightColor }}
-                onClick={toggleReplying}
-              >
-                <NeedleIcon className={styles.icon} />
-                Add another post
+      <div className={styles.actionsHolder}>
+        <AnimatePresence>
+          {(replying || hovering) && !isReply && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className={styles.actions}>
+                <div
+                  className={styles.openReply}
+                  // style={{ color: highlightColor }}
+                  onClick={toggleReplying}
+                >
+                  <NeedleIcon className={styles.icon} />
+                  Add another entry
+                </div>
+                <div className={styles.sep}>/</div>
+                <div
+                  className={styles.openReply}
+                  // style={{ color: highlightColor }}
+                  onClick={() => {
+                    setIsAiReplying(true);
+                    toggleReplying();
+                  }}
+                >
+                  <ReflectIcon className={styles.icon2} />
+                  Reflect
+                </div>
               </div>
-              <div
-                className={styles.openReply}
-                style={{ backgroundColor: highlightColor }}
-                onClick={() => {
-                  setIsAiReplying(true);
-                  toggleReplying();
-                }}
-              >
-                <ReflectIcon className={styles.icon2} />
-                Reflect
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <AnimatePresence>
         {replying && (
@@ -254,4 +250,6 @@ export default function Post({ postPath }) {
       </AnimatePresence>
     </div>
   );
-}
+});
+
+export default Post;

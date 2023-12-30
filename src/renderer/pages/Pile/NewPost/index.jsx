@@ -4,12 +4,12 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { DiscIcon, PaperclipIcon } from 'renderer/icons';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import Editor from '../Editor';
 import { usePilesContext } from 'renderer/context/PilesContext';
 import usePost from 'renderer/hooks/usePost';
 
-export default function NewPost() {
+const NewPost = memo(() => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
 
   return (
@@ -20,4 +20,6 @@ export default function NewPost() {
       </div>
     </div>
   );
-}
+});
+
+export default NewPost;

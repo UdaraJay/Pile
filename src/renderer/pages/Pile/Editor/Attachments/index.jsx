@@ -4,11 +4,11 @@ import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
 import { motion } from 'framer-motion';
 import { usePilesContext } from 'renderer/context/PilesContext';
 
-export default function Attachments({
+const Attachments = ({
   post,
   onRemoveAttachment = () => {},
   editable = false,
-}) {
+}) => {
   const { getCurrentPilePath } = usePilesContext();
 
   if (!post) return;
@@ -42,4 +42,6 @@ export default function Attachments({
       );
     }
   });
-}
+};
+
+export default Attachments;

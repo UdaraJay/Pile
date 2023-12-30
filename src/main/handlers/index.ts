@@ -17,6 +17,11 @@ ipcMain.handle('index-add', (event, filePath) => {
   return index;
 });
 
+ipcMain.handle('index-update', (event, filePath, data) => {
+  const index = pileIndex.update(filePath, data);
+  return index;
+});
+
 ipcMain.handle('index-remove', (event, filePath) => {
   const index = pileIndex.remove(filePath);
   return index;

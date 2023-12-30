@@ -4,7 +4,7 @@ const useIPCListener = (channel, initialData) => {
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
-    const handler = (event, newData) => {
+    const handler = (newData) => {
       setData(newData);
     };
 

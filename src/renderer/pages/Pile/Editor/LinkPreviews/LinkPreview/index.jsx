@@ -38,7 +38,7 @@ export default function LinkPreview({ url }) {
     getPreview(url);
   }, [url]);
 
-  if (!preview) return;
+  if (!preview) return <div className={styles.placeholder}></div>;
 
   const createYouTubeEmbed = (url) => {
     // Extract the video ID from the YouTube URL
@@ -127,11 +127,9 @@ export default function LinkPreview({ url }) {
     <motion.div
       initial={{
         opacity: 0,
-        transform: 'scale(0.9)',
-        transformOrigin: 'top left',
       }}
-      animate={{ opacity: 1, transform: 'scale(1)' }}
-      exit={{ opacity: 0, transform: 'scale(0.9)' }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ delay: 0.3 }}
     >
       <div className={styles.card} onClick={toggleExpand}>

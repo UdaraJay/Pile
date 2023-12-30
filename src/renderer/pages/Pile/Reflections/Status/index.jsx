@@ -7,6 +7,7 @@ import {
   DiscIcon,
   DownloadIcon,
   FlameIcon,
+  InfoIcon,
 } from 'renderer/icons';
 import { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -23,13 +24,18 @@ import Waiting from '../../Toasts/Toast/Loaders/Waiting';
 export default function Status() {
   const statusFromMain = useIPCListener('vector-index', '');
   const [setupRun, setSetupRun] = useState(false);
-  const [status, setStatus] = useState('Loading index...');
+  const [status, setStatus] = useState('loading');
+  const [message, setMessage] = useState({
+    type: 'loading',
+    message: 'Loading index...',
+  });
   const { initVectorIndex, rebuildVectorIndex, query, getVectorIndex } =
     useIndexContext();
 
   useEffect(() => {
     if (statusFromMain) {
-      setStatus(statusFromMain);
+      setStatus(statusFromMain.type);
+      setMessage(statusFromMain);
 
       const timer = setTimeout(() => {
         setStatus('');
@@ -61,8 +67,14 @@ export default function Status() {
 
   const renderIcon = (status) => {
     switch (status) {
-      case 'Loading index...':
+      case 'loading':
         return <Waiting className={styles.waiting} />;
+      case 'querying':
+        return <Waiting className={styles.waiting} />;
+      case 'indexing':
+        return <Waiting className={styles.waiting} />;
+      case 'done':
+        return <InfoIcon className={styles.reflectIcon} />;
       default:
         return <ReflectIcon className={styles.reflectIcon} />;
     }
@@ -70,8 +82,10 @@ export default function Status() {
 
   return (
     <div className={styles.container}>
-      {renderIcon()}
-      <div className={styles.text}>{status || 'Search or Ask'}</div>
+      {renderIcon(status)}
+      <div className={styles.text}>
+        {status ? message.message : 'Search or Ask'}
+      </div>
     </div>
   );
 }

@@ -3,62 +3,56 @@ import styles from './Posts.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef, memo } from 'react';
 import { useIndexContext } from 'renderer/context/IndexContext';
-import { motion } from 'framer-motion';
 import Post from './Post';
-
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {},
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: -30 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
+import NewPost from '../NewPost';
+import { AnimatePresence, motion } from 'framer-motion';
+import debounce from 'renderer/utils/debounce';
+import VirtualList from './VirtualList';
 
 export default function Posts() {
-  const { index } = useIndexContext();
+  const { index, updateIndex } = useIndexContext();
+  const [data, setData] = useState([]);
 
-  const renderPosts = useMemo(() => {
-    if (index.size === 0) {
-      return (
+  // Index is updated when an entry is added/deleted.
+  // We use this to generate the data array which consists of
+  // all the items that are going to be rendered on the virtual list.
+  useEffect(() => {
+    const onlyParentEntries = Array.from(index)
+      .filter(([key, metadata]) => !metadata.isReply)
+      .reduce((acc, [key, value]) => acc.set(key, value), new Map());
+
+    if (onlyParentEntries.size === data.length - 1) {
+      return;
+    }
+
+    // Dummy entry appended to the front to account for the
+    // NewPost component at the top of the list.
+    setData([['NewPost', { height: 150 }], ...Array.from(onlyParentEntries)]);
+  }, [index]);
+
+  // When there are zero entries
+  if (index.size == 0) {
+    return (
+      <div className={styles.posts}>
+        <NewPost />
         <div className={styles.empty}>
           <div className={styles.wrapper}>
-            <div className={styles.none}>Say Something?</div>
+            <div className={styles.none}>Say something?</div>
             <div className={styles.tip}>
               Pile is ideal for journaling in bursts– type down what you're
               thinking right now, come back to it over time.
             </div>
           </div>
         </div>
-      );
-    }
-
-    return Array.from(index, ([postPath, data]) => {
-      return (
-        <motion.div key={postPath} variants={item}>
-          <Post key={`post-${postPath}`} postPath={postPath} />
-        </motion.div>
-      );
-    });
-  }, [index]);
+      </div>
+    );
+  }
 
   return (
     <div className={styles.posts}>
-      <motion.div variants={container} initial="hidden" animate="show">
-        {renderPosts}
-      </motion.div>
+      <VirtualList data={data} />
     </div>
   );
 }

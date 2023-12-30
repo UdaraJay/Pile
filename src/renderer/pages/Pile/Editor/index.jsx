@@ -1,6 +1,6 @@
 import './ProseMirror.scss';
 import styles from './Editor.module.scss';
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef, memo } from 'react';
 import { Extension } from '@tiptap/core';
 import { useEditor, EditorContent } from '@tiptap/react';
 import Link from '@tiptap/extension-link';
@@ -22,348 +22,335 @@ import useThread from 'renderer/hooks/useThread';
 import LinkPreviews from './LinkPreviews';
 import { useToastsContext } from 'renderer/context/ToastsContext';
 
-export default function Editor({
-  postPath = null,
-  editable = false,
-  parentPostPath = null,
-  isAI = false,
-  isReply = false,
-  closeReply = () => {},
-  setEditable = () => {},
-  reloadParentPost,
-}) {
-  const {
-    post,
-    savePost,
-    addTag,
-    removeTag,
-    attachToPost,
-    detachFromPost,
-    setContent,
-    resetPost,
-    deletePost,
-  } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
-  const { getThread } = useThread();
-  const { ai, prompt } = useAIContext();
-  const { addNotification, removeNotification } = useToastsContext();
+const Editor = memo(
+  ({
+    postPath = null,
+    editable = false,
+    parentPostPath = null,
+    isAI = false,
+    isReply = false,
+    closeReply = () => {},
+    setEditable = () => {},
+    reloadParentPost,
+  }) => {
+    const {
+      post,
+      savePost,
+      addTag,
+      removeTag,
+      attachToPost,
+      detachFromPost,
+      setContent,
+      resetPost,
+      deletePost,
+    } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
+    const { getThread } = useThread();
+    const { ai, prompt } = useAIContext();
+    const { addNotification, removeNotification } = useToastsContext();
 
-  const isNew = !postPath;
+    const isNew = !postPath;
 
-  const EnterSubmitExtension = Extension.create({
-    name: 'EnterSubmitExtension',
-    addCommands() {
-      return {
-        triggerSubmit:
-          () =>
-          ({ state, dispatch }) => {
-            // This will trigger a 'submit' event on the editor
-            const event = new CustomEvent('submit');
-            document.dispatchEvent(event);
+    const EnterSubmitExtension = Extension.create({
+      name: 'EnterSubmitExtension',
+      addCommands() {
+        return {
+          triggerSubmit:
+            () =>
+            ({ state, dispatch }) => {
+              // This will trigger a 'submit' event on the editor
+              const event = new CustomEvent('submit');
+              document.dispatchEvent(event);
 
+              return true;
+            },
+        };
+      },
+
+      addKeyboardShortcuts() {
+        return {
+          Enter: ({ editor }) => {
+            editor.commands.triggerSubmit();
             return true;
           },
-      };
-    },
-
-    addKeyboardShortcuts() {
-      return {
-        Enter: ({ editor }) => {
-          editor.commands.triggerSubmit();
-          return true;
-        },
-      };
-    },
-  });
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Typography,
-      Link,
-      Placeholder.configure({
-        placeholder: isAI ? 'AI is thinking...' : 'What are you thinking?',
-      }),
-      CharacterCount.configure({
-        limit: 10000,
-      }),
-      EnterSubmitExtension,
-    ],
-    editorProps: {
-      handlePaste: function (view, event, slice) {
-        const items = Array.from(event.clipboardData?.items || []);
-        for (const item of items) {
-          if (item.type.indexOf('image') === 0) {
-            const file = item.getAsFile();
-            const fileName = file.name; // Retrieve the filename
-            const fileExtension = fileName.split('.').pop(); // Extract the file extension
-            // Handle the image file here (e.g., upload, display, etc.)
-            const reader = new FileReader();
-            reader.onload = () => {
-              const imageData = reader.result;
-              attachToPost(imageData, fileExtension);
-            };
-            reader.readAsDataURL(file);
-
-            return true; // handled
-          }
-        }
-        return false; // not handled use default behaviour
+        };
       },
-    },
-    autofocus: true,
-    editable: editable,
-    content: post?.content || '',
-    onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
-    },
-  });
+    });
 
-  const elRef = useRef();
-  const [deleteStep, setDeleteStep] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isAIResponding, setIsAiResponding] = useState(false);
-  const [prevDragPos, setPrevDragPos] = useState(0);
+    const editor = useEditor({
+      extensions: [
+        StarterKit,
+        Typography,
+        Link,
+        Placeholder.configure({
+          placeholder: isAI ? 'AI is thinking...' : 'What are you thinking?',
+        }),
+        CharacterCount.configure({
+          limit: 10000,
+        }),
+        EnterSubmitExtension,
+      ],
+      editorProps: {
+        handlePaste: function (view, event, slice) {
+          const items = Array.from(event.clipboardData?.items || []);
+          for (const item of items) {
+            if (item.type.indexOf('image') === 0) {
+              const file = item.getAsFile();
+              const fileName = file.name; // Retrieve the filename
+              const fileExtension = fileName.split('.').pop(); // Extract the file extension
+              // Handle the image file here (e.g., upload, display, etc.)
+              const reader = new FileReader();
+              reader.onload = () => {
+                const imageData = reader.result;
+                attachToPost(imageData, fileExtension);
+              };
+              reader.readAsDataURL(file);
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setPrevDragPos(e.clientX);
-  };
+              return true; // handled
+            }
+          }
+          return false; // not handled use default behaviour
+        },
+      },
+      autofocus: true,
+      editable: editable,
+      content: post?.content || '',
+      onUpdate: ({ editor }) => {
+        setContent(editor.getHTML());
+      },
+    });
 
-  const handleMouseMove = (e) => {
-    if (isDragging && elRef.current) {
-      const delta = e.clientX - prevDragPos;
-      elRef.current.scrollLeft -= delta;
+    const elRef = useRef();
+    const [deleteStep, setDeleteStep] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const [isAIResponding, setIsAiResponding] = useState(false);
+    const [prevDragPos, setPrevDragPos] = useState(0);
+
+    const handleMouseDown = (e) => {
+      setIsDragging(true);
       setPrevDragPos(e.clientX);
-    }
-  };
+    };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+    const handleMouseMove = (e) => {
+      if (isDragging && elRef.current) {
+        const delta = e.clientX - prevDragPos;
+        elRef.current.scrollLeft -= delta;
+        setPrevDragPos(e.clientX);
+      }
+    };
 
-  useEffect(() => {
-    if (!editor) return;
-    generateAiResponse();
-  }, [editor, isAI]);
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
 
-  const handleSubmit = useCallback(async () => {
-    await savePost();
-    if (isNew) {
-      resetPost();
+    useEffect(() => {
+      if (!editor) return;
+      generateAiResponse();
+    }, [editor, isAI]);
+
+    const handleSubmit = useCallback(async () => {
+      await savePost();
+      if (isNew) {
+        resetPost();
+        closeReply();
+        return;
+      }
+
       closeReply();
-      return;
-    }
-
-    closeReply();
-    setEditable(false);
-  }, [editor, isNew, post]);
-
-  // Listen for the 'submit' event and call handleSubmit when it's triggered
-  useEffect(() => {
-    const handleEvent = () => {
-      if (editor?.isFocused) {
-        handleSubmit();
-      }
-    };
-
-    document.addEventListener('submit', handleEvent);
-
-    return () => {
-      document.removeEventListener('submit', handleEvent);
-    };
-  }, [handleSubmit, editor]);
-
-  // This has to ensure that it only calls the AI generate function
-  // on entries added for the AI that are empty.
-  const generateAiResponse = useCallback(async () => {
-    if (!editor) return;
-    if (isAIResponding) return;
-
-    const isEmpty = editor.state.doc.textContent.length === 0;
-
-    // isAI makes sure AI responses are only generated for
-    // AI entries that are empty.
-    if (isAI && isEmpty) {
-      addNotification({
-        id: 'reflecting',
-        type: 'thinking',
-        message: 'talking to AI',
-        dismissTime: 10000,
-      });
       setEditable(false);
-      setIsAiResponding(true);
-      const thread = await getThread(parentPostPath);
-      let context = [];
-      context.push({
-        role: 'system',
-        content: prompt,
-      });
+    }, [editor, isNew, post]);
 
-      // todo: if post content contains links then attach their summary
-      // as context as well
-      thread.forEach((post) => {
-        const message = { role: 'user', content: post.content };
-        context.push(message);
-      });
+    // Listen for the 'submit' event and call handleSubmit when it's triggered
+    useEffect(() => {
+      const handleEvent = () => {
+        if (editor?.isFocused) {
+          handleSubmit();
+        }
+      };
 
-      context.push({
-        role: 'system',
-        content: 'You can only respond in plaintext, do NOT use HTML.',
-      });
+      document.addEventListener('submit', handleEvent);
 
-      if (context.length === 0) return;
+      return () => {
+        document.removeEventListener('submit', handleEvent);
+      };
+    }, [handleSubmit, editor]);
 
-      const stream = await ai.chat.completions.create({
-        model: 'gpt-4',
-        stream: true,
-        max_tokens: 200,
-        messages: context,
-      });
+    // This has to ensure that it only calls the AI generate function
+    // on entries added for the AI that are empty.
+    const generateAiResponse = useCallback(async () => {
+      if (!editor) return;
+      if (isAIResponding) return;
 
-      for await (const part of stream) {
-        const token = part.choices[0].delta.content;
-        editor.commands.insertContent(token);
+      const isEmpty = editor.state.doc.textContent.length === 0;
+
+      // isAI makes sure AI responses are only generated for
+      // AI entries that are empty.
+      if (isAI && isEmpty) {
+        addNotification({
+          id: 'reflecting',
+          type: 'thinking',
+          message: 'talking to AI',
+          dismissTime: 10000,
+        });
+        setEditable(false);
+        setIsAiResponding(true);
+        const thread = await getThread(parentPostPath);
+        let context = [];
+        context.push({
+          role: 'system',
+          content: prompt,
+        });
+
+        // todo: if post content contains links then attach their summary
+        // as context as well
+        thread.forEach((post) => {
+          const message = { role: 'user', content: post.content };
+          context.push(message);
+        });
+
+        context.push({
+          role: 'system',
+          content: 'You can only respond in plaintext, do NOT use HTML.',
+        });
+
+        if (context.length === 0) return;
+
+        const stream = await ai.chat.completions.create({
+          model: 'gpt-4',
+          stream: true,
+          max_tokens: 200,
+          messages: context,
+        });
+
+        for await (const part of stream) {
+          const token = part.choices[0].delta.content;
+          editor.commands.insertContent(token);
+        }
+        removeNotification('reflecting');
+        setIsAiResponding(false);
       }
-      removeNotification('reflecting');
-      setIsAiResponding(false);
-    }
-  }, [editor, isAI]);
+    }, [editor, isAI]);
 
-  useEffect(() => {
-    if (editor) {
-      if (!post) return;
-      if (post?.content != editor.getHTML()) {
-        editor.commands.setContent(post.content);
+    useEffect(() => {
+      if (editor) {
+        if (!post) return;
+        if (post?.content != editor.getHTML()) {
+          editor.commands.setContent(post.content);
+        }
       }
-    }
-  }, [post, editor]);
+    }, [post, editor]);
 
-  const triggerAttachment = () => attachToPost();
+    const triggerAttachment = () => attachToPost();
 
-  useEffect(() => {
-    if (editor) {
-      editor.setEditable(editable);
-    }
-    setDeleteStep(0);
-  }, [editable]);
+    useEffect(() => {
+      if (editor) {
+        editor.setEditable(editable);
+      }
+      setDeleteStep(0);
+    }, [editable]);
 
-  const handleOnDelete = useCallback(async () => {
-    if (deleteStep == 0) {
-      setDeleteStep(1);
-      return;
-    }
+    const handleOnDelete = useCallback(async () => {
+      if (deleteStep == 0) {
+        setDeleteStep(1);
+        return;
+      }
 
-    await deletePost();
-  }, [deleteStep]);
+      await deletePost();
+    }, [deleteStep]);
 
-  const isBig = useCallback(() => {
-    return editor?.storage.characterCount.characters() < 280;
-  }, [editor]);
+    const isBig = useCallback(() => {
+      return editor?.storage.characterCount.characters() < 280;
+    }, [editor]);
 
-  const renderPostButton = () => {
-    if (isAI) return 'Save AI response';
-    if (isReply) return 'Reply';
-    if (isNew) return 'Post';
+    const renderPostButton = () => {
+      if (isAI) return 'Save AI response';
+      if (isReply) return 'Reply';
+      if (isNew) return 'Post';
 
-    return 'Update';
-  };
+      return 'Update';
+    };
 
-  if (!post) return;
+    if (!post) return;
 
-  return (
-    <div className={`${styles.frame} ${isNew && styles.isNew}`}>
-      {editable ? (
-        <EditorContent
-          key={'new'}
-          className={`${styles.editor} ${isBig() && styles.editorBig} ${
-            isAIResponding && styles.responding
-          }`}
-          editor={editor}
-        />
-      ) : (
-        <div className={styles.uneditable}>
-          <div
-            key="uneditable"
-            className={`${styles.editor} ${isBig() && styles.editorBig}`}
-            dangerouslySetInnerHTML={{ __html: post.content }}
+    return (
+      <div className={`${styles.frame} ${isNew && styles.isNew}`}>
+        {editable ? (
+          <EditorContent
+            key={'new'}
+            className={`${styles.editor} ${isBig() && styles.editorBig} ${
+              isAIResponding && styles.responding
+            }`}
+            editor={editor}
           />
-        </div>
-      )}
+        ) : (
+          <div className={styles.uneditable}>
+            <div
+              key="uneditable"
+              className={`${styles.editor} ${isBig() && styles.editorBig}`}
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+          </div>
+        )}
 
-      <LinkPreviews post={post} />
-      <AnimatePresence>
-        <motion.div
-          key="attachments"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.75 }}
+        <LinkPreviews post={post} />
+
+        <div
+          className={`${styles.media} ${
+            post?.data?.attachments.length > 0 ? styles.open : ''
+          }`}
         >
           <div
-            className={`${styles.media} ${
-              post?.data?.attachments.length > 0 ? styles.open : ''
-            }`}
+            className={`${styles.scroll} ${isNew && styles.new}`}
+            ref={elRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           >
-            <div
-              className={`${styles.scroll} ${isNew && styles.new}`}
-              ref={elRef}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-            >
-              <div className={styles.container}>
-                <AnimatePresence>
-                  <Attachments
-                    post={post}
-                    editable={editable}
-                    onRemoveAttachment={detachFromPost}
-                  />
-                </AnimatePresence>
-              </div>
+            <div className={styles.container}>
+              <Attachments
+                post={post}
+                editable={editable}
+                onRemoveAttachment={detachFromPost}
+              />
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {editable && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <div className={styles.footer}>
-              <div className={styles.left}>
-                <button className={styles.button} onClick={triggerAttachment}>
-                  <PhotoIcon className={styles.icon} />
-                </button>
-              </div>
-              <div className={styles.right}>
-                {isReply && (
-                  <button className={styles.deleteButton} onClick={closeReply}>
-                    Close
-                  </button>
-                )}
-
-                {!isNew && (
-                  <button
-                    className={styles.deleteButton}
-                    onClick={handleOnDelete}
-                  >
-                    {deleteStep == 0 ? 'Delete' : 'Click again to confirm'}
-                  </button>
-                )}
-                <button
-                  tabIndex="0"
-                  className={styles.button}
-                  onClick={handleSubmit}
-                >
-                  {renderPostButton()}
-                </button>
-              </div>
+          <div className={styles.footer}>
+            <div className={styles.left}>
+              <button className={styles.button} onClick={triggerAttachment}>
+                <PhotoIcon className={styles.icon} />
+              </button>
             </div>
-          </motion.div>
+            <div className={styles.right}>
+              {isReply && (
+                <button className={styles.deleteButton} onClick={closeReply}>
+                  Close
+                </button>
+              )}
+
+              {!isNew && (
+                <button
+                  className={styles.deleteButton}
+                  onClick={handleOnDelete}
+                >
+                  {deleteStep == 0 ? 'Delete' : 'Click again to confirm'}
+                </button>
+              )}
+              <button
+                tabIndex="0"
+                className={styles.button}
+                onClick={handleSubmit}
+              >
+                {renderPostButton()}
+              </button>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
-    </div>
-  );
-}
+      </div>
+    );
+  }
+);
+
+export default Editor;

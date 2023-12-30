@@ -163,8 +163,6 @@ const configuration: webpack.Configuration = {
       isDevelopment: process.env.NODE_ENV !== 'production',
       nodeModules: webpackPaths.appNodeModulesPath,
     }),
-
-    million.webpack({ auto: true, mute: true }),
   ],
 
   node: {

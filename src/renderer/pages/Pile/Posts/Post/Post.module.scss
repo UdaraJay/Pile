@@ -1,8 +1,14 @@
 .root {
-    padding: 5px 0;
+    position: relative;
+    // padding: 5px 0;
     height: auto;
-    scroll-padding: 60px;
-    scroll-snap-type: x proximity;
+    min-height: 72px;
+
+    &.focused {
+        background: var(--bg);
+        z-index: 99;
+        box-shadow: 0 30px 80px 40px var(--bg);
+    }
 }
 
 .post {
@@ -169,8 +175,8 @@
 .reply {
     .left {
         .connector {
-            margin-top: 3px;
-            height: 15px;
+            margin-top: -30px;
+            height: 48px;
             width: 2px;
             background: var(--border);
             transition: all ease-in-out 120ms;
@@ -190,30 +196,45 @@
     }
 }
 
+.actionsHolder {
+    display: flex;
+    height: 40px;
+    min-height: 40px;
+    margin-top: -10px;
+    position: relative;
+}
+
 .actions {
     display: flex;
-    padding: 0 16px 0 20px;
-    margin: 1px -5px;
+    align-items: center;
+    vertical-align: middle;
+    padding: 0 16px 0 51px;
+    margin: 0 -5px;
+
+    .sep {
+        margin: 0 5px 0 4px;
+        color: var(--secondary);
+        opacity: 0.25;
+    }
 
     .openReply {
         display: flex;
         align-items: center;
-        // z-index: 1;
-        font-size: 0.9em;
+        font-size: 0.95em;
         user-select: none;
-        padding: 2px 13px 2px 2px;
-        transition: all ease-in-out 120ms;
+        padding: 2px 10px 2px 3px;
+
+        transition: all ease-in-out 80ms;
         border-radius: 90px;
-        margin-right: 8px;
-        margin-top: 3px;
-        background: var(--base);
-        color: var(--primary);
+        color: var(--base);
         line-height: 1;
         white-space: nowrap;
 
         &:hover {
             cursor: pointer;
             filter: contrast(1.15);
+            color: var(--base-hover);
+            background: var(--bg-secondary);
         }
 
         &:active {
@@ -224,8 +245,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 25px;
-            width: 25px;
+            height: 23px;
+            width: 23px;
             margin-right: 4px;
             fill: currentColor;
             transition: all ease-in-out 120ms;
@@ -235,10 +256,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 18px;
-            width: 18px;
+            height: 20px;
+            width: 20px;
+            margin: 2px 0;
             margin-right: 6px;
             margin-left: 5px;
+            // margin-top: -1px;
             fill: currentColor;
             transition: all ease-in-out 120ms;
         }

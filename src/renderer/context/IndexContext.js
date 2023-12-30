@@ -54,6 +54,18 @@ export const IndexContextProvider = ({ children }) => {
     [currentPile]
   );
 
+  const updateIndex = useCallback(async (filePath, data) => {
+    // setIndex((prevMap) => {
+    //   const newMap = new Map(prevMap);
+    //   newMap.set(filePath, data);
+    //   return newMap;
+    // });
+
+    window.electron.ipc.invoke('index-update', filePath, data).then((index) => {
+      // setIndex(index);
+    });
+  }, []);
+
   const removeIndex = useCallback(async (filePath) => {
     window.electron.ipc.invoke('index-remove', filePath).then((index) => {
       setIndex(index);
@@ -92,6 +104,7 @@ export const IndexContextProvider = ({ children }) => {
     initVectorIndex,
     rebuildVectorIndex,
     getVectorIndex,
+    updateIndex,
     query,
   };
 

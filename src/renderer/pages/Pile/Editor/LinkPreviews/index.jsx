@@ -1,5 +1,5 @@
 import styles from './LinkPreviews.module.scss';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, memo } from 'react';
 import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import LinkPreview from './LinkPreview';
@@ -24,7 +24,7 @@ const extractLinks = (htmlString) => {
   return urls.filter((value, index, self) => self.indexOf(value) === index);
 };
 
-export default function LinkPreviews({ post, editable = false }) {
+const LinkPreviews = memo(({ post, editable = false }) => {
   const getPreview = (url) => {
     return window.electron.ipc.invoke('get-link-preview', url);
   };
@@ -42,4 +42,5 @@ export default function LinkPreviews({ post, editable = false }) {
       <AnimatePresence>{renderLinks()}</AnimatePresence>
     </div>
   );
-}
+});
+export default LinkPreviews;

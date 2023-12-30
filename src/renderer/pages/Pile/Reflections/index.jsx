@@ -77,8 +77,6 @@ export default function Reflections() {
     });
   };
 
-  console.log('response', response);
-
   return (
     <>
       <Dialog.Root>

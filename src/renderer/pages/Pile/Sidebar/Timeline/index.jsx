@@ -3,10 +3,19 @@ import styles from './Timeline.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useEffect, useStatem, useRef } from 'react';
+import {
+  useEffect,
+  useStatem,
+  useRef,
+  useState,
+  memo,
+  useMemo,
+  useCallback,
+} from 'react';
 import { DateTime } from 'luxon';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import { useIndexContext } from 'renderer/context/IndexContext';
+import { on } from 'events';
 
 function isToday(date) {
   const today = new Date();
@@ -22,17 +31,19 @@ const countEntriesByDate = (map, targetDate) => {
   let count = 0;
   const targetDateString = targetDate.toISOString().substring(0, 10);
   for (const [key, value] of map.entries()) {
-    const createdAtDate = new Date(value.createdAt);
-    const localDateString = new Date(
-      createdAtDate.getFullYear(),
-      createdAtDate.getMonth(),
-      createdAtDate.getDate()
-    )
-      .toISOString()
-      .substring(0, 10);
-    if (localDateString === targetDateString) {
-      count++;
-    }
+    try {
+      const createdAtDate = new Date(value.createdAt);
+      const localDateString = new Date(
+        createdAtDate.getFullYear(),
+        createdAtDate.getMonth(),
+        createdAtDate.getDate()
+      )
+        .toISOString()
+        .substring(0, 10);
+      if (localDateString === targetDateString) {
+        count++;
+      }
+    } catch (error) {}
   }
   return count;
 };
@@ -48,7 +59,7 @@ const renderCount = (count) => {
   );
 };
 
-function DayComponent({ date }) {
+const DayComponent = memo(({ date, scrollToDate }) => {
   const { index } = useIndexContext();
   const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   const dayName = dayNames[date.getDay()];
@@ -57,6 +68,9 @@ function DayComponent({ date }) {
 
   return (
     <div
+      onClick={() => {
+        scrollToDate(date);
+      }}
       className={`${styles.day} ${isToday(date) && styles.today} ${
         dayName == 'S' && styles.monday
       }`}
@@ -67,9 +81,9 @@ function DayComponent({ date }) {
       <div className={styles.dayNumber}>{dayNumber}</div>
     </div>
   );
-}
+});
 
-function WeekComponent({ startDate, endDate }) {
+const WeekComponent = memo(({ startDate, endDate, scrollToDate }) => {
   const weekOfMonth = Math.floor(startDate.getDate() / 7) + 1;
   const monthNames = [
     'January',
@@ -93,7 +107,13 @@ function WeekComponent({ startDate, endDate }) {
     date <= endDate;
     date.setDate(date.getDate() + 1)
   ) {
-    days.push(<DayComponent key={date.toString()} date={new Date(date)} />);
+    days.push(
+      <DayComponent
+        key={date.toString()}
+        date={new Date(date)}
+        scrollToDate={scrollToDate}
+      />
+    );
   }
 
   const weekOfMonthText = () => {
@@ -124,12 +144,53 @@ function WeekComponent({ startDate, endDate }) {
       <div className={styles.line}></div>
     </div>
   );
-}
+});
 
-const Timeline = () => {
+const Timeline = memo(() => {
   const scrollRef = useRef(null);
   const scrubRef = useRef(null);
-  const { closestDate } = useTimelineContext();
+  const { index } = useIndexContext();
+  const { visibleIndex, scrollToIndex, closestDate, setClosestDate } =
+    useTimelineContext();
+  const [parentEntries, setParentEntries] = useState([]);
+
+  useEffect(() => {
+    if (!index) return;
+    const onlyParentEntries = Array.from(index).filter(
+      ([key, metadata]) => !metadata.isReply
+    );
+    setParentEntries(onlyParentEntries);
+  }, [index]);
+
+  useEffect(() => {
+    if (!parentEntries || parentEntries.length == 0) return;
+    if (visibleIndex == 0) return;
+    const current = parentEntries[visibleIndex - 1][1];
+    const createdAt = current.createdAt;
+    setClosestDate(createdAt);
+  }, [visibleIndex, parentEntries]);
+
+  const scrollToDate = useCallback(
+    (targetDate) => {
+      try {
+        let closestIndex = -1;
+        let smallestDiff = Infinity;
+
+        parentEntries.forEach((post, index) => {
+          let postDate = new Date(post[1].createdAt);
+          let diff = Math.abs(targetDate - postDate);
+          if (diff < smallestDiff) {
+            smallestDiff = diff;
+            closestIndex = index;
+          }
+        });
+        scrollToIndex(closestIndex);
+      } catch (error) {
+        console.error('Failed to scroll to entry', error);
+      }
+    },
+    [parentEntries]
+  );
 
   const getWeeks = () => {
     let weeks = [];
@@ -157,9 +218,17 @@ const Timeline = () => {
     return weeks;
   };
 
-  let weeks = getWeeks().map((week, index) => (
-    <WeekComponent key={index} startDate={week.start} endDate={week.end} />
-  ));
+  const createWeeks = () =>
+    getWeeks().map((week, index) => (
+      <WeekComponent
+        key={index}
+        startDate={week.start}
+        endDate={week.end}
+        scrollToDate={scrollToDate}
+      />
+    ));
+
+  let weeks = useMemo(createWeeks, [parentEntries.length]);
 
   useEffect(() => {
     if (!scrubRef.current) return;
@@ -193,6 +262,6 @@ const Timeline = () => {
       <div ref={scrubRef} className={styles.scrubber}></div>
     </div>
   );
-};
+});
 
 export default Timeline;

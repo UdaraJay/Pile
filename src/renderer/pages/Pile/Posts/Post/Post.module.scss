@@ -1,7 +1,8 @@
 .root {
     position: relative;
-    padding: 5px 0;
+    // padding: 5px 0;
     height: auto;
+    min-height: 72px;
 
     &.focused {
         background: var(--bg);
@@ -174,8 +175,8 @@
 .reply {
     .left {
         .connector {
-            margin-top: -14px;
-            height: 33px;
+            margin-top: -30px;
+            height: 48px;
             width: 2px;
             background: var(--border);
             transition: all ease-in-out 120ms;
@@ -197,11 +198,10 @@
 
 .actionsHolder {
     display: flex;
-    height: 25px;
-    min-height: 25px;
-    margin-top: -12px;
+    height: 40px;
+    min-height: 40px;
+    margin-top: -10px;
     position: relative;
-    z-index: 99;
 }
 
 .actions {

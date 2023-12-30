@@ -4,6 +4,7 @@ const glob = require('glob');
 const matter = require('gray-matter');
 const keytar = require('keytar');
 const pileIndex = require('./pileIndex');
+const { BrowserWindow } = require('electron');
 
 const {
   TextNode,
@@ -44,6 +45,13 @@ class PileVectorIndex {
     await this.initVectorStoreIndex();
     await this.initQueryEngine();
     await this.initChatEngine();
+  }
+
+  async sendMessageToRenderer(channel = 'status', message) {
+    let win = BrowserWindow.getFocusedWindow();
+    if (win && !win.isDestroyed()) {
+      win.webContents.send(channel, message);
+    }
   }
 
   async setAPIKeyToEnv() {
@@ -95,7 +103,7 @@ class PileVectorIndex {
       );
 
       // Build the vector store for existing entries.
-      console.log('🛠️ Building vector index');
+      console.log('🛠️ Building fresh vector index');
       this.rebuildVectorIndex(this.pilePath);
     }
   }
@@ -267,6 +275,8 @@ class PileVectorIndex {
     const index = new Map(JSON.parse(data));
     const documents = [];
 
+    let count = 1;
+
     console.log('🟢 Rebuilding vector store...');
     // it makes sense to compile each thread into one document before
     // injesting it here... the metadata can includes the relative paths of
@@ -315,13 +325,36 @@ class PileVectorIndex {
 
           const replies = await Promise.all(childNodePromises);
           thread.relationships[NodeRelationship.CHILD] = replies;
+
           this.addDocument(thread);
+
+          this.sendMessageToRenderer('vector-index', {
+            type: 'indexing',
+            count: count,
+            total: index.size,
+            message: `Indexed entry ${count}/${index.size}`,
+          });
+
           console.log('✅ Successfully indexed file', relativeFilePath);
         }
+        count++;
       } catch (error) {
+        this.sendMessageToRenderer('vector-index', {
+          type: 'indexing',
+          count: count,
+          total: index.size,
+          message: `Failed to index an entry. Skipping ${count}/${index.size}`,
+        });
         console.log('❌ Failed to embed and index:', relativeFilePath);
       }
     }
+
+    this.sendMessageToRenderer('vector-index', {
+      type: 'done',
+      count: index.size,
+      total: index.size,
+      message: `Indexing complete`,
+    });
     console.log('🟢 Finished building index');
   }
 

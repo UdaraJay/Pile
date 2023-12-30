@@ -26,7 +26,7 @@ import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 const Post = memo(({ postPath }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
-  const { setClosestDate } = useTimelineContext();
+  // const { setClosestDate } = useTimelineContext();
   const { post, cycleColor, refreshPost, setHighlight } = usePost(postPath);
   const [hovering, setHover] = useState(false);
   const [replying, setReplying] = useState(false);
@@ -53,34 +53,34 @@ const Post = memo(({ postPath }) => {
 
   const containerRef = useRef();
 
-  useEffect(() => {
-    const container = containerRef.current;
+  // useEffect(() => {
+  //   const container = containerRef.current;
 
-    const handleIntersection = (entries) => {
-      const entry = entries[0];
-      if (entry.isIntersecting) {
-        if (post.data.isReply) return;
-        setClosestDate(post.data.createdAt);
-      }
-    };
+  //   const handleIntersection = (entries) => {
+  //     const entry = entries[0];
+  //     if (entry.isIntersecting) {
+  //       if (post.data.isReply) return;
+  //       setClosestDate(post.data.createdAt);
+  //     }
+  //   };
 
-    const options = {
-      root: null,
-      rootMargin: '-100px 0px 0px 0px',
-      threshold: 0,
-    };
+  //   const options = {
+  //     root: null,
+  //     rootMargin: '-100px 0px 0px 0px',
+  //     threshold: 0,
+  //   };
 
-    const observer = new IntersectionObserver(handleIntersection, options);
-    if (container) {
-      observer.observe(container);
-    }
+  //   const observer = new IntersectionObserver(handleIntersection, options);
+  //   if (container) {
+  //     observer.observe(container);
+  //   }
 
-    return () => {
-      if (container) {
-        observer.unobserve(container);
-      }
-    };
-  }, [containerRef, post]);
+  //   return () => {
+  //     if (container) {
+  //       observer.unobserve(container);
+  //     }
+  //   };
+  // }, [containerRef, post]);
 
   if (!post) return;
   if (post.content == '' && post.data.attachments.length == 0) return;

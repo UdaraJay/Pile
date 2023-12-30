@@ -6,8 +6,6 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { useState, useCallback, useEffect, useMemo, useRef, memo } from 'react';
 import { useIndexContext } from 'renderer/context/IndexContext';
 import Post from './Post';
-import { VariableSizeList as List, areEqual } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import NewPost from '../NewPost';
 import { AnimatePresence, motion } from 'framer-motion';
 import debounce from 'renderer/utils/debounce';
@@ -33,6 +31,24 @@ export default function Posts() {
     // NewPost component at the top of the list.
     setData([['NewPost', { height: 150 }], ...Array.from(onlyParentEntries)]);
   }, [index]);
+
+  // When there are zero entries
+  if (index.size == 0) {
+    return (
+      <div className={styles.posts}>
+        <NewPost />
+        <div className={styles.empty}>
+          <div className={styles.wrapper}>
+            <div className={styles.none}>Say something?</div>
+            <div className={styles.tip}>
+              Pile is ideal for journaling in bursts– type down what you're
+              thinking right now, come back to it over time.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.posts}>

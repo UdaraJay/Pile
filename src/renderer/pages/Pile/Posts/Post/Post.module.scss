@@ -6,7 +6,6 @@
 
     &.focused {
         background: var(--bg);
-        z-index: 99;
         box-shadow: 0 30px 80px 40px var(--bg);
     }
 }

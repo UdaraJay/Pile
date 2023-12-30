@@ -65,9 +65,9 @@ export default function Reflections() {
     if (!response) return;
     const sources = response.sourceNodes;
 
-    return sources.map((source) => {
+    return sources.map((source, index) => {
       return (
-        <div className={styles.post}>
+        <div key={index} className={styles.post}>
           <Post
             key={`post-${source.metadata.relativeFilePath}`}
             postPath={source.metadata.relativeFilePath}

@@ -114,6 +114,8 @@
     --bg-tertiary: #1a375f;
     --bg-color-secondary-hover: rgb(95, 100, 122);
     --bg-translucent: rgba(10, 15, 35, 0.45); */
+    
+    color-scheme: dark;
   }
 }
 

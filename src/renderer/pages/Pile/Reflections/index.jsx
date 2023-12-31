@@ -16,7 +16,6 @@ import {
   usePilesContext,
 } from 'renderer/context/PilesContext';
 import { useIndexContext } from 'renderer/context/IndexContext';
-import { response as testResponse } from './response';
 import Post from '../Posts/Post';
 import TextareaAutosize from 'react-textarea-autosize';
 import Waiting from '../Toasts/Toast/Loaders/Waiting';

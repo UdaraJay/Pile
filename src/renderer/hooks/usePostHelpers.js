@@ -48,7 +48,7 @@ export const attachToPostCreator =
     // Attachments are stored relative to the base path from the
     // base directory of the pile
     const correctedPaths = newAttachments.map((path) => {
-      const pathArr = path.split('/').slice(-4);
+      const pathArr = path.split(/[/\\]/).slice(-4);
       const newPath = window.electron.joinPath(...pathArr);
 
       return newPath;

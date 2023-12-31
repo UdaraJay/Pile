@@ -113,7 +113,7 @@ ipcMain.handle('open-file', async (event, data) => {
     const hours = String(currentDate.getHours()).padStart(2, '0');
     const minutes = String(currentDate.getMinutes()).padStart(2, '0');
     const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-    const selectedFileName = filePath.split('/').pop();
+    const selectedFileName = filePath.split(/[/\\]/).pop();
 
     if (!selectedFileName) continue;
 

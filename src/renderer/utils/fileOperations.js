@@ -13,9 +13,9 @@ const postFormat = {
 };
 
 const getDirectoryPath = (filePath) => {
-  const pathArr = filePath.split('/');
+  const pathArr = filePath.split(/[/\\]/);
   pathArr.pop();
-  return pathArr.join('/');
+  return window.electron.joinPath(...pathArr);
 };
 
 const getFormattedTimestamp = () => {

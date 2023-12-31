@@ -32,7 +32,7 @@ export const PilesContextProvider = ({ children }) => {
     if (!location.pathname) return;
     if (!location.pathname.startsWith('/pile/')) return;
 
-    const currentPileName = location.pathname.split('/').pop();
+    const currentPileName = location.pathname.split(/[/\\]/).pop();
 
     changeCurrentPile(currentPileName);
   }, [location.pathname]);

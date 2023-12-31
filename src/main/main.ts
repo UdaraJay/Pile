@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 
 import './ipc';
+import { nativeTheme } from 'electron/main';
 
 Menu.setApplicationMenu(null);
 
@@ -87,6 +88,11 @@ const createWindow = async () => {
     trafficLightPosition: { x: 18, y: 16 },
     transparent: true,
     vibrancy: 'sidebar',
+    titleBarOverlay: {
+      color: '#00000000',
+      symbolColor: nativeTheme.shouldUseDarkColors ? 'white' : 'black',
+      height: 50,
+    },
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));

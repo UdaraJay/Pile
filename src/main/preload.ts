@@ -55,6 +55,9 @@ const electronHandler = {
     fs.writeFile(path, data, 'utf-8', callback),
   joinPath: (...args: any) => path.join(...args),
   mkdir: (...args: any) => fs.mkdir(...args),
+  isMac: process.platform === 'darwin',
+  isWindows: process.platform === 'win32',
+  pathSeparator: path.sep,
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

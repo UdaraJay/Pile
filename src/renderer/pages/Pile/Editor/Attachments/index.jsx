@@ -16,7 +16,7 @@ const Attachments = ({
   return post.data.attachments.map((attachment) => {
     const image_exts = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
     const extension = attachment.split('.').pop();
-    const imgPath = 'local://' + getCurrentPilePath() + '/' + attachment;
+    const imgPath = 'local://' + getCurrentPilePath() + window.electron.pathSeparator + attachment;
 
     if (image_exts.includes(extension)) {
       return (

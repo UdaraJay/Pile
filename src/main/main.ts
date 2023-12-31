@@ -1,5 +1,5 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-import { app, BrowserWindow, shell, protocol, net, Menu } from 'electron';
+import { app, BrowserWindow, shell, protocol, net, Menu, nativeTheme } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -8,7 +8,6 @@ import fs from 'fs';
 import path from 'path';
 
 import './ipc';
-import { nativeTheme } from 'electron/main';
 
 Menu.setApplicationMenu(null);
 

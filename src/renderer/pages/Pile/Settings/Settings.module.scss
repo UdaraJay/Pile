@@ -1,278 +1,277 @@
 .iconHolder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
-    min-width: 36px;
-    border-radius: 8px;
-    transition: all ease-in-out 120ms;
-    -webkit-app-region: none;
-    background: transparent;
-    margin-right: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 36px;
+  border-radius: 8px;
+  transition: all ease-in-out 120ms;
+  -webkit-app-region: none;
+  background: transparent;
+  margin-right: -2px;
 
+  .settingsIcon {
+    color: var(--secondary);
+    height: 17px;
+    width: 17px;
+    transition: all ease-in-out 220ms;
+    transition-delay: 40ms;
+    opacity: 0.5;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: var(--bg-secondary);
+    color: var(--primary);
+
+    .homeIcon,
     .settingsIcon {
-        color: var(--secondary);
-        height: 17px;
-        width: 17px;
-        transition: all ease-in-out 220ms;
-        transition-delay: 40ms;
-        opacity: 0.5;
+      opacity: 1;
     }
+  }
 
-    &:hover {
-        cursor: pointer;
-        background: var(--bg-secondary);
-        color: var(--primary);
-
-        .homeIcon,
-        .settingsIcon {
-            opacity: 1;
-        }
-    }
-
-    &:active {
-        background: var(--bg-tertiary);
-    }
+  &:active {
+    background: var(--bg-tertiary);
+  }
 }
 
 button,
 fieldset,
 input {
-    all: unset;
+  all: unset;
 }
 
 .DialogOverlay {
-    background-color: var(--bg-tertiary);
-    position: fixed;
-    inset: 0;
-    animation: overlayShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
-    opacity: 0.9;
-    z-index: 4;
+  background-color: var(--bg-tertiary);
+  position: fixed;
+  inset: 0;
+  animation: overlayShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.9;
+  z-index: 4;
 }
 
 .DialogContent {
-    z-index: 6;
-    background-color: var(--bg);
-    border-radius: 22px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90vw;
-    max-width: 450px;
-    max-height: 85vh;
-    padding: 18px;
-    animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 6;
+  background-color: var(--bg);
+  border-radius: 22px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 450px;
+  max-height: 85vh;
+  padding: 18px;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .DialogContent:focus {
-    outline: none;
+  outline: none;
 }
 
 .DialogTitle {
-    margin: 0;
-    padding: 0;
-    line-height: 1;
-    font-family: "Porpora";
-    font-size: 1.4em;
-    color: var(--primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-family: 'Porpora';
+  font-size: 1.4em;
+  color: var(--primary);
 }
 
 .DialogDescription {
-    margin: 6px 0 0;
-    color: var(--secondary);
-    font-size: 15px;
-    line-height: 1.5;
+  margin: 6px 0 0;
+  color: var(--secondary);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .Button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  background: var(--base);
+  border-radius: 8px;
+  transition: all ease-in-out 120ms;
+  padding: 0 14px;
+  line-height: 28px;
+  color: var(--base);
+  color: var(--active-text);
+  font-size: 0.85em;
+  border-radius: 90px;
+  user-select: none;
+
+  .icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  &.active {
+    background: var(--bg-secondary);
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: var(--base-hover);
+  }
+
+  &:active {
     background: var(--base);
-    border-radius: 8px;
-    transition: all ease-in-out 120ms;
-    padding: 0 14px;
-    line-height: 28px;
-    color: var(--base);
-    color: var(--active-text);
-    font-size: 0.85em;
-    border-radius: 90px;
-    user-select: none;
-
-    .icon {
-        height: 18px;
-        width: 18px;
-    }
-
-    &.active {
-        background: var(--bg-secondary);
-    }
-
-    &:hover {
-        cursor: pointer;
-        background: var(--base-hover);
-    }
-
-    &:active {
-        background: var(--base);
-    }
+  }
 }
 
 .IconButton {
-    font-family: inherit;
-    border-radius: 100%;
-    height: 28px;
-    width: 28px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--violet-11);
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    transition: all ease-in-out 120ms;
-    stroke-width: 2px;
-    color: var(--secondary);
+  font-family: inherit;
+  border-radius: 100%;
+  height: 28px;
+  width: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--violet-11);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transition: all ease-in-out 120ms;
+  strokewidth: 2px;
+  color: var(--secondary);
 
-    &:hover {
-        cursor: pointer;
-        color: var(--primary);
-        background-color: var(--bg-secondary);
-    }
+  &:hover {
+    cursor: pointer;
+    color: var(--primary);
+    background-color: var(--bg-secondary);
+  }
 }
 
 .Fieldset {
-    display: flex;
-    flex-direction: column;
-    margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
 }
 
 .disclaimer {
-    font-size: 0.8em;
-    color: var(--secondary);
-    margin-top: 10px;
-    line-height: 1.4;
-    opacity: 0.75;
+  font-size: 0.8em;
+  color: var(--secondary);
+  margin-top: 10px;
+  line-height: 1.4;
+  opacity: 0.75;
 
-    a {
-        color: var(--active);
+  a {
+    color: var(--active);
 
-        &:hover {
-            color: var(--active-hover);
-        }
+    &:hover {
+      color: var(--active-hover);
     }
+  }
 }
 
 .Label {
-    font-size: 12px;
-    color: var(--secondary);
-    margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--secondary);
+  margin-bottom: 8px;
 }
 
 .Input {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 7px;
-    padding: 8px 10px;
-    font-size: 14px;
-    line-height: 1;
-    color: var(--primary);
-    background: var(--bg-tertiary);
-    border: none;
-    outline: none;
-    font-family: 'Inter', sans-serif;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--primary);
+  background: var(--bg-tertiary);
+  border: none;
+  outline: none;
+  font-family: 'Inter', sans-serif;
 
-    &:focus {
-        box-shadow: 0 0 0 2px var(--base);
-    }
+  &:focus {
+    box-shadow: 0 0 0 2px var(--base);
+  }
 }
 
 .Textarea {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 7px;
-    padding: 8px 10px;
-    font-size: 14px;
-    line-height: 1.35;
-    min-height: 150px;
-    width: 100%; /* Ensure the width is 100%, no less, no more */
-    resize: none; /* Prevent resizing */
-    color: var(--primary);
-    background: var(--bg-tertiary);
-    border: none;
-    outline: none;
-    font-family: 'Inter', sans-serif;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 14px;
+  line-height: 1.35;
+  min-height: 150px;
+  width: 100%; /* Ensure the width is 100%, no less, no more */
+  resize: none; /* Prevent resizing */
+  color: var(--primary);
+  background: var(--bg-tertiary);
+  border: none;
+  outline: none;
+  font-family: 'Inter', sans-serif;
 
-    &:focus {
-        box-shadow: 0 0 0 2px var(--base);
-    }
+  &:focus {
+    box-shadow: 0 0 0 2px var(--base);
+  }
 }
 
 .themes {
+  display: flex;
+  margin: -5px;
+  margin-bottom: 0px;
+
+  .theme {
     display: flex;
-    margin: -5px;
-    margin-bottom: 0px;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 32px;
+    width: 30px;
+    background: var(--bg-secondary);
+    margin: 5px;
+    border-radius: 12px;
 
-    .theme {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 32px;
-        width: 30px;
-        background: var(--bg-secondary);
-        margin: 5px;
-        border-radius: 12px;
-
-        .color1 {
-            flex: 1 0 auto;
-            border-radius: 10px;
-            margin: 2px;
-            // margin-bottom: 0;
-        }
-
-        .color2 {
-            flex: 1 0 auto;
-            border-radius: 0 0 10px 10px;
-            margin: 3px;
-            margin-top: 0;
-        }
-
-        &:hover {
-            cursor: pointer;
-            background: var(--bg-tertiary);
-        }
-
-        &.current {
-            background: var(--primary);
-        }
-
+    .color1 {
+      flex: 1 0 auto;
+      border-radius: 10px;
+      margin: 2px;
+      // margin-bottom: 0;
     }
+
+    .color2 {
+      flex: 1 0 auto;
+      border-radius: 0 0 10px 10px;
+      margin: 3px;
+      margin-top: 0;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background: var(--bg-tertiary);
+    }
+
+    &.current {
+      background: var(--primary);
+    }
+  }
 }
 
 @keyframes overlayShow {
-    from {
-        opacity: 0;
-    }
+  from {
+    opacity: 0;
+  }
 
-    to {
-        opacity: 0.9;
-    }
+  to {
+    opacity: 0.9;
+  }
 }
 
 @keyframes contentShow {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -48%) scale(0.96);
-    }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
 
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }

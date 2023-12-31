@@ -10,6 +10,8 @@ const wrapperStyle = window.electron.isMac ? {
   background: 'var(--bg)',
   borderRadius: '8px',
   overflow: 'hidden',
+  border: '1px solid var(--bg-secondary)',
+  height: '100vh',
 }
 
 root.render(

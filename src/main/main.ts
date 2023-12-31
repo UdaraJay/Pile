@@ -85,7 +85,7 @@ const createWindow = async () => {
     frame: false,
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 18, y: 16 },
-    transparent: true,
+    transparent: process.platform === 'darwin',
     vibrancy: 'sidebar',
     titleBarOverlay: {
       color: '#00000000',

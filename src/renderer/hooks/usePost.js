@@ -96,7 +96,7 @@ function usePost(
         }
 
         const postRelativePath = saveToPath.replace(
-          getCurrentPilePath() + '/',
+          getCurrentPilePath() + window.electron.pathSeparator,
           ''
         );
         addIndex(postRelativePath, parentPostPath); // Add the file to the index
@@ -110,7 +110,7 @@ function usePost(
   );
 
   const addReplyToParent = async (parentPostPath, replyPostPath) => {
-    const relativeReplyPath = replyPostPath.split('/').slice(-3).join('/');
+    const relativeReplyPath = window.electron.joinPath(...replyPostPath.split(/[/\\]/).slice(-3));
     const fullParentPostPath = getCurrentPilePath(parentPostPath);
     const parentPost = await getPost(fullParentPostPath);
     const content = parentPost.content;

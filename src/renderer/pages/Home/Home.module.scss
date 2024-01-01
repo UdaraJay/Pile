@@ -148,6 +148,7 @@
     font-size: 0.8em;
     border-radius: 12px;
     overflow: hidden;
+    opacity: 0.999; // Having the opacity set to 1 interferes with 'overflow: hidden'
 
     .pile {
         -webkit-app-region: none;

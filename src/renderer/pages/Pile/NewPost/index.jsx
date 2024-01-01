@@ -14,7 +14,7 @@ const NewPost = memo(() => {
 
   return (
     <div className={styles.post}>
-      <div className={styles.now}>at this moment</div>
+      {/* <div className={styles.now}>at this moment</div> */}
       <div className={styles.editor}>
         <Editor editable />
       </div>

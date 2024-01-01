@@ -1,5 +1,5 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-import { app, BrowserWindow, shell, protocol, net, Menu } from 'electron';
+import { app, BrowserWindow, shell, protocol, net, Menu, nativeTheme } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -85,8 +85,13 @@ const createWindow = async () => {
     frame: false,
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 18, y: 16 },
-    transparent: true,
+    transparent: process.platform === 'darwin',
     vibrancy: 'sidebar',
+    titleBarOverlay: {
+      color: '#00000000',
+      symbolColor: nativeTheme.shouldUseDarkColors ? 'white' : 'black',
+      height: 50,
+    },
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));

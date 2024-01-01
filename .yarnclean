@@ -43,3 +43,8 @@ wercker.yml
 
 # misc
 *.md
+
+# exceptions
+<!-- This doc folder is required for the yaml package -->
+<!-- https://github.com/eemeli/yaml/issues/384 -->
+!**/yaml/dist/**/doc

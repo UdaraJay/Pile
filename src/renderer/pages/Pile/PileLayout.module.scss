@@ -167,7 +167,6 @@
     position: sticky;
     top: 0;
     z-index: 4;
-    width: 100%;
     height: var(--nav-height);
     font-size: 0.85em;
     background: var(--bg);
@@ -373,10 +372,22 @@
             opacity: 0.5;
             transition: all ease-in-out 120ms;
             font-size: 13px;
-
-            @media only screen and (max-width: 909px) {
-                margin-left: 86px;
-            }
         }
+    }
+}
+
+// OS Styles
+
+.mac {
+    .nav {
+        @media only screen and (max-width: 909px) {
+            padding-left: 86px;
+        }
+    }
+}
+
+.win {
+    .nav {
+        padding-right: 130px;
     }
 }

@@ -1,6 +1,6 @@
 {
   "description": "Pile",
-  "version": "0.3.1",
+  "version": "0.9.2",
   "keywords": [
     "pile"
   ],
@@ -30,9 +30,13 @@
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
-    "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
+    "postinstall": "patch-package && ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
-    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac --publish always",
+    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac --publish never",
+    "package:mac": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac",
+    "publish:mac": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac --publish always",
+    "package:win": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --win",
+    "publish:win": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --win --publish always",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
@@ -166,7 +170,9 @@
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "mini-css-extract-plugin": "^2.7.6",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.31",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.8",
     "react-refresh": "^0.14.0",
     "react-test-renderer": "^18.2.0",

@@ -3,7 +3,7 @@ import styles from './PileLayout.module.scss';
 import { HomeIcon } from 'renderer/icons';
 import Sidebar from './Sidebar/Timeline/index';
 import { useIndexContext } from 'renderer/context/IndexContext';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { DateTime } from 'luxon';
 import Settings from './Settings';
 import HighlightsDialog from './Highlights';
@@ -37,7 +37,7 @@ export default function PileLayout({ children }) {
     window.scrollTo(0, 0);
   }, []);
 
-  const themeStyles = useCallback(() => {
+  const themeStyles = useMemo(() => {
     switch (currentTheme) {
       case 'purple':
         return styles.purpleTheme;
@@ -50,8 +50,13 @@ export default function PileLayout({ children }) {
     }
   }, [currentTheme]);
 
+  const osStyles = useMemo(
+    () => (window.electron.isMac ? styles.mac : styles.win),
+    []
+  );
+
   return (
-    <div className={`${styles.frame} ${themeStyles()}`}>
+    <div className={`${styles.frame} ${themeStyles} ${osStyles}`}>
       <div className={styles.bg}></div>
       <div className={styles.main}>
         <div className={styles.sidebar}>

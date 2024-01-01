@@ -43,7 +43,7 @@ export default function CreatePile() {
 
   const renderPiles = () => {
     return pilesList.map((pile) => {
-      const name = pile.split('/').pop();
+      const name = pile.split(/[/\\]/).pop();
       return (
         <div className={styles.pile} key={pile}>
           <div className={styles.left}>

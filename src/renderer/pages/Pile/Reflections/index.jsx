@@ -8,7 +8,7 @@ import {
   DownloadIcon,
   FlameIcon,
 } from 'renderer/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAIContext } from 'renderer/context/AIContext';
 import {
@@ -76,6 +76,11 @@ export default function Reflections() {
     });
   };
 
+  const osStyles = useMemo(
+    () => (window.electron.isMac ? styles.mac : styles.win),
+    []
+  );
+
   return (
     <>
       <Dialog.Root>
@@ -90,6 +95,14 @@ export default function Reflections() {
             <div className={styles.wrapper}>
               <Dialog.Title className={styles.DialogTitle}>
                 <Status setReady={setReady} />
+                <Dialog.Close asChild>
+                  <button
+                    className={`${styles.close} ${osStyles}`}
+                    aria-label="Close Reflections"
+                  >
+                    <CrossIcon />
+                  </button>
+                </Dialog.Close>
               </Dialog.Title>
               <TextareaAutosize
                 value={text}
@@ -110,14 +123,6 @@ export default function Reflections() {
                     'Reflect'
                   )}
                 </button>
-                <Dialog.Close asChild>
-                  <button
-                    className={styles.close}
-                    aria-label="Close Reflections"
-                  >
-                    <CrossIcon />
-                  </button>
-                </Dialog.Close>
               </div>
 
               <AnimatePresence>

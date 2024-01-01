@@ -4,9 +4,13 @@ import { MemoryRouter as Router } from 'react-router-dom';
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
 
+const wrapperStyle = {
+  background: window.electron.isMac ? 'var(--bg-translucent)' : 'var(--bg)',
+}
+
 root.render(
   <Router>
-    <div style={{ background: 'var(--bg-translucent)' }}>
+    <div style={wrapperStyle}>
       <App />
     </div>
   </Router>

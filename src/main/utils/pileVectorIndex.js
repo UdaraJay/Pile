@@ -39,12 +39,17 @@ class PileVectorIndex {
 
     this.pilePath = pilePath;
 
-    await this.setAPIKeyToEnv();
-    await this.setStorageContext();
-    await this.setServiceContext();
-    await this.initVectorStoreIndex();
-    await this.initQueryEngine();
-    await this.initChatEngine();
+    try {
+      await this.setAPIKeyToEnv();
+      await this.setStorageContext();
+      await this.setServiceContext();
+      await this.initVectorStoreIndex();
+      await this.initQueryEngine();
+      await this.initChatEngine();
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
 
   async sendMessageToRenderer(channel = 'status', message) {
@@ -57,8 +62,7 @@ class PileVectorIndex {
   async setAPIKeyToEnv() {
     const apikey = await keytar.getPassword('pile', 'aikey');
     if (!apikey) {
-      console.error('API key not found. Please set it first.');
-      throw new Error('API key not found');
+      throw new Error('API key not found. Please set it first.');
     }
     process.env['OPENAI_API_KEY'] = apikey;
   }
@@ -136,7 +140,8 @@ class PileVectorIndex {
   // when new entries are created or when they are updated.
   async add(pilePath, relativeFilePath, parentRelativeFilePath = null) {
     // Initialize if needed
-    await this.initialize(pilePath);
+    const initialized = await this.initialize(pilePath);
+    if (!initialized) return;
 
     const filePath = path.join(pilePath, relativeFilePath);
     const fileContent = await fs.promises.readFile(filePath, 'utf-8');
@@ -263,7 +268,8 @@ class PileVectorIndex {
     if (!pilePath) return;
 
     // Setup or load the vector store
-    await this.initialize(pilePath);
+    const initialized = await this.initialize(pilePath);
+    if (!initialized) return;
 
     // Load the base index
     this.pilePath = pilePath;

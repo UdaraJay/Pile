@@ -110,7 +110,7 @@ function usePost(
   );
 
   const addReplyToParent = async (parentPostPath, replyPostPath) => {
-    const relativeReplyPath = window.electron.joinPath(replyPostPath.split(/[/\\]/).slice(-3));
+    const relativeReplyPath = window.electron.joinPath(...replyPostPath.split(/[/\\]/).slice(-3));
     const fullParentPostPath = getCurrentPilePath(parentPostPath);
     const parentPost = await getPost(fullParentPostPath);
     const content = parentPost.content;

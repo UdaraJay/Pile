@@ -86,8 +86,9 @@ input {
 }
 
 .DialogTitle {
-    display: inline-flex;
-    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     color: var(--active);
     font-weight: 400;
     border-radius: 7px;
@@ -95,15 +96,41 @@ input {
     font-size: 15px;
     line-height: 1.5;
     mix-blend-mode: soft-light;
-
-    .icon {
-        height: 28px;
-        width: 28px;
-        margin-right: 9px;
-    }
 }
 
+.close {
+    font-family: inherit;
+    border-radius: 90px;
+    height: 32px;
+    width: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all ease-in-out 120ms;
+    stroke-width: 2px;
+    background: var(--bg-tertiary);
+    color: var(--secondary);
+    margin-left: 12px;
+    position: fixed;
+    top: 16px;
+    right: 16px;
 
+    &:hover {
+        cursor: pointer;
+        color: var(--primary);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+
+    &.win {
+        position: relative;
+        margin: -5px 0 0 0;
+        top: 0;
+        left: 0;
+    }
+}
 
 .textarea {
     display: block;
@@ -190,34 +217,6 @@ input {
 
 }
 
-.close {
-    font-family: inherit;
-    border-radius: 90px;
-    height: 32px;
-    width: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all ease-in-out 120ms;
-    stroke-width: 2px;
-    background: var(--bg-tertiary);
-    color: var(--secondary);
-    margin-left: 12px;
-    position: fixed;
-    top: 16px;
-    right: 16px;
-
-    &:hover {
-        cursor: pointer;
-        color: var(--primary);
-    }
-
-    &:active {
-        transform: scale(0.9);
-    }
-}
-
-
 .answer {
     padding-bottom: 50px;
     padding-right: 50px;
@@ -225,8 +224,6 @@ input {
     margin: 60px 0 50px 0;
     color: var(--secondary);
 }
-
-
 
 .text {
     font-size: 1.6em;

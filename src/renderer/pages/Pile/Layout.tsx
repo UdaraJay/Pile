@@ -50,7 +50,10 @@ export default function PileLayout({ children }) {
     }
   }, [currentTheme]);
 
-  const osStyles = useMemo(() => window.electron.isMac ? styles.mac : styles.win, []);
+  const osStyles = useMemo(
+    () => (window.electron.isMac ? styles.mac : styles.win),
+    []
+  );
 
   return (
     <div className={`${styles.frame} ${themeStyles} ${osStyles}`}>

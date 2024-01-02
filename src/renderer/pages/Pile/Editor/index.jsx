@@ -21,6 +21,7 @@ import { useAIContext } from 'renderer/context/AIContext';
 import useThread from 'renderer/hooks/useThread';
 import LinkPreviews from './LinkPreviews';
 import { useToastsContext } from 'renderer/context/ToastsContext';
+import Gen from 'main/utils/Gen';
 
 const Editor = memo(
   ({
@@ -254,15 +255,16 @@ const Editor = memo(
           max_tokens: 200,
           messages: context,
         });
-
-        if (type == 'openai') {
-
+        
         for await (const part of stream) {
-          const token = part.choices[0].delta.content;
+          let token = "";
+            if (type == "openai") {
+              token = part.choices[0].delta.content;
+            }
+            else {
+              token = part.message.content;
+            }
           editor.commands.insertContent(token);
-          }
-        } else {
-          editor.commands.insertContent(stream);
         }
         removeNotification('reflecting');
         setIsAiResponding(false);

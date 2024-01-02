@@ -7,7 +7,11 @@ import {
 } from 'react';
 import OpenAI from 'openai';
 import ollama from '../../main/utils/ollama';
-// import { set } from 'main/utils/pileLinks';
+
+export const availableModelsSources = {
+  'openai': 'OpenAI',
+  'ollama': 'Ollama',
+};
 
 export const AIContext = createContext();
 
@@ -35,16 +39,42 @@ export const AIContextProvider = ({ children }) => {
       return;
     }
 
-    const res = await startOllama();
+    const modelName = await getModelName();
+    if (!modelName) {
+      return;
+    }
+
     const ollamaInstance = await ollama();
     setAi(ollamaInstance);
     console.log(ollamaInstance);
-    setModel('llama2')
+    setModel(modelName)
     setType('ollama')
     return;
 
 
   };
+
+  const getModelName = () => {
+    return window.electron.ipc.invoke('get-model-name');
+  }
+
+  const setModelName = (modelName) => {
+
+    return window.electron.ipc.invoke('set-model-name', modelName);
+  }
+
+  const setModelType = (modelType) => {
+    setType(modelType);
+    return window.electron.ipc.invoke('set-model-type', modelType);
+  }
+
+  const getModelType = () => {
+    return window.electron.ipc.invoke('get-model-type');
+  }
+
+  const clearModelName = () => {
+    return window.electron.ipc.invoke('delete-model-name');
+  }
 
   const getKey = (accountName) => {
     return window.electron.ipc.invoke('get-ai-key');
@@ -80,6 +110,11 @@ export const AIContextProvider = ({ children }) => {
     setKey,
     getKey,
     deleteKey,
+    setModelName,
+    getModelName,
+    clearModelName,
+    setModelType,
+    getModelType,
     getCompletion,
   };
 

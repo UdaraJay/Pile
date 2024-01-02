@@ -31,30 +31,33 @@ function requestOpts(args) {
 
 async function generate(args) {
     let requestOptions = requestOpts(args);
-    console.log(args.stream)
     if (args.stream) {
         try {
             let genout = Gen.prototype.generate(requestOptions)
             return genout;
         } catch (error) {
+            console.log("Error in ollama.js generate")
             console.log(error)
             return null;
         }
     } else {
-        return await getBulk(requestOptions)
+        try {
+            return await getBulk(requestOptions)
+        } catch (error) {
+            console.log("Error in ollama.js generate for getBulk")
+            console.log(error)
+            return null;
+        }
     }
 
 }
 async function getBulk() {
-    console.log("Fetching")
     let response = await fetch("http://127.0.0.1:11434/api/chat", requestOptions)
         .then(response => response.body.getReader())
         .then(response => response.text())
         .catch(error => console.log('error', error));
-    console.log("Fetched")
     let parsed = JSON.parse(response)
     let content = parsed["message"]["content"]
-    console.log("Content", content)
     return content;
 }
 // Create an object with the chat.completions.create function set to be equal to generate

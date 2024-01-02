@@ -5,66 +5,165 @@ import {
   useEffect,
   useCallback,
 } from 'react';
-import OpenAI from 'openai';
+import { useLocation } from 'react-router-dom';
+import { usePilesContext } from './PilesContext';
+import { useAIContext } from './AIContext';
+import { useToastsContext } from './ToastsContext';
 
-export const AIContext = createContext();
+export const LinksContext = createContext();
 
-export const AIContextProvider = ({ children }) => {
-  const [ai, setAi] = useState(null);
+export const LinksContextProvider = ({ children }) => {
+  const { currentPile, getCurrentPilePath } = usePilesContext();
+  const { ai, model, getCompletion } = useAIContext();
+  const { addNotification, updateNotification, removeNotification } =
+    useToastsContext();
 
-  const prompt =
-    'You are an AI within a journaling app. Your job is to help the user reflect on their thoughts in a thoughtful and kind manner. The user can never directly address you or directly respond to you. Try not to repeat what the user said, instead try to seed new ideas, encourage or debate. Keep your responses concise, but meaningful.';
+  const getLink = useCallback(
+    async (url) => {
+      const pilePath = getCurrentPilePath();
+      const preview = await window.electron.ipc.invoke(
+        'links-get',
+        pilePath,
+        url
+      );
 
-  useEffect(() => {
-    setupAi();
-  }, []);
+      // return cached preview if available
+      if (preview) {
+        return preview;
+      }
 
-  const setupAi = async () => {
-    const key = await getKey();
+      addNotification({
+        id: url,
+        type: 'waiting',
+        message: 'Creating link preview',
+        dismissTime: 12000,
+      });
 
-    if (!key) return;
+      // otherwise generate a new preview
+      const _preview = await getPreview(url);
+      updateNotification(url, 'thinking', 'Generating preview...');
+      const aiCard = await generateMeta(url).catch(() => {
+        console.log(
+          'Failed to generate AI link preview, a basic preview will be used.'
+        );
+        updateNotification(url, 'failed', 'AI link preview failed');
+        return null;
+      });
 
-    const openaiInstance = new OpenAI({
-      apiKey: key,
+      const linkPreview = {
+        url: url,
+        createdAt: new Date().toISOString(),
+        title: _preview?.title ?? '',
+        images: _preview?.images ?? [],
+        favicon: _preview?.favicon ?? '',
+        host: _preview?.host ?? '',
+        description: aiCard?.summary ?? '',
+        summary: '',
+        aiCard: aiCard ?? null,
+      };
+
+      // cache it
+      setLink(url, linkPreview);
+
+      removeNotification(url);
+
+      return linkPreview;
+    },
+    [currentPile]
+  );
+
+  const setLink = useCallback(
+    async (url, data) => {
+      const pilePath = getCurrentPilePath();
+      window.electron.ipc.invoke('links-set', pilePath, url, data);
+    },
+    [currentPile]
+  );
+
+  const getPreview = async (url) => {
+    const data = await window.electron.ipc.invoke('get-link-preview', url);
+    return data;
+  };
+
+  const getContent = async (url) => {
+    const data = await window.electron.ipc.invoke('get-link-content', url);
+    return data;
+  };
+
+  const trimContent = (string, numWords = 2000) => {
+    const wordsArray = string.split(/\s+/);
+    if (wordsArray.length > numWords) {
+      return wordsArray.slice(0, numWords).join(' ') + '...';
+    }
+    return string;
+  };
+
+  const generateMeta = async (url) => {
+    const { text, images, links } = await getContent(url);
+    const trimmedContent = trimContent(text);
+
+    let context = [];
+
+    context.push({
+      role: 'system',
+      content: `Provided below is some extracted plaintext response of a website. Use it to generate the content for a rich preview card for the webpage. 
+        The content is as follows: 
+        ${trimmedContent}
+        `,
+    });
+    context.push({
+      role: 'system',
+      content: `These are the links on the page: 
+        ${links}
+        `,
+    });
+    context.push({
+      role: 'system',
+      content: `These are the images on the page: 
+        ${images}
+        `,
+    });
+    context.push({
+      role: 'system',
+      content: `Provide your response as a JSON object that follows this schema:
+        {
+          "url": ${url}, 
+          "category": '', // suggest the best category for this page based on the content. eg: video, book, recipie, app, research paper, news, opinion, blog, social media etc.
+          "images": [{src: '', alt: ''}], // key images  
+          "summary": string, // tldr summary of this webpage
+          "highlights": [''], // plaintext sentences of 3-8 key insights, facts or quotes. Like an executive summary.
+          "buttons": [{title: '', href: ''}], // use the links to generate a primary and secondary buttons appropriate for this preview. ONLY use relevant links from the page.
+        }`,
     });
 
-    setAi(openaiInstance);
-  };
-
-  const getKey = (accountName) => {
-    return window.electron.ipc.invoke('get-ai-key');
-  };
-
-  const setKey = (secretKey) => {
-    return window.electron.ipc.invoke('set-ai-key', secretKey);
-  };
-
-  const deleteKey = () => {
-    return window.electron.ipc.invoke('delete-ai-key');
-  };
-
-  const getCompletion = async (model = 'gpt-3', context) => {
     const response = await ai.chat.completions.create({
       model: model,
-      max_tokens: 200,
+      max_tokens: 500,
       messages: context,
+      response_format: {
+        type: 'json_object',
+      },
     });
 
-    return response;
+    let choice = false;
+
+    try {
+      choice = JSON.parse(response.choices[0].message.content);
+    } catch (error) {}
+
+    return choice;
   };
 
-  const AIContextValue = {
-    ai,
-    prompt,
-    setKey,
-    getKey,
-    deleteKey,
-    getCompletion,
+  const linksContextValue = {
+    getLink,
+    setLink,
   };
 
   return (
-    <AIContext.Provider value={AIContextValue}>{children}</AIContext.Provider>
+    <LinksContext.Provider value={linksContextValue}>
+      {children}
+    </LinksContext.Provider>
   );
 };
 
-export const useAIContext = () => useContext(AIContext);
+export const useLinksContext = () => useContext(LinksContext);

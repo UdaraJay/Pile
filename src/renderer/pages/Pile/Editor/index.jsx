@@ -45,7 +45,7 @@ const Editor = memo(
       deletePost,
     } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
     const { getThread } = useThread();
-    const { ai, prompt } = useAIContext();
+    const { ai, model, type, prompt } = useAIContext();
     const { addNotification, removeNotification } = useToastsContext();
 
     const isNew = !postPath;
@@ -208,8 +208,10 @@ const Editor = memo(
     // This has to ensure that it only calls the AI generate function
     // on entries added for the AI that are empty.
     const generateAiResponse = useCallback(async () => {
+      console.log("Generate AI response")
       if (!editor) return;
       if (isAIResponding) return;
+      if (!ai) return;
 
       const isEmpty = editor.state.doc.textContent.length === 0;
 
@@ -225,6 +227,7 @@ const Editor = memo(
         setEditable(false);
         setIsAiResponding(true);
         const thread = await getThread(parentPostPath);
+        console.log("Thread", thread)
         let context = [];
         context.push({
           role: 'system',
@@ -246,15 +249,20 @@ const Editor = memo(
         if (context.length === 0) return;
 
         const stream = await ai.chat.completions.create({
-          model: 'gpt-4',
+          model: model,
           stream: true,
           max_tokens: 200,
           messages: context,
         });
 
+        if (type == 'openai') {
+
         for await (const part of stream) {
           const token = part.choices[0].delta.content;
           editor.commands.insertContent(token);
+          }
+        } else {
+          editor.commands.insertContent(stream);
         }
         removeNotification('reflecting');
         setIsAiResponding(false);

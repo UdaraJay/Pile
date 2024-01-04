@@ -102,6 +102,7 @@ input {
   user-select: none;
 
   .icon {
+    position: relative;
     height: 18px;
     width: 18px;
   }
@@ -185,6 +186,59 @@ input {
   border: none;
   outline: none;
   font-family: 'Inter', sans-serif;
+
+  &.model {
+    width: 160px;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px var(--base);
+  }
+}
+
+.AIModelInput {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-radius: 7px;
+  background: var(--bg-tertiary);
+  justify-content: space-between;
+  width: 155px;
+  height: 32px;
+
+  .text {
+    display: inline-flex;
+    flex: 1 1 auto;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--primary);
+    padding: 8px 10px;
+    font-family: 'Inter', sans-serif;
+    width: auto;
+    margin: 0;
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .aiiconholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    width: 32px;
+    margin-right: 10px;
+  }
+
+  .aiicon {
+    align-self: center;
+    flex: 0 0 20px;
+    height: 100%;
+    width: 24px;
+    color: #fff;
+  }
 
   &:focus {
     box-shadow: 0 0 0 2px var(--base);
@@ -285,21 +339,41 @@ input {
 
   .model {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    height: 32px;
-    width: 150px;
+    height: 33px;
+    padding: 0 17px 0 10px;
     background-color: var(--bg-secondary);
     margin: 5px;
-    border-radius: 12px;
+    border-radius: 90px;
     align-items: center;
     justify-items: center;
     justify-content: center;
+    font-size: 0.9em;
+    overflow: hidden;
+
+    .icon {
+      height: 20px;
+      width: 20px;
+      margin-right: 8px;
+      transition: all ease-in-out 120ms;
+
+      &.ollama {
+        height: 24px;
+        transform: translateY(4px);
+      }
+    }
 
     &:hover {
       cursor: pointer;
       background: var(--bg-tertiary);
+
+      .icon {
+        &.ollama {
+          transform: translateY(2px) scale(1.05);
+        }
+      }
     }
+
 
     &.current {
       background: var(--base);

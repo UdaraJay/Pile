@@ -209,7 +209,6 @@ const Editor = memo(
     // This has to ensure that it only calls the AI generate function
     // on entries added for the AI that are empty.
     const generateAiResponse = useCallback(async () => {
-      console.log("Generate AI response")
       if (!editor) return;
       if (isAIResponding) return;
       if (!ai) return;
@@ -228,7 +227,7 @@ const Editor = memo(
         setEditable(false);
         setIsAiResponding(true);
         const thread = await getThread(parentPostPath);
-        console.log("Thread", thread)
+        console.log('Thread', thread);
         let context = [];
         context.push({
           role: 'system',
@@ -255,15 +254,14 @@ const Editor = memo(
           max_tokens: 200,
           messages: context,
         });
-        
+
         for await (const part of stream) {
-          let token = "";
-            if (type == "openai") {
-              token = part.choices[0].delta.content;
-            }
-            else {
-              token = part.message.content;
-            }
+          let token = '';
+          if (type == 'openai') {
+            token = part.choices[0].delta.content;
+          } else {
+            token = part.message.content;
+          }
           editor.commands.insertContent(token);
         }
         removeNotification('reflecting');

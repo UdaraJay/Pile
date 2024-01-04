@@ -143,12 +143,12 @@ export const PilesContextProvider = ({ children }) => {
     [currentPile]
   );
 
-  
   const pilesContextValue = {
     piles,
     getCurrentPilePath,
     createPile,
     currentPile,
+    updateCurrentPile,
     deletePile,
     currentTheme,
     setTheme,

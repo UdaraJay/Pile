@@ -46,7 +46,7 @@ const Editor = memo(
       deletePost,
     } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
     const { getThread } = useThread();
-    const { ai, model, type, prompt } = useAIContext();
+    const { ai, provider, model, prompt } = useAIContext();
     const { addNotification, removeNotification } = useToastsContext();
 
     const isNew = !postPath;
@@ -249,7 +249,7 @@ const Editor = memo(
         if (context.length === 0) return;
 
         const stream = await ai.chat.completions.create({
-          model: model,
+          model: 'gpt-4',
           stream: true,
           max_tokens: 200,
           messages: context,
@@ -257,7 +257,9 @@ const Editor = memo(
 
         for await (const part of stream) {
           let token = '';
-          if (type == 'openai') {
+          console.log('model', model);
+          if (provider == 'openai') {
+            console.log('part.choices[0]', part);
             token = part.choices[0].delta.content;
           } else {
             token = part.message.content;

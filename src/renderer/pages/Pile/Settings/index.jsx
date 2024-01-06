@@ -77,21 +77,26 @@ export default function Settings() {
   };
 
   const renderModelOptions = () => {
-    return Object.keys(availableModelsProviders).map((model, index) => {
+    return Object.keys(availableModelsProviders).map((_provider, index) => {
       return (
         <button
-          key={`model-${model}`}
-          className={`${styles.model} ${provider == model && styles.current}`}
+          key={`model-${_provider}`}
+          className={`${styles.model} ${
+            provider == _provider && styles.current
+          }`}
           onClick={() => {
-            setProvider(model);
+            setProvider(_provider);
+            if (_provider == 'openai') {
+              setModel('gpt-4');
+            }
           }}
         >
-          {model === 'openai' ? (
+          {_provider === 'openai' ? (
             <OpenAIIcon className={styles.icon} />
           ) : (
             <OllamaIcon className={`${styles.icon} ${styles.ollama}`} />
           )}
-          {availableModelsProviders[model]}
+          {availableModelsProviders[_provider]}
         </button>
       );
     });

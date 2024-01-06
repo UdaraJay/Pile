@@ -21,10 +21,11 @@ export const getLinkPreview = async (url) => {
       })
       .then((response) => {
         const contentType = response.headers['content-type'];
+        console.log('Not HTML/Text content', contentType);
         if (contentType && contentType.includes('text/html')) {
           return response;
         }
-        throw new Error('Not an HTML content');
+        throw new Error('Not HTML/Text content');
       });
 
     const html = response.data;

@@ -2,7 +2,7 @@
 
 Pile is a desktop app for reflective journaling. It's about simplicity, keeping your data local, and enhancing your journaling experience with AI.
 
-![Pile app screenshot](./assets/cover.avif)
+![Pile app screenshot](./assets/cover.png)
 
 ## Getting started
 

@@ -2,22 +2,22 @@
 
 Pile is a desktop app for reflective journaling. It's about simplicity, keeping your data local, and enhancing your journaling experience with AI.
 
-![Pile app screenshot](./assets/cover.png)
+![Pile app screenshot](./assets/cover.avif)
 
 ## Getting started
 
 1. Download the latest version of Pile by going to the [Pile releases page](https://github.com/UdaraJay/Pile/releases/).
-2. Open the `.zip` or `.dmg` file and drag the application to the destination of your choice (_optional_), such as your `Applications/` folder.
+2. On macOS Open the `.zip` or `.dmg` file and drag the application to the destination of your choice (_optional_), such as your `Applications/` folder. On Windows, use the `.exe` to install.
 3. Finally open the application, create a `New Pile`, and start your reflective journey.
 
-### AI reflections (requires GPT-4 access)
+### AI reflections (requires GPT-4)
 
 Enhance your journaling experience by integrating OpenAI's GPT AI reflections into Pile. If you have access to OpenAI's GPT-4 API, you can use your API key to:
 
-- **Reflect on entries**: Click "reflect" on any written entry to get AI-generated insights and thoughts as a reply in the thread.
-- **Search or ask questions**: Click the "reflect" icon on the top-right of the window to search or ask question about your entire journal.
+- **Reflect on entries:** Click "reflect" on any written entry to get AI-generated insights and thoughts as a reply in the thread.
+- **Search or ask questions:** Click the "reflect" icon on the top-right of the window to search or ask question about your entire journal.
 
-To setup the AI features: head over to [platform.openai.com/api-keys](https://platform.openai.com/api-keys) and create a new API key. Click the settings icon on the top-right corner of Pile and enter your secret API key into the API key field. 
+**How to setup AI features:** head over to [platform.openai.com/api-keys](https://platform.openai.com/api-keys) and create a new API key. Click the settings icon on the top-right corner of Pile and enter your secret API key into the API key field.
 
 Before you use the AI-powered features within this app, we strongly recommend that you [configure a spending limit within OpenAI's interface](https://platform.openai.com/account/limits) to prevent unexpected costs.
 

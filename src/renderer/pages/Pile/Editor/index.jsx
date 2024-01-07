@@ -21,6 +21,7 @@ import { useAIContext } from 'renderer/context/AIContext';
 import useThread from 'renderer/hooks/useThread';
 import LinkPreviews from './LinkPreviews';
 import { useToastsContext } from 'renderer/context/ToastsContext';
+import Gen from 'main/utils/Gen';
 
 const Editor = memo(
   ({
@@ -45,7 +46,7 @@ const Editor = memo(
       deletePost,
     } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
     const { getThread } = useThread();
-    const { ai, prompt } = useAIContext();
+    const { ai, provider, model, prompt } = useAIContext();
     const { addNotification, removeNotification } = useToastsContext();
 
     const isNew = !postPath;
@@ -210,6 +211,7 @@ const Editor = memo(
     const generateAiResponse = useCallback(async () => {
       if (!editor) return;
       if (isAIResponding) return;
+      if (!ai) return;
 
       const isEmpty = editor.state.doc.textContent.length === 0;
 
@@ -225,6 +227,7 @@ const Editor = memo(
         setEditable(false);
         setIsAiResponding(true);
         const thread = await getThread(parentPostPath);
+        console.log('Thread', thread);
         let context = [];
         context.push({
           role: 'system',
@@ -253,7 +256,14 @@ const Editor = memo(
         });
 
         for await (const part of stream) {
-          const token = part.choices[0].delta.content;
+          let token = '';
+          console.log('model', model);
+          if (provider == 'openai') {
+            console.log('part.choices[0]', part);
+            token = part.choices[0].delta.content;
+          } else {
+            token = part.message.content;
+          }
           editor.commands.insertContent(token);
         }
         removeNotification('reflecting');

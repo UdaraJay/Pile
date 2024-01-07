@@ -1,16 +1,39 @@
 import styles from './Settings.module.scss';
-import { SettingsIcon, CrossIcon } from 'renderer/icons';
-import { useEffect, useState } from 'react';
+import {
+  SettingsIcon,
+  CrossIcon,
+  OpenAIIcon,
+  OllamaIcon,
+} from 'renderer/icons';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useAIContext } from 'renderer/context/AIContext';
+import {
+  availableModelsProviders,
+  recognizeModel,
+  useAIContext,
+} from 'renderer/context/AIContext';
 import {
   availableThemes,
   usePilesContext,
 } from 'renderer/context/PilesContext';
+import { motion } from 'framer-motion';
 
 export default function Settings() {
-  const { ai, prompt, getKey, setKey, deleteKey } = useAIContext();
+  const {
+    ai,
+    model,
+    setModel,
+    provider,
+    setProvider,
+    prompt,
+    setPrompt,
+    getKey,
+    setKey,
+    deleteKey,
+    updateSettings,
+  } = useAIContext();
   const [key, setCurrentKey] = useState('');
+  const [modelName, setCurrentModelName] = useState('');
   const { currentTheme, setTheme } = usePilesContext();
 
   const retrieveKey = async () => {
@@ -26,12 +49,57 @@ export default function Settings() {
     setCurrentKey(e.target.value);
   };
 
+  const handleOnModelNameChange = (e) => {
+    setModel(e.target.value);
+  };
+
   const handleSaveChanges = () => {
-    if (key == '') {
-      deleteKey();
+    if (provider == 'openai') {
+      if (key == '') {
+        deleteKey();
+      } else {
+        setKey(key);
+      }
     } else {
-      setKey(key);
+      if (model == '') {
+        // clearModelName();
+      } else {
+        // setModelName(model);
+      }
     }
+
+    updateSettings(provider, model, prompt);
+  };
+
+  const handleOnChangePrompt = (e) => {
+    const p = e.target.value ?? '';
+    setPrompt(p);
+  };
+
+  const renderModelOptions = () => {
+    return Object.keys(availableModelsProviders).map((_provider, index) => {
+      return (
+        <button
+          key={`model-${_provider}`}
+          className={`${styles.model} ${
+            provider == _provider && styles.current
+          }`}
+          onClick={() => {
+            setProvider(_provider);
+            if (_provider == 'openai') {
+              setModel('gpt-4');
+            }
+          }}
+        >
+          {_provider === 'openai' ? (
+            <OpenAIIcon className={styles.icon} />
+          ) : (
+            <OllamaIcon className={`${styles.icon} ${styles.ollama}`} />
+          )}
+          {availableModelsProviders[_provider]}
+        </button>
+      );
+    });
   };
 
   const renderThemes = () => {
@@ -55,6 +123,78 @@ export default function Settings() {
       );
     });
   };
+
+  const openAIOptions = () => {
+    retrieveKey();
+    return (
+      <>
+        <fieldset className={styles.Fieldset}>
+          <label className={styles.Label} htmlFor="name">
+            OpenAI API key
+          </label>
+          <input
+            className={styles.Input}
+            onChange={handleOnChangeKey}
+            value={key || ''}
+            placeholder="Paste an OpenAI API key to enable AI reflections"
+          />
+        </fieldset>
+        <div className={styles.disclaimer}>
+          Before you use the AI-powered features within this app, we{' '}
+          <b>strongly recommend</b> that you configure a{' '}
+          <a href="https://platform.openai.com/account/limits" target="_blank">
+            spending limit within OpenAI's interface
+          </a>{' '}
+          to prevent unexpected costs.
+        </div>
+      </>
+    );
+  };
+
+  const ollamaOptions = () => {
+    const graphics = recognizeModel(model);
+    return (
+      <>
+        <fieldset className={styles.Fieldset}>
+          <label className={styles.Label} htmlFor="name">
+            AI Model
+          </label>
+          <div className={styles.AIModelInput}>
+            <input
+              className={styles.text}
+              onChange={handleOnModelNameChange}
+              value={model}
+              placeholder="(eg. mixtral)"
+              spellcheck="false"
+            />
+            <motion.div
+              key={model}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className={styles.aiiconholder}>
+                <graphics.icon className={styles.aiicon} />
+              </div>
+            </motion.div>
+          </div>
+        </fieldset>
+        <div className={styles.disclaimer}>
+          <a href="https://ollama.ai/library" target="_blank">
+            Ollama
+          </a>{' '}
+          needs to be installed and running the specified model for this to
+          work. For a list of available models, see{' '}
+          <a href="https://ollama.ai/library" target="_blank">
+            Ollama's library
+          </a>
+          .{' '}
+        </div>
+      </>
+    );
+  };
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -76,38 +216,23 @@ export default function Settings() {
             </label>
             <div className={styles.themes}>{renderThemes()}</div>
           </fieldset>
-
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
-              API key (OpenAI)
+              AI Provider
             </label>
-            <input
-              className={styles.Input}
-              onChange={handleOnChangeKey}
-              value={key}
-              placeholder="Paste an OpenAI API key to enable AI reflections"
-            />
+            <div className={styles.models}>{renderModelOptions()}</div>
           </fieldset>
-          <div className={styles.disclaimer}>
-            Before you use the AI-powered features within this app, we{' '}
-            <b>strongly recommend</b> that you configure a{' '}
-            <a
-              href="https://platform.openai.com/account/limits"
-              target="_blank"
-            >
-              spending limit within OpenAI's interface
-            </a>{' '}
-            to prevent unexpected costs.
-          </div>
+
+          <div>{provider == 'openai' ? openAIOptions() : ollamaOptions()}</div>
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
-              Prompt (locked)
+              Prompt
             </label>
             <textarea
               className={styles.Textarea}
               placeholder="Enter your own prompt for AI reflections"
               value={prompt}
-              readOnly
+              onChange={handleOnChangePrompt}
             />
           </fieldset>
           <div

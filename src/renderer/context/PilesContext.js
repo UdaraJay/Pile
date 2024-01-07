@@ -148,6 +148,7 @@ export const PilesContextProvider = ({ children }) => {
     getCurrentPilePath,
     createPile,
     currentPile,
+    updateCurrentPile,
     deletePile,
     currentTheme,
     setTheme,

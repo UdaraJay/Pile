@@ -40,3 +40,9 @@ export * from './img/PileIcon';
 export * from './img/ChainIcon';
 export * from './img/WarningIcon';
 export * from './img/ReflectIcon';
+
+// logos
+export * from './logos/OpenAIIcon';
+export * from './logos/OllamaIcon';
+export * from './logos/MetaIcon';
+export * from './logos/MistralIcon';

@@ -67,6 +67,7 @@ const VirtualList = memo(({ data }) => {
         computeItemKey={getKey}
         atTopThreshold={300}
         overscan={500}
+        topItemCount={1}
         // style={{ height: windowHeight }}
         // increaseViewportBy={{ top: 5000, bottom: 5000 }}
         // useWindowScroll

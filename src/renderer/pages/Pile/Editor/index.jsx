@@ -245,17 +245,30 @@ const Editor = memo(
 
         if (context.length === 0) return;
 
-        const stream = await ai.chat.completions.create({
-          model: 'gpt-4',
-          stream: true,
-          max_tokens: 200,
-          messages: context,
-        });
-
-        for await (const part of stream) {
-          const token = part.choices[0].delta.content;
-          editor.commands.insertContent(token);
+        try {
+          const stream = await ai.chat.completions.create({
+            model: 'gpt-4',
+            stream: true,
+            max_tokens: 200,
+            messages: context,
+          });
+  
+          for await (const part of stream) {
+            const token = part.choices[0].delta.content;
+            editor.commands.insertContent(token);
+          }
+        } catch (error) {
+          console.log('AI request failed:', error)
+          addNotification({
+            id: 'reflecting',
+            type: 'failed',
+            message: 'AI request failed',
+            dismissTime: 12000,
+          });
+          setIsAiResponding(false);
+          return;
         }
+       
         removeNotification('reflecting');
         setIsAiResponding(false);
       }

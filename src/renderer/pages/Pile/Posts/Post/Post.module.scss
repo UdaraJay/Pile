@@ -14,7 +14,7 @@
     display: flex;
     position: relative;
     padding: 0 18px;
-
+    margin-top: 2px;
     .left {
         display: flex;
         flex-direction: column;
@@ -34,7 +34,6 @@
             border-radius: 90px;
             user-select: none;
             position: relative;
-            z-index: 1;
             transition: all ease-in-out 120ms;
             margin: 4px 0;
 
@@ -138,7 +137,6 @@
 
             .time {
                 position: relative;
-                z-index: 1;
                 color: var(--secondary);
                 font-size: 0.9em;
                 padding: 3px 5px;

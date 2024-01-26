@@ -9,7 +9,8 @@ import {
 } from 'renderer/context/PilesContext';
 
 export default function Settings() {
-  const { ai, prompt, getKey, setKey, deleteKey } = useAIContext();
+  const { ai, prompt, getBaseUrl,setBaseUrl, getKey, setKey, deleteKey } = useAIContext();
+  const [baseUrl, setCurrentBaseUrl] = useState(getBaseUrl());
   const [key, setCurrentKey] = useState('');
   const { currentTheme, setTheme } = usePilesContext();
 
@@ -22,6 +23,10 @@ export default function Settings() {
     retrieveKey();
   }, []);
 
+  const handleOnChangeBaseUrl = (e) => {
+    setCurrentBaseUrl(e.target.value);
+  }
+
   const handleOnChangeKey = (e) => {
     setCurrentKey(e.target.value);
   };
@@ -31,6 +36,9 @@ export default function Settings() {
       deleteKey();
     } else {
       setKey(key);
+    }
+    if (baseUrl != getBaseUrl()) {
+      setBaseUrl(baseUrl);
     }
   };
 
@@ -75,6 +83,18 @@ export default function Settings() {
               Appearance
             </label>
             <div className={styles.themes}>{renderThemes()}</div>
+          </fieldset>
+
+          <fieldset className={styles.Fieldset}>
+            <label className={styles.Label} htmlFor="name">
+              Base url (OpenAI)
+            </label>
+            <input
+              className={styles.Input}
+              onChange={handleOnChangeBaseUrl}
+              value={baseUrl}
+              placeholder="Change OpenAI API base url"
+            />
           </fieldset>
 
           <fieldset className={styles.Fieldset}>

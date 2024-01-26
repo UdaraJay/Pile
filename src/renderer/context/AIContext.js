@@ -23,12 +23,21 @@ export const AIContextProvider = ({ children }) => {
     const key = await getKey();
 
     if (!key) return;
-
     const openaiInstance = new OpenAI({
+      baseURL: getBaseUrl(),
       apiKey: key,
     });
 
     setAi(openaiInstance);
+  };
+
+  const getBaseUrl = () => {
+    return localStorage.getItem('baseUrl') ?? 'https://api.openai.com/v1';
+  };
+
+  const setBaseUrl = async (baseUrl) => {
+    localStorage.setItem('baseUrl', baseUrl);
+    await setupAi();
   };
 
   const getKey = (accountName) => {
@@ -55,6 +64,8 @@ export const AIContextProvider = ({ children }) => {
 
   const AIContextValue = {
     ai,
+    getBaseUrl,
+    setBaseUrl,
     prompt,
     setKey,
     getKey,

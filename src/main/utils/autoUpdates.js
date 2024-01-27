@@ -4,7 +4,6 @@ const { ipcMain } = require('electron');
 class AppUpdater {
   constructor(mainWindow) {
     this.mainWindow = mainWindow;
-
     autoUpdater.checkForUpdatesAndNotify();
 
     autoUpdater.on('update-available', () => {
@@ -24,7 +23,7 @@ class AppUpdater {
     });
 
     autoUpdater.on('error', (error) => {
-        console.log('Pile auto update error')
+        console.log('Pile auto update error');
         mainWindow.webContents.send('update_error', error);
     });
   }

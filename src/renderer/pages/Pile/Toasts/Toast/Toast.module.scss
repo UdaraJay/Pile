@@ -3,10 +3,13 @@
     align-items: center;
     text-align: right;
     font-size: 0.8rem;
+    text-wrap: nowrap;
 
     .icon {
         height: 18px;
         width: 18px;
+        min-height: 18px;
+        min-width: 18px;
         margin-left: 10px;
     }
 

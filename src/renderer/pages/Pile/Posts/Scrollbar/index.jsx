@@ -1,5 +1,4 @@
-import React, { useCallback } from "react";
-import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import React from "react";
 import styles from './Scrollbar.module.scss';
 
 // do not inline the component, as a fresh instance would be created with each re-render

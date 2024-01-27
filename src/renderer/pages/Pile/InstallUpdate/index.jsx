@@ -4,13 +4,14 @@ import { useEffect, useState, useMemo } from 'react';
 import { useAutoUpdateContext } from 'renderer/context/AutoUpdateContext';
 
 export default function InstallUpdate() {
-  const { updateAvailable, restartAndUpdate } = useAutoUpdateContext();
+  const { updateDownloaded,updateError, restartAndUpdate } = useAutoUpdateContext();
 
-  if (updateAvailable !== true) return;
+  if (updateError) return;
+  if (updateDownloaded !== true) return;
 
   return (
     <div onClick={restartAndUpdate} className={styles.update}>
-      <RefreshIcon className={styles.icon} /> Install Update
+      <RefreshIcon className={styles.icon} /> Restart to update
     </div>
   );
 }

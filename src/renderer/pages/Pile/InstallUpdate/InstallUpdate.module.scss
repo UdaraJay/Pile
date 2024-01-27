@@ -5,11 +5,12 @@
   color: var(--secondary);
   border-radius: 90px;
   padding: 4px 12px 4px 8px;
-  margin: 0 8px 0 0;
+  margin: 0 8px 0 4px;
   text-wrap: nowrap;
   transition: all ease-in-out 120ms;
   position: relative;
   -webkit-app-region: none;
+  user-select: none;
 
   .icon {
     margin-right: 5px;

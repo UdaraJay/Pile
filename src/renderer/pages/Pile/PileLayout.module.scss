@@ -177,11 +177,12 @@
     .left {
         display: flex;
         align-items: center;
-        flex: 1 0 300px;
+        flex: 1 1 300px;
         height: var(--nav-height);
         overflow: hidden;
         transition: all ease-in-out 120ms;
         padding-bottom: 3px;
+        text-wrap: nowrap;
 
         .search {
             display: flex;

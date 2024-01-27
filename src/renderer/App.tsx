@@ -1,6 +1,5 @@
 import './App.css';
 import {
-  MemoryRouter as Router,
   Routes,
   Route,
   useLocation,

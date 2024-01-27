@@ -258,7 +258,6 @@ const Editor = memo(
             editor.commands.insertContent(token);
           }
         } catch (error) {
-          console.log('AI request failed:', error)
           addNotification({
             id: 'reflecting',
             type: 'failed',

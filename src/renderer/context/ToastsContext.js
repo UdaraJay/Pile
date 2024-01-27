@@ -45,9 +45,10 @@ export const ToastsContextProvider = ({ children }) => {
     type = 'info',
     message,
     dismissTime = 5000,
+    immediate = false
   }) => {
     const newNotification = { id, type, message, dismissTime };
-    setNotificationsQueue((currentQueue) => [...currentQueue, newNotification]);
+    setNotificationsQueue((currentQueue) => immediate ? [newNotification] : [...currentQueue, newNotification]);
   };
 
   const updateNotification = (targetId, newType, newMessage) => {

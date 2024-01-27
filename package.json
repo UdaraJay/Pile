@@ -1,6 +1,6 @@
 {
   "description": "Pile",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "keywords": [
     "pile"
   ],
@@ -33,7 +33,7 @@
     "postinstall": "patch-package && ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
     "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac --win --publish always",
-    "package:mac": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac",
+    "package:mac": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac --publish never",
     "publish:mac": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --mac --publish always",
     "package:win": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --win",
     "publish:win": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --win --publish always",
@@ -109,6 +109,7 @@
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^5.3.0",
+    "follow-redirects": "^1.15.5",
     "framer-motion": "^10.12.18",
     "gray-matter": "^4.0.3",
     "llamaindex": "^0.0.35",
@@ -262,11 +263,13 @@
     "extraResources": [
       "./assets/**"
     ],
-    "publish": [{
-      "provider": "github",
-      "owner": "UdaraJay",
-      "repo": "Pile"
-    }]
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "UdaraJay",
+        "repo": "Pile"
+      }
+    ]
   },
   "devEngines": {
     "node": ">=14.x",

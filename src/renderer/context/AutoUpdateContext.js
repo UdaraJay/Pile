@@ -14,7 +14,7 @@ export const AutoUpdateContextProvider = ({ children }) => {
     const handleUpdateNotAvailable = () => setUpdateNotAvailable(true);
 
     useEffect(() => {
-      if(!window || !window.electron.ipc) return;
+      if(!window) return;
 
       window.electron.ipc.on('update_available', handleUpdateAvailable);
       window.electron.ipc.on('update_downloaded', handleUpdateDownloaded);
@@ -30,7 +30,7 @@ export const AutoUpdateContextProvider = ({ children }) => {
     }, []);
 
     const restartAndUpdate = () => {
-      if(!window?.electron) return; 
+      if(!window) return; 
       window.electron.ipc.sendMessage('restart_app');
   };
 

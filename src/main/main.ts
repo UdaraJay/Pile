@@ -1,23 +1,21 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-import { app, BrowserWindow, shell, protocol, net, Menu, nativeTheme } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  protocol,
+  net,
+  Menu,
+  nativeTheme,
+} from 'electron';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import fs from 'fs';
 import path from 'path';
 import './ipc';
-import setupAutoUpdater = require('./utils/autoUpdates');
+import AppUpdater from './utils/autoUpdates';
 
 Menu.setApplicationMenu(null);
-
-class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -107,8 +105,6 @@ const createWindow = async () => {
     }
   });
 
-  setupAutoUpdater(mainWindow);
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -122,7 +118,8 @@ const createWindow = async () => {
     return { action: 'deny' };
   });
 
-  new AppUpdater();
+  // setupAutoUpdater(mainWindow);
+  new AppUpdater(mainWindow);
 };
 
 /**

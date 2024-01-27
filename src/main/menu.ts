@@ -5,6 +5,7 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
+import { autoUpdater } from 'electron-updater';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -59,6 +60,10 @@ export default class MenuBuilder {
         {
           label: 'About Pile',
           selector: 'orderFrontStandardAboutPanel:',
+        },
+        {
+          label: 'Check for Updates...',
+          click: () => this.checkForUpdates(),
         },
         { type: 'separator' },
         { label: 'Services', submenu: [] },
@@ -151,6 +156,7 @@ export default class MenuBuilder {
         { label: 'Bring All to Front', selector: 'arrangeInFront:' },
       ],
     };
+
     const subMenuHelp: MenuItemConstructorOptions = {
       label: 'Help',
       submenu: [
@@ -170,6 +176,22 @@ export default class MenuBuilder {
         : subMenuViewProd;
 
     return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+  }
+
+  checkForUpdates(): void {
+    autoUpdater
+      .checkForUpdatesAndNotify()
+      .then((updateCheckResult) => {
+        if (!updateCheckResult?.updateInfo) {
+          this.mainWindow.webContents.send('update_not_available');
+          return;
+        }
+        this.mainWindow.webContents.send('update_available');
+      })
+      .catch((error) => {
+        console.error('Error checking for updates:', error);
+        this.mainWindow.webContents.send('update_error', error);
+      });
   }
 
   buildDefaultTemplate() {

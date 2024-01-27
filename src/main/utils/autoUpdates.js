@@ -1,7 +1,10 @@
 const { autoUpdater } = require('electron-updater');
 const { ipcMain } = require('electron');
 
-const setupAutoUpdater = (mainWindow) => {
+class AppUpdater {
+  constructor(mainWindow) {
+    this.mainWindow = mainWindow;
+
     autoUpdater.checkForUpdatesAndNotify();
 
     autoUpdater.on('update-available', () => {
@@ -24,6 +27,7 @@ const setupAutoUpdater = (mainWindow) => {
         console.log('Pile auto update error')
         mainWindow.webContents.send('update_error', error);
     });
-};
+  }
+}
 
-module.exports = setupAutoUpdater;
+export default AppUpdater;

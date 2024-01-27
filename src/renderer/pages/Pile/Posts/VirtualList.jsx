@@ -21,6 +21,7 @@ import { useVirtualizer, useWindowVirtualizer } from '@tanstack/react-virtual';
 import { useWindowResize } from 'renderer/hooks/useWindowResize';
 import { Virtuoso } from 'react-virtuoso';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
+import Scrollbar from './Scrollbar';
 
 const VirtualList = memo(({ data }) => {
   const { virtualListRef, setVisibleIndex } = useTimelineContext();
@@ -65,11 +66,9 @@ const VirtualList = memo(({ data }) => {
         rangeChanged={handleRangeChanged}
         itemContent={renderItem}
         computeItemKey={getKey}
-        atTopThreshold={300}
-        overscan={500}
-        // style={{ height: windowHeight }}
-        // increaseViewportBy={{ top: 5000, bottom: 5000 }}
-        // useWindowScroll
+        atTopThreshold={1300}
+        overscan={1500}
+        components={{ Scroller: Scrollbar }}
       />
     </AnimatePresence>
   );

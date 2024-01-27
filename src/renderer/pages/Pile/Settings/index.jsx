@@ -9,7 +9,17 @@ import {
 } from 'renderer/context/PilesContext';
 
 export default function Settings() {
-  const { ai, prompt, getBaseUrl,setBaseUrl, getKey, setKey, deleteKey } = useAIContext();
+  const {
+    ai,
+    prompt,
+    setPrompt,
+    updateSettings,
+    getBaseUrl,
+    setBaseUrl,
+    getKey,
+    setKey,
+    deleteKey,
+  } = useAIContext();
   const [baseUrl, setCurrentBaseUrl] = useState(getBaseUrl());
   const [key, setCurrentKey] = useState('');
   const { currentTheme, setTheme } = usePilesContext();
@@ -25,10 +35,15 @@ export default function Settings() {
 
   const handleOnChangeBaseUrl = (e) => {
     setCurrentBaseUrl(e.target.value);
-  }
+  };
 
   const handleOnChangeKey = (e) => {
     setCurrentKey(e.target.value);
+  };
+
+  const handleOnChangePrompt = (e) => {
+    const p = e.target.value ?? '';
+    setPrompt(p);
   };
 
   const handleSaveChanges = () => {
@@ -37,9 +52,12 @@ export default function Settings() {
     } else {
       setKey(key);
     }
+    
     if (baseUrl != getBaseUrl()) {
       setBaseUrl(baseUrl);
     }
+
+    updateSettings(prompt);
   };
 
   const renderThemes = () => {
@@ -121,13 +139,13 @@ export default function Settings() {
           </div>
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
-              Prompt (locked)
+              Prompt
             </label>
             <textarea
               className={styles.Textarea}
               placeholder="Enter your own prompt for AI reflections"
               value={prompt}
-              readOnly
+              onChange={handleOnChangePrompt}
             />
           </fieldset>
           <div

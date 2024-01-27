@@ -6,18 +6,27 @@ import {
   useCallback,
 } from 'react';
 import OpenAI from 'openai';
+import { usePilesContext } from './PilesContext';
+
+const defaultPrompt =
+  'You are an AI within a journaling app. Your job is to help the user reflect on their thoughts in a thoughtful and kind manner. The user can never directly address you or directly respond to you. Try not to repeat what the user said, instead try to seed new ideas, encourage or debate. Keep your responses concise, but meaningful.';
 
 export const AIContext = createContext();
 
 export const AIContextProvider = ({ children }) => {
+  const { currentPile, updateCurrentPile } = usePilesContext();
   const [ai, setAi] = useState(null);
+  const [prompt, setPrompt] = useState(defaultPrompt);
 
-  const prompt =
-    'You are an AI within a journaling app. Your job is to help the user reflect on their thoughts in a thoughtful and kind manner. The user can never directly address you or directly respond to you. Try not to repeat what the user said, instead try to seed new ideas, encourage or debate. Keep your responses concise, but meaningful.';
-
+  // Sync AI settings from currentPile
   useEffect(() => {
-    setupAi();
-  }, []);
+    if (currentPile) {
+      console.log('🧠 Syncing current pile');
+      if (currentPile.AIPrompt && currentPile.AIPrompt !== '')
+        setPrompt(currentPile.AIPrompt);
+      setupAi();
+    }
+  }, [currentPile]);
 
   const setupAi = async () => {
     const key = await getKey();
@@ -52,6 +61,13 @@ export const AIContextProvider = ({ children }) => {
     return window.electron.ipc.invoke('delete-ai-key');
   };
 
+  const updateSettings = (prompt) => {
+    updateCurrentPile({
+      ...currentPile,
+      AIPrompt: prompt,
+    });
+  };
+
   const getCompletion = async (model = 'gpt-3', context) => {
     const response = await ai.chat.completions.create({
       model: model,
@@ -67,10 +83,12 @@ export const AIContextProvider = ({ children }) => {
     getBaseUrl,
     setBaseUrl,
     prompt,
+    setPrompt,
     setKey,
     getKey,
     deleteKey,
     getCompletion,
+    updateSettings,
   };
 
   return (

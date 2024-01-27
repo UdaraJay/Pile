@@ -1,0 +1,31 @@
+.update {
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  color: var(--secondary);
+  border-radius: 90px;
+  padding: 4px 12px 4px 8px;
+  margin: 0 8px 0 0;
+  text-wrap: nowrap;
+  transition: all ease-in-out 120ms;
+  position: relative;
+  -webkit-app-region: none;
+
+  .icon {
+    margin-right: 5px;
+    height: 20px;
+    width: 20px;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: var(--bg-tertiary);
+    color: var(--primary);
+  }
+
+  &:active {
+    cursor: pointer;
+    background: var(--bg-secondary);
+    color: var(--active);
+  }
+}

@@ -262,11 +262,11 @@
     "extraResources": [
       "./assets/**"
     ],
-    "publish": {
+    "publish": [{
       "provider": "github",
-      "owner": "udarajay",
-      "repo": "pile"
-    }
+      "owner": "UdaraJay",
+      "repo": "Pile"
+    }]
   },
   "devEngines": {
     "node": ">=14.x",

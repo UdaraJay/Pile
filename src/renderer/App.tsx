@@ -1,5 +1,4 @@
 import './App.css';
-import { useEffect, useState } from 'react';
 import {
   MemoryRouter as Router,
   Routes,
@@ -20,6 +19,7 @@ import { AIContextProvider } from './context/AIContext';
 import { HighlightsContextProvider } from './context/HighlightsContext';
 import { LinksContextProvider } from './context/LinksContext';
 import { ToastsContextProvider } from './context/ToastsContext';
+import { AutoUpdateContextProvider } from './context/AutoUpdateContext';
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
@@ -51,64 +51,66 @@ export default function App() {
   return (
     <PilesContextProvider>
       <ToastsContextProvider>
-        <AIContextProvider>
-          <IndexContextProvider>
-            <HighlightsContextProvider>
-              <TagsContextProvider>
-                <TimelineContextProvider>
-                  <LinksContextProvider>
-                    <AnimatePresence mode="wait">
-                      <Routes location={location} key={location.pathname}>
-                        <Route
-                          path="/"
-                          element={
-                            <AnimatedPage _key="home">
-                              <Home />
-                            </AnimatedPage>
-                          }
-                        />
-                        <Route
-                          path="/license"
-                          element={
-                            <AnimatedPage _key="license">
-                              <License />
-                            </AnimatedPage>
-                          }
-                        />
-                        <Route
-                          path="/credits"
-                          element={
-                            <AnimatedPage _key="credits">
-                              <Credits />
-                            </AnimatedPage>
-                          }
-                        />
-                        <Route
-                          path="/new-pile"
-                          element={
-                            <AnimatedPage _key="new-pile">
-                              <CreatePile />
-                            </AnimatedPage>
-                          }
-                        />
-                        <Route path="/pile">
+        <AutoUpdateContextProvider>
+          <AIContextProvider>
+            <IndexContextProvider>
+              <HighlightsContextProvider>
+                <TagsContextProvider>
+                  <TimelineContextProvider>
+                    <LinksContextProvider>
+                      <AnimatePresence mode="wait">
+                        <Routes location={location} key={location.pathname}>
                           <Route
-                            path=":pileName"
+                            path="/"
                             element={
-                              <AnimatedPage down _key="pile">
-                                <Pile />
+                              <AnimatedPage _key="home">
+                                <Home />
                               </AnimatedPage>
                             }
                           />
-                        </Route>
-                      </Routes>
-                    </AnimatePresence>
-                  </LinksContextProvider>
-                </TimelineContextProvider>
-              </TagsContextProvider>
-            </HighlightsContextProvider>
-          </IndexContextProvider>
-        </AIContextProvider>
+                          <Route
+                            path="/license"
+                            element={
+                              <AnimatedPage _key="license">
+                                <License />
+                              </AnimatedPage>
+                            }
+                          />
+                          <Route
+                            path="/credits"
+                            element={
+                              <AnimatedPage _key="credits">
+                                <Credits />
+                              </AnimatedPage>
+                            }
+                          />
+                          <Route
+                            path="/new-pile"
+                            element={
+                              <AnimatedPage _key="new-pile">
+                                <CreatePile />
+                              </AnimatedPage>
+                            }
+                          />
+                          <Route path="/pile">
+                            <Route
+                              path=":pileName"
+                              element={
+                                <AnimatedPage down _key="pile">
+                                  <Pile />
+                                </AnimatedPage>
+                              }
+                            />
+                          </Route>
+                        </Routes>
+                      </AnimatePresence>
+                    </LinksContextProvider>
+                  </TimelineContextProvider>
+                </TagsContextProvider>
+              </HighlightsContextProvider>
+            </IndexContextProvider>
+          </AIContextProvider>
+        </AutoUpdateContextProvider>
       </ToastsContextProvider>
     </PilesContextProvider>
   );

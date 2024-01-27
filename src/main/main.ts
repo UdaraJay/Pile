@@ -6,8 +6,8 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import fs from 'fs';
 import path from 'path';
-
 import './ipc';
+import setupAutoUpdater = require('./utils/autoUpdates');
 
 Menu.setApplicationMenu(null);
 
@@ -106,6 +106,8 @@ const createWindow = async () => {
       mainWindow.show();
     }
   });
+
+  setupAutoUpdater(mainWindow);
 
   mainWindow.on('closed', () => {
     mainWindow = null;

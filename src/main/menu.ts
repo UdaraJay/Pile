@@ -70,7 +70,7 @@ export default class MenuBuilder {
         },
         {
           label: 'Hide Others',
-          accelerator: 'Command+Shift+H',
+          accelerator: 'Command+Option+H',
           selector: 'hideOtherApplications:',
         },
         { label: 'Show All', selector: 'unhideAllApplications:' },

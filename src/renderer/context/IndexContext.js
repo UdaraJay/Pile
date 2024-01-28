@@ -87,6 +87,11 @@ export const IndexContextProvider = ({ children }) => {
     [currentPile]
   );
 
+  const chat = useCallback(
+    async (text) => window.electron.ipc.invoke('vectorindex-chat', text),
+    [currentPile]
+  );
+
   const getVectorIndex = useCallback(async () => {
     const pilePath = getCurrentPilePath();
     const vIndex = await window.electron.ipc.invoke(
@@ -106,6 +111,7 @@ export const IndexContextProvider = ({ children }) => {
     getVectorIndex,
     updateIndex,
     query,
+    chat,
   };
 
   return (

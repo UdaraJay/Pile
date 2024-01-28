@@ -25,7 +25,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 const prompts = [
   'Pose me any riddle or wonderment you wish',
-  'You may consult this mind on any matter, mysterious or mundane.',
+  'You may consult this mind on any matter, mysterious or mundane',
 ];
 
 export default function Reflections() {
@@ -36,6 +36,8 @@ export default function Reflections() {
   const [text, setText] = useState('');
   const [querying, setQuerying] = useState(false);
   const [response, setResponse] = useState(null);
+
+  let randomPrompt = useMemo(() => prompts[Math.floor(Math.random() * prompts.length)], []);
 
   const onChangeText = (e) => {
     setText(e.target.value);
@@ -109,7 +111,7 @@ export default function Reflections() {
                 onChange={onChangeText}
                 className={styles.textarea}
                 onKeyDown={handleKeyPress}
-                placeholder="Pose me any riddle or wonderment you wish"
+                placeholder={randomPrompt}
               />
               <div className={styles.buttons}>
                 <button

@@ -78,8 +78,8 @@ class PileVectorIndex {
     this.serviceContext = serviceContextFromDefaults({
       llm: new OpenAI({
         model: 'gpt-4-0613',
-        temperature: 0.9,
-        prompt: 'As a wise librarian, how would you respond to this inquiry',
+        temperature: 0.85,
+        prompt: 'As a wise librarian of this humans journals, how would you respond to this inquiry',
       }),
     });
   }
@@ -114,7 +114,7 @@ class PileVectorIndex {
 
   async initQueryEngine() {
     const retriever = this.vectorIndex.asRetriever();
-    retriever.similarityTopK = 10;
+    retriever.similarityTopK = 20;
 
     const nodePostprocessor = new SimilarityPostprocessor({
       similarityCutoff: 0.7,
@@ -130,7 +130,7 @@ class PileVectorIndex {
 
   async initChatEngine() {
     const retriever = this.vectorIndex.asRetriever();
-    retriever.similarityTopK = 10;
+    retriever.similarityTopK = 20;
     this.chatEngine = new ContextChatEngine({ retriever });
   }
 
@@ -244,6 +244,18 @@ class PileVectorIndex {
     }
 
     const response = await this.queryEngine.query(text);
+    return response;
+  }
+
+  async chat(text) {
+    if (!this.chatEngine) {
+      console.warn(
+        'Chat engine is not initialized. Please initialize it first.'
+      );
+      return;
+    }
+
+    const response = await this.chatEngine.chat({message: text});
     return response;
   }
 

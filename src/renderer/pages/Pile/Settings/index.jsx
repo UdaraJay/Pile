@@ -52,7 +52,7 @@ export default function Settings() {
     } else {
       setKey(key);
     }
-    
+
     if (baseUrl != getBaseUrl()) {
       setBaseUrl(baseUrl);
     }
@@ -105,13 +105,14 @@ export default function Settings() {
 
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
-              Base url (OpenAI)
+              Base url (defaults to OpenAI)
             </label>
             <input
               className={styles.Input}
               onChange={handleOnChangeBaseUrl}
               value={baseUrl}
-              placeholder="Change OpenAI API base url"
+              placeholder="https://api.openai.com/v1"
+              defaultValue="https://api.openai.com/v1"
             />
           </fieldset>
 

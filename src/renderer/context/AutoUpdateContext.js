@@ -15,7 +15,7 @@ export const AutoUpdateContextProvider = ({ children }) => {
     addNotification({
       id: 'auto-update',
       message: 'Update available',
-      dismissTime: 3000,
+      dismissTime: 2000,
     });
 
     addNotification({
@@ -23,7 +23,6 @@ export const AutoUpdateContextProvider = ({ children }) => {
       type: 'waiting',
       message: 'Downloading update...',
       dismissTime: 5000,
-      immediate: true,
     });
 
     setUpdateAvailable(true);
@@ -40,7 +39,6 @@ export const AutoUpdateContextProvider = ({ children }) => {
       type: 'failed',
       message: 'Auto update failed',
       dismissTime: 5000,
-      immediate: true,
     });
 
     setUpdateError(error);
@@ -52,7 +50,7 @@ export const AutoUpdateContextProvider = ({ children }) => {
       message: 'Pile is up-to-date',
       type: 'success',
       dismissTime: 5000,
-      immediate: true,
+      immediate: false,
     });
 
     setUpdateNotAvailable(true);

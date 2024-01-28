@@ -95,7 +95,6 @@ input {
   transition: all ease-in-out 120ms;
   padding: 0 14px;
   line-height: 28px;
-  color: var(--base);
   color: var(--active-text);
   font-size: 0.85em;
   border-radius: 90px;
@@ -108,6 +107,10 @@ input {
 
   &.active {
     background: var(--bg-secondary);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px var(--primary);
   }
 
   &:hover {
@@ -133,7 +136,7 @@ input {
   top: 10px;
   right: 10px;
   transition: all ease-in-out 120ms;
-  strokewidth: 2px;
+  stroke-width: 2px;
   color: var(--secondary);
 
   &:hover {

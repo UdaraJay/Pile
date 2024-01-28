@@ -13,6 +13,7 @@ import Reflections from './Reflections';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import InstallUpdate from './InstallUpdate';
+import Chat from './Chat';
 
 export default function PileLayout({ children }) {
   const { pileName } = useParams();
@@ -86,7 +87,8 @@ export default function PileLayout({ children }) {
             </div>
             <div className={styles.right}>
               <Toasts />
-<InstallUpdate/>
+              <InstallUpdate />
+              <Chat />
               <Reflections />
               <Settings />
               <Link to="/" className={`${styles.iconHolder}`}>

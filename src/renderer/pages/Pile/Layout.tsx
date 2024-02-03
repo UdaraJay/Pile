@@ -41,6 +41,8 @@ export default function PileLayout({ children }) {
 
   const themeStyles = useMemo(() => {
     switch (currentTheme) {
+      case 'blue':
+        return styles.blueTheme;
       case 'purple':
         return styles.purpleTheme;
       case 'yellow':

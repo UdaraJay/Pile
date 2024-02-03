@@ -165,7 +165,11 @@ const Timeline = memo(() => {
   useEffect(() => {
     if (!parentEntries || parentEntries.length == 0) return;
     if (visibleIndex == 0) return;
-    const current = parentEntries[visibleIndex - 1][1];
+    let current;
+    if (parentEntries && visibleIndex > 0 && parentEntries[visibleIndex - 1]) {
+      current = parentEntries[visibleIndex - 1][1];
+    }
+    if (!current) return;
     const createdAt = current.createdAt;
     setClosestDate(createdAt);
   }, [visibleIndex, parentEntries]);

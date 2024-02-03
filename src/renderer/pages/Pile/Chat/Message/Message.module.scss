@@ -1,0 +1,72 @@
+.message {
+  font-size: 1.25em;
+  line-height: 1.45;
+  white-space: pre;
+  text-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  margin: 0 0 40px 0;
+  padding: 0 0 40px 0;
+
+  .wrap {
+    display: flex;
+    width: 100%;
+    max-width: 550px;
+    text-align: left;
+    align-items: flex-start;
+
+    .ball {
+      flex: 0 0 auto;
+      height: 30px;
+      width: 30px;
+      background: var(--bg);
+      border-radius: 90px;
+      margin-right: 15px;
+      color: var(--primary);
+      line-height: 1;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .text {
+      margin-top: 2px;
+      color: var(--primary);
+    }
+  }
+
+  .avatar {
+    height: 16px;
+    width: 16px;
+  }
+
+  &.user {
+
+    .wrap{
+      .ball {
+        background: var(--base);
+      }
+  
+      .text {
+        font-size: 1.2em;
+        color: var(--secondary);
+      }
+    }
+   
+  }
+
+  &.ai {
+    .ball {
+      .avatar {
+        height: 18px;
+        width: 18px;
+        fill: var(--secondary);
+      }
+    }
+   
+  }
+}

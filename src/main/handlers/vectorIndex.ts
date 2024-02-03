@@ -22,7 +22,7 @@ ipcMain.handle('vectorindex-query', (event, text) =>
 );
 
 ipcMain.handle('vectorindex-reset-chat', (event) =>
-  pileVectorIndex.chat()
+  pileVectorIndex.resetChatEngine()
 );
 
 ipcMain.handle('vectorindex-chat', (event, text) =>

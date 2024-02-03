@@ -9,7 +9,8 @@ import {
 import { useLocation } from 'react-router-dom';
 
 export const availableThemes = {
-  light: { primary: '#4d80e6', secondary: '#fff' },
+  light: { primary: '#ddd', secondary: '#fff' },
+  blue: { primary: '#a4d5ff', secondary: '#fff' },
   purple: { primary: '#d014e1', secondary: '#fff' },
   yellow: { primary: '#ff9634', secondary: '#fff' },
   green: { primary: '#22ff00', secondary: '#fff' },

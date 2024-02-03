@@ -8,7 +8,7 @@ import {
   DownloadIcon,
   FlameIcon,
   InfoIcon,
-  SearchIcon,
+  ChatIcon,
 } from 'renderer/icons';
 import { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -77,7 +77,7 @@ export default function Status() {
       case 'done':
         return <InfoIcon className={styles.reflectIcon} />;
       default:
-        return <SearchIcon className={styles.reflectIcon} />;
+        return <ChatIcon className={styles.reflectIcon} />;
     }
   };
 
@@ -85,7 +85,7 @@ export default function Status() {
     <div className={styles.container}>
       {renderIcon(status)}
       <div className={styles.text}>
-        {status ? message.message : 'Search'}
+        {status ? message.message : 'Chat with this journal'}
       </div>
     </div>
   );

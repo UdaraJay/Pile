@@ -35,6 +35,7 @@ export const AIContextProvider = ({ children }) => {
     const openaiInstance = new OpenAI({
       baseURL: getBaseUrl(),
       apiKey: key,
+      dangerouslyAllowBrowser: true
     });
 
     setAi(openaiInstance);

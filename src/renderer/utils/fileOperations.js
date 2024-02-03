@@ -45,6 +45,7 @@ const getFilePathForNewPost = (basePath, timestamp = new Date()) => {
 
 const createDirectory = (directoryPath) => {
   return new Promise((resolve, reject) => {
+    console.log('creating directory', directoryPath)
     window.electron.mkdir(directoryPath, { recursive: true }, (err) => {
       if (err) {
         if (err.code === 'EEXIST') {

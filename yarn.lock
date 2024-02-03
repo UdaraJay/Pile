@@ -3631,11 +3631,11 @@ axe-core@^4.6.2:
   integrity sha512-/dlp0fxyM3R8YW7MFzaHWXrf4zzbr0vaYb23VBFCl83R7nWNPg/yaQw2Dc8jzCMmDVLhSdzH8MjrsuIUuvX+6g==
 
 axios@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
-  integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.7.tgz#7b48c2e27c96f9c68a2f8f31e2ab19f59b06b0a7"
+  integrity sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==
   dependencies:
-    follow-redirects "^1.15.0"
+    follow-redirects "^1.15.4"
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
@@ -6058,7 +6058,7 @@ flatted@^3.2.9:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.9.tgz#7eb4c67ca1ba34232ca9d2d93e9886e611ad7daf"
   integrity sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==
 
-follow-redirects@^1.0.0, follow-redirects@^1.15.0, follow-redirects@^1.15.5:
+follow-redirects@^1.0.0, follow-redirects@^1.15.4, follow-redirects@^1.15.5:
   version "1.15.5"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.5.tgz#54d4d6d062c0fa7d9d17feb008461550e3ba8020"
   integrity sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==
@@ -6106,9 +6106,9 @@ forwarded@0.2.0:
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
 framer-motion@^10.12.18:
-  version "10.16.4"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-10.16.4.tgz#30279ef5499b8d85db3a298ee25c83429933e9f8"
-  integrity sha512-p9V9nGomS3m6/CALXqv6nFGMuFOxbWsmaOrdmhyQimMIlLl3LC7h7l86wge/Js/8cRu5ktutS/zlzgR7eBOtFA==
+  version "10.18.0"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-10.18.0.tgz#1f4fc51403996ea7170af885bd44a7079d255950"
+  integrity sha512-oGlDh1Q1XqYPksuTD/usb0I70hq95OUzmL9+6Zd+Hs4XV0oaISBa/UUMSjYiq6m8EUF32132mOJ8xVZS+I0S6w==
   dependencies:
     tslib "^2.4.0"
   optionalDependencies:
@@ -8790,10 +8790,10 @@ open@^9.1.0:
     is-inside-container "^1.0.0"
     is-wsl "^2.2.0"
 
-openai@4.0.0-beta.6:
-  version "4.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/openai/-/openai-4.0.0-beta.6.tgz#faf2841f0328d4e57e82eac745383632bc2fa8ca"
-  integrity sha512-sZscRgs6nhBgIt0qcK8XB2PGga6V0Qy9rQn/vKesox/laQDs9tMaOi6rsDhHq15aXQJPROfEB0K9SZoCuyWbSw==
+openai@^4.16.1:
+  version "4.18.0"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-4.18.0.tgz#445f2001c2261ca3b4372039103fa5fc072d70bb"
+  integrity sha512-0C+waXoU7mvp/1QZzwnmPCkq4t02VJkjL1EXn0Pd7pFuTA0Y4y1LwzSZSiF/tpxw+Pr7diHVJjbfJ8QbdZnEcA==
   dependencies:
     "@types/node" "^18.11.18"
     "@types/node-fetch" "^2.6.4"
@@ -8803,11 +8803,12 @@ openai@4.0.0-beta.6:
     form-data-encoder "1.7.2"
     formdata-node "^4.3.2"
     node-fetch "^2.6.7"
+    web-streams-polyfill "^3.2.1"
 
-openai@^4.16.1:
-  version "4.18.0"
-  resolved "https://registry.yarnpkg.com/openai/-/openai-4.18.0.tgz#445f2001c2261ca3b4372039103fa5fc072d70bb"
-  integrity sha512-0C+waXoU7mvp/1QZzwnmPCkq4t02VJkjL1EXn0Pd7pFuTA0Y4y1LwzSZSiF/tpxw+Pr7diHVJjbfJ8QbdZnEcA==
+openai@^4.26.0:
+  version "4.26.0"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-4.26.0.tgz#0363b9d390727705b89cd1b1ea8e38af2afd53b6"
+  integrity sha512-HPC7tgYdeP38F3uHA5WgnoXZyGbAp9jgcIo23p6It+q/07u4C+NZ8xHKlMShsPbDDmFRpPsa3vdbXYpbhJH3eg==
   dependencies:
     "@types/node" "^18.11.18"
     "@types/node-fetch" "^2.6.4"
@@ -9812,9 +9813,9 @@ react-textarea-autosize@^8.5.3:
     use-latest "^1.2.1"
 
 react-virtuoso@^4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.6.2.tgz#74b59ebe3260e1f73e92340ffec84a6853285a12"
-  integrity sha512-vvlqvzPif+MvBrJ09+hJJrVY0xJK9yran+A+/1iwY78k0YCVKsyoNPqoLxOxzYPggspNBNXqUXEcvckN29OxyQ==
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.6.3.tgz#95f3a7905863a51bba3aa724c5ee79ccaf0400fb"
+  integrity sha512-NcoSsf4B0OCx7U8i2s+VWe8b9e+FWzcN/5ly4hKjErynBzGONbWORZ1C5amUlWrPi6+HbUQ2PjnT4OpyQIpP9A==
 
 react@^18.2.0:
   version "18.2.0"

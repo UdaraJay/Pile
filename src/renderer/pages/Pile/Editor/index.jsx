@@ -57,10 +57,10 @@ const Editor = memo(
           triggerSubmit:
             () =>
             ({ state, dispatch }) => {
+              console.log('trigger CustomEvent submit')
               // This will trigger a 'submit' event on the editor
               const event = new CustomEvent('submit');
               document.dispatchEvent(event);
-
               return true;
             },
         };

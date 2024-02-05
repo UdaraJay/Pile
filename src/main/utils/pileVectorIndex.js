@@ -138,7 +138,7 @@ class PileVectorIndex {
 
   async initChatEngine() {
     const retriever = this.vectorIndex.asRetriever();
-    retriever.similarityTopK = 30;
+    retriever.similarityTopK = 50;
     this.chatEngine = new ContextChatEngine({
       retriever,
       contextSystemPrompt: this.customContextSystemPrompt,
@@ -147,7 +147,7 @@ class PileVectorIndex {
 
   async resetChatEngine() {
     const retriever = this.vectorIndex.asRetriever();
-    retriever.similarityTopK = 30;
+    retriever.similarityTopK = 50;
     this.chatEngine = new ContextChatEngine({
       retriever,
       contextSystemPrompt: this.customContextSystemPrompt,

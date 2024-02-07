@@ -7,6 +7,7 @@ import {
   DiscIcon,
   DownloadIcon,
   FlameIcon,
+  SearchIcon,
 } from 'renderer/icons';
 import { useEffect, useState, useMemo } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -88,12 +89,13 @@ export default function Reflections() {
       <Dialog.Root>
         <Dialog.Trigger asChild>
           <div className={styles.iconHolder}>
-            <ReflectIcon className={styles.settingsIcon} />
+            <SearchIcon className={styles.settingsIcon} />
           </div>
         </Dialog.Trigger>
         <Dialog.Portal container={container}>
           <Dialog.Overlay className={styles.DialogOverlay} />
           <Dialog.Content className={styles.DialogContent}>
+            <div className={styles.scroller}>
             <div className={styles.wrapper}>
               <Dialog.Title className={styles.DialogTitle}>
                 <Status setReady={setReady} />
@@ -148,6 +150,7 @@ export default function Reflections() {
               </AnimatePresence>
 
               {renderResponse()}
+            </div>
             </div>
           </Dialog.Content>
           <div className={styles.DialogContentOverlay}></div>

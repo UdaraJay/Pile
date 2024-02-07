@@ -40,3 +40,6 @@ export * from './img/PileIcon';
 export * from './img/ChainIcon';
 export * from './img/WarningIcon';
 export * from './img/ReflectIcon';
+export * from './img/ChatIcon';
+export * from './img/OpenBookIcon';
+export * from './img/PersonIcon';

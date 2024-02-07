@@ -1,0 +1,34 @@
+.intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  width: 500px;
+  margin: 0 auto;
+  padding: 70px 0 50px 0;
+  text-align: center;
+
+  .icon{
+    height: 55px;
+    width: 60px;
+    margin: 22px auto;
+  }
+
+  .title {
+    font-family: 'Porpora';
+    font-size: 3.4em;
+    margin: 0 auto;
+    max-width: 400px;
+    line-height: 1.1;
+    color: var(--primary);
+    text-shadow: 0 0 50px var(--base), 20px -230px 100px var(--base-hover);
+  }
+  
+  .des {
+    font-size: 1.3em;
+    line-height: 1.4;
+    margin: 0 auto;
+    margin-top: 20px;
+    max-width: 340px;
+  }
+}

@@ -1,0 +1,22 @@
+.container {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 400;
+    border-radius: 7px;
+    font-size: 14px;
+    line-height: 1.5;
+    mix-blend-mode: soft-light;
+    position: relative;
+}
+
+.reflectIcon {
+    height: 23px;
+    width: 23px;
+    margin-right: 9px;
+}
+
+.waiting {
+    height: 23px;
+    width: 23px;
+    margin-right: 12px;
+}

@@ -77,9 +77,10 @@ class PileVectorIndex {
   async setServiceContext() {
     this.serviceContext = serviceContextFromDefaults({
       llm: new OpenAI({
-        model: 'gpt-4-0613',
+        model: 'gpt-4-0125-preview',
         temperature: 0.85,
-        prompt: 'As a wise librarian of this humans journals, how would you respond to this inquiry',
+        prompt:
+          'As a wise librarian of this humans journals, how would you respond to this inquiry',
       }),
     });
   }
@@ -114,7 +115,7 @@ class PileVectorIndex {
 
   async initQueryEngine() {
     const retriever = this.vectorIndex.asRetriever();
-    retriever.similarityTopK = 20;
+    retriever.similarityTopK = 30;
 
     const nodePostprocessor = new SimilarityPostprocessor({
       similarityCutoff: 0.7,
@@ -128,10 +129,29 @@ class PileVectorIndex {
     );
   }
 
+  customContextSystemPrompt({ context = '' }) {
+    // You can customize the prompt based on the context or other logic
+    const systemPrompt = `System: You are an AI within my personal journal. Answer you questions primarily based on the context provided, only stray away from it when you think it's helpful. You have access to the user's journal entries as context, the user is aware of this so you don't need to preface that to the user. Don't answer in lists all the time. Make your outputs aesthetically pleasing. You are like a wise librarian of my thoughts, providing advice and counsel. You try to keep responses consise and get to the point quickly. You address the user as 'you', you don't need to know their name. You should engage with the user like you're a human \nCurrent date and time: ${new Date().toISOString()} \nSome relevant past journal entries for context: ${context}\nResponse:`;
+
+    return systemPrompt;
+  }
+
   async initChatEngine() {
     const retriever = this.vectorIndex.asRetriever();
-    retriever.similarityTopK = 20;
-    this.chatEngine = new ContextChatEngine({ retriever });
+    retriever.similarityTopK = 50;
+    this.chatEngine = new ContextChatEngine({
+      retriever,
+      contextSystemPrompt: this.customContextSystemPrompt,
+    });
+  }
+
+  async resetChatEngine() {
+    const retriever = this.vectorIndex.asRetriever();
+    retriever.similarityTopK = 50;
+    this.chatEngine = new ContextChatEngine({
+      retriever,
+      contextSystemPrompt: this.customContextSystemPrompt,
+    });
   }
 
   // This takes a new entry and its parent entry if available as
@@ -243,9 +263,17 @@ class PileVectorIndex {
       return;
     }
 
-    const response = await this.queryEngine.query(text);
+    const response = await this.queryEngine.query({ query: text });
     return response;
   }
+
+   sanitize(text) {
+    if (!text) {
+        return " ";
+    }
+    return text;
+}
+
 
   async chat(text) {
     if (!this.chatEngine) {
@@ -255,8 +283,17 @@ class PileVectorIndex {
       return;
     }
 
-    const response = await this.chatEngine.chat({message: text});
-    return response;
+    let message = '';
+    const stream = await this.chatEngine.chat({ message: this.sanitize(text), stream: true });
+
+    for await (const chunk of stream) {
+      const part = chunk?.response ?? ''
+      message = message.concat(part);
+      await this.sendMessageToRenderer('streamed_chat', part)
+    }
+    
+    await this.sendMessageToRenderer('streamed_chat', '@@END@@')
+    return message;
   }
 
   async addDocument(thread) {

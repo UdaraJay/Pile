@@ -29,7 +29,7 @@ const VirtualList = memo(({ data }) => {
 
   const handleRangeChanged = (range) => {
     const middle = Math.floor((range.startIndex + range.endIndex) / 2);
-    setVisibleIndex(middle);
+    setVisibleIndex(range.startIndex);
   };
 
   const renderItem = useCallback((index, entry) => {
@@ -66,8 +66,8 @@ const VirtualList = memo(({ data }) => {
         rangeChanged={handleRangeChanged}
         itemContent={renderItem}
         computeItemKey={getKey}
-        atTopThreshold={1300}
-        overscan={1500}
+        atTopThreshold={100}
+        increaseViewportBy={2000}
         components={{ Scroller: Scrollbar }}
       />
     </AnimatePresence>

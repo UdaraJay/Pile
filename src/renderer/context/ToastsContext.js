@@ -3,7 +3,6 @@ import {
   createContext,
   useContext,
   useEffect,
-  useCallback,
   useRef,
 } from 'react';
 
@@ -18,7 +17,16 @@ export const ToastsContextProvider = ({ children }) => {
     if (notificationsQueue.length > 0) {
       // Set a timeout to dismiss the first notification
       notificationTimeoutRef.current = setTimeout(() => {
-        setNotificationsQueue((currentQueue) => currentQueue.slice(1));
+        setNotificationsQueue((currentQueue) => {
+          const rest = currentQueue.slice(1)
+
+          if (rest.length !== 0) {
+            const next = rest[0];
+            next.onEnter && next.onEnter();
+          }
+
+          return rest;
+        });
       }, notificationsQueue[0].dismissTime || 5000); // Default 5 seconds
     }
   };
@@ -45,9 +53,10 @@ export const ToastsContextProvider = ({ children }) => {
     type = 'info',
     message,
     dismissTime = 5000,
-    immediate = false
+    immediate = false,
+    onEnter = null,
   }) => {
-    const newNotification = { id, type, message, dismissTime };
+    const newNotification = { id, type, message, dismissTime, onEnter };
     setNotificationsQueue((currentQueue) => immediate ? [newNotification] : [...currentQueue, newNotification]);
   };
 

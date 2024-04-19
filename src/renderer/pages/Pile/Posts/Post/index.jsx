@@ -53,35 +53,6 @@ const Post = memo(({ postPath }) => {
 
   const containerRef = useRef();
 
-  // useEffect(() => {
-  //   const container = containerRef.current;
-
-  //   const handleIntersection = (entries) => {
-  //     const entry = entries[0];
-  //     if (entry.isIntersecting) {
-  //       if (post.data.isReply) return;
-  //       setClosestDate(post.data.createdAt);
-  //     }
-  //   };
-
-  //   const options = {
-  //     root: null,
-  //     rootMargin: '-100px 0px 0px 0px',
-  //     threshold: 0,
-  //   };
-
-  //   const observer = new IntersectionObserver(handleIntersection, options);
-  //   if (container) {
-  //     observer.observe(container);
-  //   }
-
-  //   return () => {
-  //     if (container) {
-  //       observer.unobserve(container);
-  //     }
-  //   };
-  // }, [containerRef, post]);
-
   if (!post) return;
   if (post.content == '' && post.data.attachments.length == 0) return;
 

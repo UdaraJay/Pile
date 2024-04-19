@@ -46,7 +46,7 @@ input {
   position: fixed;
   inset: 0;
   animation: overlayShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
-  opacity: 0.9;
+  opacity: 0.8;
   z-index: 4;
   overflow-y: overlay;
 }
@@ -75,7 +75,7 @@ input {
   height: calc(100vh - 10px);
   overflow-x: hidden;
   overflow-y: overlay;
-  padding: 14px 0px 100px 0;
+  padding: 0 0px 100px 0;
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -99,7 +99,7 @@ input {
 .wrapper {
   position: relative;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 90px 40px 0 40px;
   max-width: 700px;
   overflow-y: overlay;
   overflow-x: hidden;
@@ -117,50 +117,12 @@ input {
 }
 
 .DialogTitle {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  color: var(--active);
-  font-weight: 400;
-  border-radius: 7px;
-  margin: 100px 0 16px 0;
-  font-size: 15px;
-  line-height: 1.5;
-  mix-blend-mode: soft-light;
-}
-
-.close {
-  font-family: inherit;
-  border-radius: 90px;
-  height: 32px;
-  width: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all ease-in-out 120ms;
-  stroke-width: 2px;
-  background: var(--bg-tertiary);
-  color: var(--secondary);
-  margin-left: 12px;
   position: fixed;
-  top: 12px;
-  right: 26px;
-
-  &:hover {
-    cursor: pointer;
-    color: var(--primary);
-  }
-
-  &:active {
-    transform: scale(0.9);
-  }
-
-  &.win {
-    position: relative;
-    margin: -5px 0 0 0;
-    top: 0;
-    left: 0;
-  }
+  top: 50px;
+  left: 0;
+  width: 100%;
+  padding: 0px 0;
+  z-index: 115;
 }
 
 .textarea {
@@ -194,60 +156,6 @@ input {
 
   &:focus {
     color: var(--primary);
-  }
-}
-
-.buttons {
-  display: flex;
-  align-items: center;
-  margin-top: 32px;
-
-  .ask {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    height: 37px;
-    // line-height: 38px;
-    background: var(--active);
-    border-radius: 8px;
-    transition: all ease-in-out 120ms;
-    padding: 0 12px;
-    color: var(--active-text);
-    border-radius: 90px;
-    user-select: none;
-    font-size: 1.2em;
-    font-weight: 500;
-    width: 90px;
-    transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
-
-    &.processing {
-      width: 75px;
-    }
-
-    .icon {
-      height: 18px;
-      width: 18px;
-    }
-
-    .spinner {
-      height: 22px;
-      width: 22px;
-      align-self: center;
-    }
-
-    &.active {
-      background: var(--bg-secondary);
-    }
-
-    &:hover {
-      cursor: pointer;
-      background: var(--active-hover);
-    }
-
-    &:active {
-      background: var(--base);
-    }
   }
 }
 

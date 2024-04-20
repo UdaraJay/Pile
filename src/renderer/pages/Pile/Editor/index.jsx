@@ -250,7 +250,7 @@ const Editor = memo(
             max_tokens: 200,
             messages: context,
           });
-  
+
           for await (const part of stream) {
             const token = part.choices[0].delta.content;
             editor.commands.insertContent(token);
@@ -261,11 +261,12 @@ const Editor = memo(
             type: 'failed',
             message: 'AI request failed',
             dismissTime: 12000,
+            onEnter: closeReply
           });
           setIsAiResponding(false);
           return;
         }
-       
+
         removeNotification('reflecting');
         setIsAiResponding(false);
       }

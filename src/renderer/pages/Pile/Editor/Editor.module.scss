@@ -196,6 +196,8 @@
   .right {
     display: flex;
     align-items: center;
+    z-index: 10;
+    position: relative;
 
     .button {
       display: flex;

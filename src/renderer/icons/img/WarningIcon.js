@@ -13,14 +13,14 @@ export const WarningIcon = (props) => {
           cy="10.5"
           r="8"
           stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="m10.5 11.5v-5"
           stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <circle cx="10.5" cy="14.5" fill="currentColor" r="1" />
       </g>

@@ -1,0 +1,147 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    width: 600px;
+    gap: 10px;
+  }
+
+  .bar {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.5;
+    background: var(--bg);
+    width: 100%;
+    border-radius: 90px;
+    padding: 0 13px;
+    height: 40px;
+    transition: all ease-in-out 120ms;
+
+    &:focus-within {
+      .reflectIcon {
+        color: var(--active);
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    height: 38px;
+
+    .ask {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      align-items: center;
+      height: 100%;
+      background: var(--active);
+      border-radius: 8px;
+      transition: all ease-in-out 120ms;
+      padding: 0 12px;
+      color: var(--active-text);
+      border-radius: 90px;
+      user-select: none;
+      font-size: 1em;
+      font-weight: 450;
+      width: 90px;
+      transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
+      margin: 0;
+      font-size: 15px;
+
+      &.processing {
+        width: 75px;
+      }
+
+      .icon {
+        height: 18px;
+        width: 18px;
+      }
+
+      .spinner {
+        height: 22px;
+        width: 22px;
+        align-self: center;
+      }
+
+      &.active {
+        background: var(--bg-secondary);
+      }
+
+      &:hover {
+        cursor: pointer;
+        background: var(--active-hover);
+      }
+
+      &:active {
+        background: var(--base);
+      }
+    }
+  }
+
+  .reflectIcon {
+    height: 22px;
+    width: 22px;
+    margin-right: 12px;
+    color: var(--primary);
+    transition: all ease-in-out 120ms;
+  }
+
+  .waiting {
+    height: 23px;
+    width: 23px;
+    margin-right: 12px;
+  }
+
+  .textarea {
+    flex: 1 1 auto;
+    border: none;
+    background: none;
+    resize: none;
+    width: 100%;
+    font-size: 16px;
+    line-height: 40px;
+    outline: none;
+    color: var(--primary);
+
+    &::placeholder {
+      color: var(--secondary);
+    }
+  }
+
+  .close {
+    font-family: inherit;
+    border-radius: 90px;
+    height: 36px;
+    min-width: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all ease-in-out 120ms;
+    stroke-width: 2px;
+    background: var(--bg-tertiary);
+    color: var(--secondary);
+
+    &:hover {
+      cursor: pointer;
+      color: var(--primary);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    .icon {
+      height: 25px;
+      width: 25px;
+    }
+  }
+}

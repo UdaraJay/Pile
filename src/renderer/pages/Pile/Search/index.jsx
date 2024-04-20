@@ -1,4 +1,4 @@
-import styles from './Reflections.module.scss';
+import styles from './Search.module.scss';
 import {
   SettingsIcon,
   CrossIcon,
@@ -21,15 +21,10 @@ import Post from '../Posts/Post';
 import TextareaAutosize from 'react-textarea-autosize';
 import Waiting from '../Toasts/Toast/Loaders/Waiting';
 import Thinking from '../Toasts/Toast/Loaders/Thinking';
-import Status from './Status';
+import InputBar from './InputBar';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const prompts = [
-  'Pose me any riddle or wonderment you wish',
-  'You may consult this mind on any matter, mysterious or mundane',
-];
-
-export default function Reflections() {
+export default function Search() {
   const { currentTheme, setTheme } = usePilesContext();
   const { initVectorIndex, rebuildVectorIndex, query } = useIndexContext();
   const [container, setContainer] = useState(null);
@@ -37,8 +32,6 @@ export default function Reflections() {
   const [text, setText] = useState('');
   const [querying, setQuerying] = useState(false);
   const [response, setResponse] = useState(null);
-
-  let randomPrompt = useMemo(() => prompts[Math.floor(Math.random() * prompts.length)], []);
 
   const onChangeText = (e) => {
     setText(e.target.value);
@@ -96,61 +89,39 @@ export default function Reflections() {
           <Dialog.Overlay className={styles.DialogOverlay} />
           <Dialog.Content className={styles.DialogContent}>
             <div className={styles.scroller}>
-            <div className={styles.wrapper}>
-              <Dialog.Title className={styles.DialogTitle}>
-                <Status setReady={setReady} />
-                <Dialog.Close asChild>
-                  <button
-                    className={`${styles.close} ${osStyles}`}
-                    aria-label="Close Reflections"
-                  >
-                    <CrossIcon />
-                  </button>
-                </Dialog.Close>
-              </Dialog.Title>
-              <TextareaAutosize
-                value={text}
-                onChange={onChangeText}
-                className={styles.textarea}
-                onKeyDown={handleKeyPress}
-                placeholder={randomPrompt}
-              />
-              <div className={styles.buttons}>
-                <button
-                  className={`${styles.ask} ${querying && styles.processing}`}
-                  onClick={onSubmit}
-                  disabled={querying}
-                >
-                  {querying ? (
-                    <Thinking className={styles.spinner} />
-                  ) : (
-                    'Reflect'
-                  )}
-                </button>
-              </div>
+              <div className={styles.wrapper}>
+                <Dialog.Title className={styles.DialogTitle}>
+                  <InputBar
+                    setReady={setReady}
+                    value={text}
+                    onChange={onChangeText}
+                    onSubmit={onSubmit}
+                    querying={querying}
+                  />
+                </Dialog.Title>
 
-              <AnimatePresence>
-                {response && (
-                  <motion.div
-                    key={response.response}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <div className={styles.answer}>
-                      <div className={styles.text}>{response.response}</div>
-                      <div className={styles.text_context}>
-                        *This answer is written by AI, using the entries below.
-                        AI can make mistakes. Consider checking important
-                        information.
+                <AnimatePresence>
+                  {response && (
+                    <motion.div
+                      key={response.response}
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <div className={styles.answer}>
+                        <div className={styles.text}>{response.response}</div>
+                        <div className={styles.text_context}>
+                          *This answer is written by AI, using the entries
+                          below. AI can make mistakes. Consider checking
+                          important information.
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-              {renderResponse()}
-            </div>
+                {renderResponse()}
+              </div>
             </div>
           </Dialog.Content>
           <div className={styles.DialogContentOverlay}></div>

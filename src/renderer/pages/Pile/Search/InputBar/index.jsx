@@ -107,13 +107,12 @@ export default function InputBar({
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.bar}>
-          {renderIcon(status)}
           <input
             value={value}
             onChange={onChange}
             className={styles.textarea}
             onKeyDown={handleKeyPress}
-            placeholder={'Search your journal...'}
+            placeholder={'What are you looking for?'}
           />
         </div>
         <div className={styles.buttons}>
@@ -122,15 +121,18 @@ export default function InputBar({
             onClick={onSubmit}
             disabled={querying}
           >
-            {querying ? <Thinking className={styles.spinner} /> : 'Search'}
+            {querying ? (
+              <Thinking className={styles.spinner} />
+            ) : (
+              <SearchIcon className={styles.icon} />
+            )}
           </button>
+          <Dialog.Close asChild>
+            <button className={styles.close} aria-label="Close search">
+              <CrossIcon className={styles.icon} />
+            </button>
+          </Dialog.Close>
         </div>
-
-        <Dialog.Close asChild>
-          <button className={styles.close} aria-label="Close search">
-            <CrossIcon className={styles.icon} />
-          </button>
-        </Dialog.Close>
       </div>
     </div>
   );

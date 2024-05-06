@@ -88,18 +88,17 @@ export default function Search() {
         <Dialog.Portal container={container}>
           <Dialog.Overlay className={styles.DialogOverlay} />
           <Dialog.Content className={styles.DialogContent}>
-            <div className={styles.scroller}>
-              <div className={styles.wrapper}>
-                <Dialog.Title className={styles.DialogTitle}>
-                  <InputBar
-                    setReady={setReady}
-                    value={text}
-                    onChange={onChangeText}
-                    onSubmit={onSubmit}
-                    querying={querying}
-                  />
-                </Dialog.Title>
-
+            <div className={styles.wrapper}>
+              <Dialog.Title className={styles.DialogTitle}>
+                <InputBar
+                  setReady={setReady}
+                  value={text}
+                  onChange={onChangeText}
+                  onSubmit={onSubmit}
+                  querying={querying}
+                />
+              </Dialog.Title>
+              <div className={styles.scroller}>
                 <AnimatePresence>
                   {response && (
                     <motion.div
@@ -119,12 +118,10 @@ export default function Search() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-
                 {renderResponse()}
               </div>
             </div>
           </Dialog.Content>
-          <div className={styles.DialogContentOverlay}></div>
         </Dialog.Portal>
       </Dialog.Root>
       <div ref={setContainer} />

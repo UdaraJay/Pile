@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  padding: 3px;
 
   .wrapper {
     display: flex;
@@ -35,7 +36,8 @@
   .buttons {
     display: flex;
     align-items: center;
-    height: 38px;
+    gap: 5px;
+    height: 36px;
 
     .ask {
       display: flex;
@@ -52,7 +54,7 @@
       user-select: none;
       font-size: 1em;
       font-weight: 450;
-      width: 90px;
+      width: 40px;
       transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
       margin: 0;
       font-size: 15px;
@@ -62,8 +64,8 @@
       }
 
       .icon {
-        height: 18px;
-        width: 18px;
+        height: 20px;
+        width: 20px;
       }
 
       .spinner {
@@ -140,8 +142,8 @@
     }
 
     .icon {
-      height: 25px;
-      width: 25px;
+      height: 22px;
+      width: 22px;
     }
   }
 }

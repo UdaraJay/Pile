@@ -5,6 +5,7 @@ const matter = require('gray-matter');
 const keytar = require('keytar');
 const pileIndex = require('./pileIndex');
 const { BrowserWindow } = require('electron');
+const pileSearchIndex = require('./pileSearchIndex');
 
 const {
   TextNode,
@@ -64,11 +65,12 @@ class PileVectorIndex {
     if (!apikey) {
       throw new Error('API key not found. Please set it first.');
     }
+
     process.env['OPENAI_API_KEY'] = apikey;
   }
 
   async setStorageContext() {
-    const persistDirectory = path.join(this.pilePath, this.vectorIndexFolder); // Create a dedicated directory for storing the index
+    const persistDirectory = path.join(this.pilePath, this.vectorIndexFolder);
     this.storageContext = await storageContextFromDefaults({
       persistDir: persistDirectory,
     });
@@ -77,10 +79,11 @@ class PileVectorIndex {
   async setServiceContext() {
     this.serviceContext = serviceContextFromDefaults({
       llm: new OpenAI({
-        model: 'gpt-4-0125-preview',
+        model: 'gpt-4-turbo',
         temperature: 0.85,
+        maxTokens: 400,
         prompt:
-          'As a wise librarian of this humans journals, how would you respond to this inquiry',
+          'No markdown syntax. use <br/> tags for line breaks. As a wise librarian of this persons journals respond to this inquiry as concisely as possible.',
       }),
     });
   }
@@ -137,12 +140,7 @@ class PileVectorIndex {
   }
 
   async initChatEngine() {
-    const retriever = this.vectorIndex.asRetriever();
-    retriever.similarityTopK = 50;
-    this.chatEngine = new ContextChatEngine({
-      retriever,
-      contextSystemPrompt: this.customContextSystemPrompt,
-    });
+    this.resetChatEngine();
   }
 
   async resetChatEngine() {
@@ -150,6 +148,13 @@ class PileVectorIndex {
     retriever.similarityTopK = 50;
     this.chatEngine = new ContextChatEngine({
       retriever,
+      chatModel: new OpenAI({
+        model: 'gpt-4-turbo',
+        temperature: 0.85,
+        maxTokens: 400,
+        prompt:
+          'No markdown syntax. use <br/> tags for line breaks. As a wise librarian of this persons journals respond to this inquiry as concisely as possible.',
+      }),
       contextSystemPrompt: this.customContextSystemPrompt,
     });
   }
@@ -267,13 +272,12 @@ class PileVectorIndex {
     return response;
   }
 
-   sanitize(text) {
+  sanitize(text) {
     if (!text) {
-        return " ";
+      return 'no input provided';
     }
     return text;
-}
-
+  }
 
   async chat(text) {
     if (!this.chatEngine) {
@@ -284,16 +288,30 @@ class PileVectorIndex {
     }
 
     let message = '';
-    const stream = await this.chatEngine.chat({ message: this.sanitize(text), stream: true });
+    const stream = await this.chatEngine.chat({
+      message: this.sanitize(text),
+      stream: true,
+    });
 
-    for await (const chunk of stream) {
-      const part = chunk?.response ?? ''
-      message = message.concat(part);
-      await this.sendMessageToRenderer('streamed_chat', part)
-    }
-    
-    await this.sendMessageToRenderer('streamed_chat', '@@END@@')
-    return message;
+    console.log('stream', stream);
+
+    return;
+
+    await this.sendMessageToRenderer('streamed_chat', stream.response);
+    await this.sendMessageToRenderer('streamed_chat', '@@END@@');
+    return stream.response;
+
+    // TODO: Streaming not working as expected in this version
+    // of the engine. Revisit.
+    // for await (const chunk of stream) {
+    //   console.log('chunk', chunk);
+    //   const part = chunk?.response ?? '';
+    //   message = message.concat(part);
+    //   await this.sendMessageToRenderer('streamed_chat', part);
+    // }
+
+    // await this.sendMessageToRenderer('streamed_chat', '@@END@@');
+    // return message;
   }
 
   async addDocument(thread) {

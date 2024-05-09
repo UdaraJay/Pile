@@ -55,21 +55,17 @@ export const IndexContextProvider = ({ children }) => {
   );
 
   const updateIndex = useCallback(async (filePath, data) => {
-    // setIndex((prevMap) => {
-    //   const newMap = new Map(prevMap);
-    //   newMap.set(filePath, data);
-    //   return newMap;
-    // });
-
-    window.electron.ipc.invoke('index-update', filePath, data).then((index) => {
-      // setIndex(index);
-    });
+    window.electron.ipc.invoke('index-update', filePath, data);
   }, []);
 
   const removeIndex = useCallback(async (filePath) => {
     window.electron.ipc.invoke('index-remove', filePath).then((index) => {
       setIndex(index);
     });
+  }, []);
+
+  const search = useCallback(async (query) => {
+    return window.electron.ipc.invoke('index-search', query);
   }, []);
 
   const initVectorIndex = useCallback(async () => {
@@ -91,7 +87,7 @@ export const IndexContextProvider = ({ children }) => {
     async (text) => window.electron.ipc.invoke('vectorindex-chat', text),
     [currentPile]
   );
-  
+
   const resetChat = useCallback(
     async (text) => window.electron.ipc.invoke('vectorindex-reset-chat'),
     [currentPile]
@@ -118,6 +114,7 @@ export const IndexContextProvider = ({ children }) => {
     query,
     chat,
     resetChat,
+    search,
   };
 
   return (

@@ -78,12 +78,11 @@ export default function Chat() {
     if (!response) return;
     const sources = response.sourceNodes;
     return sources.map((source, index) => {
+      const uniqueKey = source.node?.metadata?.relativeFilePath;
+      if (!uniqueKey) return null;
       return (
         <div key={index} className={styles.post}>
-          <Post
-            key={`post-${source.metadata.relativeFilePath}`}
-            postPath={source.metadata.relativeFilePath}
-          />
+          <Post key={`post-${uniqueKey}`} postPath={uniqueKey} />
         </div>
       );
     });

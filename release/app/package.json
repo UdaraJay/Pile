@@ -1,6 +1,6 @@
 {
   "name": "pile",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Pile: Everyday journal and thought companion.",
   "license": "MIT",
   "author": {
@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "keytar": "^7.9.0",
-    "llamaindex": "^0.1.9"
+    "llamaindex": "^0.3.8"
   }
 }

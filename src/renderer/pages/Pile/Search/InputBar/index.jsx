@@ -9,6 +9,7 @@ import {
   FlameIcon,
   InfoIcon,
   SearchIcon,
+  Search2Icon,
 } from 'renderer/icons';
 import { useEffect, useState, useMemo } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -124,7 +125,7 @@ export default function InputBar({
             {querying ? (
               <Thinking className={styles.spinner} />
             ) : (
-              <SearchIcon className={styles.icon} />
+              <Search2Icon className={styles.icon} />
             )}
           </button>
           <Dialog.Close asChild>

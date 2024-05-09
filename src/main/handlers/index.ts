@@ -22,6 +22,16 @@ ipcMain.handle('index-update', (event, filePath, data) => {
   return index;
 });
 
+ipcMain.handle('index-search', (event, query) => {
+  const index = pileIndex.get();
+  const refs = pileIndex.search(query).map((ref: any) => ref.ref);
+  const results = refs.map((ref: any) => {
+    const res = { ref, ...index.get(ref) };
+    return res;
+  });
+  return results;
+});
+
 ipcMain.handle('index-remove', (event, filePath) => {
   const index = pileIndex.remove(filePath);
   return index;

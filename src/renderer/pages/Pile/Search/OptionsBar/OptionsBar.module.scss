@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 4px;
+  align-items: center;
+  gap: 6px;
+
+  .sep {
+    margin: 0 2px;
+    color: var(--bg-secondary);
+  }
+
+  .button {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    height: 100%;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    transition: all ease-in-out 120ms;
+    padding: 0 10px 0 8px;
+    color: var(--secondary);
+    border-radius: 90px;
+    user-select: none;
+    height: 26px;
+    transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
+    margin: 0;
+    border-radius: 9px;
+    font-weight: 450;
+    font-size: 12px;
+    gap: 5px;
+
+    .icon {
+      height: 16px;
+      width: 16px;
+      opacity: 0.6;
+    }
+
+    &:hover {
+      cursor: pointer;
+      color: var(--primary);
+
+      .homeIcon,
+      .settingsIcon {
+        opacity: 1;
+      }
+    }
+
+    &:active {
+      background: var(--bg-tertiary);
+    }
+
+    &.active {
+      background: var(--active);
+      color: var(--active-text);
+    }
+  }
+}

@@ -12,7 +12,6 @@ class AudioRecorder {
   }
 
   startNewRecording() {
-    // Ensure any ongoing recording is stopped
     this.stopRecording();
 
     const timestamp = new Date().toISOString().replace(/:/g, '-');
@@ -29,13 +28,9 @@ class AudioRecorder {
     });
 
     this.micInputStream = this.micInstance.getAudioStream();
-
     this.fileOutputStream = fs.createWriteStream(filePath);
     this.micInputStream.pipe(this.fileOutputStream);
-
     this.micInstance.start();
-
-    // Schedule to stop and start a new recording every 60 minutes
     this.currentTimeout = setTimeout(() => {
       this.startNewRecording();
     }, 3600000); // 60 minutes

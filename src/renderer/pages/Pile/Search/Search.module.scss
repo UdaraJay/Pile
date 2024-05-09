@@ -54,16 +54,17 @@ input {
 .DialogContent {
   z-index: 6;
   background-color: var(--bg);
-  border-radius: 22px;
+  border-radius: 17px 17px 0 0;
   position: fixed;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  bottom: 0;
+  transform: translate(-50%, 0%);
   width: 90vw;
   max-width: 700px;
-  max-height: 85vh;
-  padding: 0 2px;
+  height: 90vh;
+  padding: 2px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all ease-in-out 120ms;
 }
 
 .DialogContent:focus {
@@ -116,12 +117,29 @@ input {
   }
 }
 
+.meta {
+  border-top: 1px dashed var(--bg-secondary);
+  padding: 7px 1px 0 1px;
+  margin: 10px 6px 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  // height: 32px;
+
+  .sep {
+    display: flex;
+    height: 4px;
+    width: 4px;
+    border-radius: 90px;
+    background: var(--bg-secondary);
+  }
+}
+
 .scroller {
-  margin: 5px;
-  height: calc(85vh - 85px);
+  height: calc(92vh - 150px);
   overflow-x: hidden;
   overflow-y: overlay;
-  padding: 0 10px;
+  padding: 0 7px;
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -142,14 +160,10 @@ input {
   }
 }
 
-.answer {
-  border-bottom: 1px dashed var(--border);
-  color: var(--secondary);
-}
-
 .text {
-  font-size: 1.6em;
-  line-height: 1.45;
+  font-size: 1.3em;
+  line-height: 1.4;
+  max-width: 560px;
 }
 
 .text_context {
@@ -162,7 +176,7 @@ input {
 
 .post {
   position: relative;
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin-left: -15px;
   z-index: 9;
   pointer-events: none;
@@ -182,7 +196,7 @@ input {
 @keyframes contentShow {
   from {
     opacity: 0;
-    transform: translate(-50%, 20%);
+    transform: translate(-50%, 10vh);
   }
 
   to {

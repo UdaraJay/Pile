@@ -25,9 +25,7 @@ ipcMain.handle('vectorindex-reset-chat', (event) =>
   pileVectorIndex.resetChatEngine()
 );
 
-ipcMain.handle('vectorindex-chat', (event, text) =>
-  pileVectorIndex.chat(text)
-);
+ipcMain.handle('vectorindex-chat', (event, text) => pileVectorIndex.chat(text));
 
 ipcMain.handle('vectorindex-retriever', (event, text) =>
   pileVectorIndex.query(text)

@@ -87,12 +87,7 @@ export const PilesContextProvider = ({ children }) => {
     // If selected directory is not empty, create a new directory
     if (!window.electron.isDirEmpty(selectedPath)) {
       path = window.electron.joinPath(selectedPath, name);
-      window.electron.mkdir(path, (err) => {
-        if (err) {
-          console.error('Error creating pile folder', err);
-          return;
-        }
-      });
+      window.electron.mkdir(path);
     }
 
     const newPiles = [{ name, path }, ...piles];
@@ -152,7 +147,7 @@ export const PilesContextProvider = ({ children }) => {
     deletePile,
     currentTheme,
     setTheme,
-    updateCurrentPile
+    updateCurrentPile,
   };
 
   return (

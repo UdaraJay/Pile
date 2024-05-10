@@ -80,6 +80,9 @@
 
 .uneditable {
   cursor: default;
+  .highlight {
+    color: var(--active);
+  }
 }
 
 .media {

@@ -8,12 +8,6 @@ import { DateTime } from 'luxon';
 import Timeline from './Timeline';
 
 export default function Sidebar({}) {
-  // current time
-  const [time, setTime] = useState(DateTime.now());
-
-  let now = new Date();
-  let weeksTimestamps = [];
-
   return (
     <div className={styles.sidebar}>
       <Timeline />

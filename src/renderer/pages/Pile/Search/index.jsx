@@ -150,7 +150,11 @@ export default function Search() {
           key={uniqueKey}
           className={styles.post}
         >
-          <Post key={`post-${uniqueKey}`} postPath={uniqueKey} />
+          <Post
+            key={`post-${uniqueKey}`}
+            postPath={uniqueKey}
+            searchTerm={text}
+          />
         </motion.div>
       );
     });
@@ -161,11 +165,6 @@ export default function Search() {
     []
   );
 
-  const createStats = () => {
-    console.log('filtered', filtered);
-  };
-
-  console.log('filtered', filtered);
   return (
     <>
       <Dialog.Root>

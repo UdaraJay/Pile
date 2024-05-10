@@ -23,7 +23,7 @@ import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
-const Post = memo(({ postPath }) => {
+const Post = memo(({ postPath, searchTerm = null }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
   // const { setClosestDate } = useTimelineContext();
@@ -46,11 +46,10 @@ const Post = memo(({ postPath }) => {
 
     setReplying(!replying);
   };
-  const toggleEditable = () => setEditable(!editable);
 
+  const toggleEditable = () => setEditable(!editable);
   const handleRootMouseEnter = () => setHover(true);
   const handleRootMouseLeave = () => setHover(false);
-
   const containerRef = useRef();
 
   if (!post) return;
@@ -81,6 +80,7 @@ const Post = memo(({ postPath }) => {
           highlightColor={highlightColor}
           parentPostPath={postPath}
           reloadParentPost={refreshPost}
+          searchTerm={searchTerm}
         />
       );
     });
@@ -95,8 +95,11 @@ const Post = memo(({ postPath }) => {
       className={`${styles.root} ${
         (replying || isAIResplying) && styles.focused
       }`}
+      tabindex="0"
       onMouseEnter={handleRootMouseEnter}
       onMouseLeave={handleRootMouseLeave}
+      onFocus={handleRootMouseEnter}
+      onBlur={handleRootMouseLeave}
     >
       <div className={styles.post}>
         <div className={styles.left}>
@@ -120,9 +123,9 @@ const Post = memo(({ postPath }) => {
           <div className={styles.header}>
             <div className={styles.title}>{post.name}</div>
             <div className={styles.meta}>
-              <div className={styles.time} onClick={toggleEditable}>
+              <button className={styles.time} onClick={toggleEditable}>
                 {created.toRelative()}
-              </div>
+              </button>
             </div>
           </div>
           <div className={styles.editor}>
@@ -130,6 +133,7 @@ const Post = memo(({ postPath }) => {
               postPath={postPath}
               editable={editable}
               setEditable={setEditable}
+              searchTerm={searchTerm}
             />
           </div>
         </div>
@@ -147,18 +151,13 @@ const Post = memo(({ postPath }) => {
               transition={{ delay: 0.3 }}
             >
               <div className={styles.actions}>
-                <div
-                  className={styles.openReply}
-                  // style={{ color: highlightColor }}
-                  onClick={toggleReplying}
-                >
+                <button className={styles.openReply} onClick={toggleReplying}>
                   <NeedleIcon className={styles.icon} />
                   Add another entry
-                </div>
+                </button>
                 <div className={styles.sep}>/</div>
-                <div
+                <button
                   className={styles.openReply}
-                  // style={{ color: highlightColor }}
                   onClick={() => {
                     setIsAiReplying(true);
                     toggleReplying();
@@ -166,7 +165,7 @@ const Post = memo(({ postPath }) => {
                 >
                   <ReflectIcon className={styles.icon2} />
                   Reflect
-                </div>
+                </button>
               </div>
             </motion.div>
           )}

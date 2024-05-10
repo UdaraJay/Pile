@@ -26,13 +26,11 @@ const startRecording = (outputDirectory) => {
   micInputStream.pipe(fileOutputStream);
 
   micInstance.start();
-  console.log(`Recording started: ${filePath}`);
 };
 
 const stopRecording = () => {
   if (micInstance) {
     micInstance.stop();
-    console.log('Recording stopped');
   }
 
   if (currentTimeout) {

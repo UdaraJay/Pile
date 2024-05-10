@@ -118,8 +118,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
     "react-textarea-autosize": "^8.5.3",
-    "react-virtuoso": "^4.6.3",
-    "undici": "^5.28.4"
+    "react-virtuoso": "^4.6.3"
   },
   "devDependencies": {
     "@adobe/css-tools": "^4.3.2",

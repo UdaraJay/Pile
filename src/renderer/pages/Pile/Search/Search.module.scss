@@ -136,10 +136,11 @@ input {
 }
 
 .scroller {
-  height: calc(92vh - 150px);
+  height: calc(92vh - 140px);
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 0 7px;
+  padding-top: 10px;
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -179,7 +180,7 @@ input {
   font-size: 0.9rem;
   margin-left: -15px;
   z-index: 9;
-  pointer-events: none;
+  // pointer-events: none;
   margin-bottom: 0px;
 }
 

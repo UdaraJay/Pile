@@ -39,7 +39,6 @@ class AudioRecorder {
   stopRecording() {
     if (this.micInstance) {
       this.micInstance.stop();
-      console.log('Recording stopped');
     }
 
     if (this.currentTimeout) {

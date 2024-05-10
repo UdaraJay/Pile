@@ -53,8 +53,11 @@ const electronHandler = {
   deleteFile: (path: string, callback: any) => fs.unlink(path, callback),
   writeFile: (path: string, data: any, callback: any) =>
     fs.writeFile(path, data, 'utf-8', callback),
+  mkdir: (path: string) =>
+    fs.promises.mkdir(path, {
+      recursive: true,
+    }),
   joinPath: (...args: any) => path.join(...args),
-  mkdir: (...args: any) => fs.mkdir(...args),
   isMac: process.platform === 'darwin',
   isWindows: process.platform === 'win32',
   pathSeparator: path.sep,

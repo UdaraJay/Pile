@@ -21,6 +21,7 @@ export default function Reply({
   highlightColor,
   parentPostPath = null,
   reloadParentPost = () => {},
+  searchTerm = { searchTerm },
 }) {
   const { currentPile } = usePilesContext();
   const { post, cycleColor } = usePost(postPath);
@@ -77,6 +78,7 @@ export default function Reply({
               setEditable={setEditable}
               parentPostPath={parentPostPath}
               reloadParentPost={reloadParentPost}
+              searchTerm={searchTerm}
             />
           </div>
         </div>

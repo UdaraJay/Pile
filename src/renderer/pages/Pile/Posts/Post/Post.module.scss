@@ -1,268 +1,276 @@
 .root {
-    position: relative;
-    // padding: 5px 0;
-    height: auto;
-    min-height: 72px;
+  position: relative;
+  height: auto;
+  min-height: 72px;
+  transition: all ease-in-out 120ms;
 
-    &.focused {
-        background: var(--bg);
-        box-shadow: 0 30px 80px 40px var(--bg);
-    }
+  &:focus,
+  &:focus-within {
+    outline: none;
+    color: var(--primary);
+  }
 }
 
 .post {
+  display: flex;
+  position: relative;
+  padding: 0 18px;
+
+  .left {
     display: flex;
-    position: relative;
-    padding: 0 18px;
-
-    .left {
-        display: flex;
-        flex-direction: column;
-        width: 20px;
-        margin-right: 12px;
-        user-select: none;
-        align-items: center;
-
-        // .straight .curved
-        .connector {}
-
-        .ball {
-            flex: 0 0 20px;
-            height: 20px;
-            width: 20px;
-            background: var(--border);
-            border-radius: 90px;
-            user-select: none;
-            position: relative;
-            z-index: 1;
-            transition: all ease-in-out 120ms;
-            margin: 4px 0;
-
-            &:hover {
-                cursor: pointer;
-                background: var(--bg-tertiary);
-                filter: contrast(0.9);
-            }
-
-            &:active {
-                background: var(--bg-secondary);
-                transform: scale(0.8);
-            }
-
-            &.ai {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                color: var(--secondary);
-                font-size: 10px;
-                line-height: 1;
-                font-weight: 500;
-
-                .iconAI {
-                    height: 15px;
-                    width: 15px;
-                    fill: var(--bg);
-                    mix-blend-mode: luminosity;
-
-                    &.replying {
-                        animation: pulse 2s infinite;
-                    }
-
-                    @keyframes pulse {
-                        0% {
-                            transform: scale(0.8);
-                        }
-
-                        70% {
-                            transform: scale(1);
-                            opacity: 0.8;
-                        }
-
-                        100% {
-                            transform: scale(0.8);
-                        }
-                    }
-                }
-            }
-        }
-
-        .line {
-            flex: 0 0 0;
-            width: 0px;
-            background: none;
-            border: none;
-            border-right: 2px solid var(--border);
-            opacity: 0;
-            transition: all ease-in-out 120ms;
-
-            &.show {
-                flex: 1 0 auto;
-                opacity: 1;
-                transition-delay: 15ms;
-            }
-
-            &.ai {
-                border-right-style: dotted;
-            }
-
-        }
-    }
-
-    .right {
-        margin: 4px 0;
-        width: 100%;
-        padding-bottom: 12px;
-
-        &.hasReplies {
-            padding-bottom: 12px;
-        }
-    }
-
-    .header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 4px 18px;
-
-        .title {}
-
-        .meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            margin-top: -3px;
-
-            .time {
-                position: relative;
-                z-index: 1;
-                color: var(--secondary);
-                font-size: 0.9em;
-                padding: 3px 5px;
-                transition: all ease-in-out 120ms;
-                border-radius: 6px;
-                user-select: none;
-                margin: 0 -5px;
-
-                &:hover {
-                    cursor: pointer;
-                    background: var(--bg-secondary);
-                    color: var(--primary);
-                    opacity: 1;
-                }
-
-                &:active {
-                    cursor: pointer;
-                    background: var(--bg-tertiary);
-                }
-            }
-        }
-    }
-
-    .editor {
-        width: 100%;
-
-        &.ai {
-            color: var(--secondary);
-        }
-    }
-}
-
-.reply {
-    .left {
-        .connector {
-            margin-top: -30px;
-            height: 48px;
-            width: 2px;
-            background: var(--border);
-            transition: all ease-in-out 120ms;
-            transition-delay: 120ms;
-            opacity: 0;
-
-            &.show {
-                opacity: 1;
-            }
-
-
-        }
-    }
-
-    .right {
-        margin-top: 22px;
-    }
-}
-
-.actionsHolder {
-    display: flex;
-    height: 40px;
-    min-height: 40px;
-    margin-top: -10px;
-    position: relative;
-}
-
-.actions {
-    display: flex;
+    flex-direction: column;
+    width: 20px;
+    margin-right: 12px;
+    user-select: none;
     align-items: center;
-    vertical-align: middle;
-    padding: 0 16px 0 51px;
-    margin: 0 -5px;
 
-    .sep {
-        margin: 0 5px 0 4px;
+    .ball {
+      flex: 0 0 20px;
+      height: 20px;
+      width: 20px;
+      background: var(--border);
+      border-radius: 90px;
+      user-select: none;
+      position: relative;
+      z-index: 1;
+      transition: all ease-in-out 120ms;
+      margin: 4px 0;
+
+      &:hover {
+        cursor: pointer;
+        background: var(--bg-tertiary);
+        filter: contrast(0.9);
+      }
+
+      &:active {
+        background: var(--bg-secondary);
+        transform: scale(0.8);
+      }
+
+      &.ai {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         color: var(--secondary);
-        opacity: 0.25;
+        font-size: 10px;
+        line-height: 1;
+        font-weight: 500;
+
+        .iconAI {
+          height: 15px;
+          width: 15px;
+          fill: var(--bg);
+          mix-blend-mode: luminosity;
+
+          &.replying {
+            animation: pulse 2s infinite;
+          }
+
+          @keyframes pulse {
+            0% {
+              transform: scale(0.8);
+            }
+
+            70% {
+              transform: scale(1);
+              opacity: 0.8;
+            }
+
+            100% {
+              transform: scale(0.8);
+            }
+          }
+        }
+      }
     }
 
-    .openReply {
-        display: flex;
-        align-items: center;
-        font-size: 0.95em;
-        user-select: none;
-        padding: 2px 10px 2px 3px;
+    .line {
+      flex: 0 0 0;
+      width: 0px;
+      background: none;
+      border: none;
+      border-right: 2px solid var(--border);
+      opacity: 0;
+      transition: all ease-in-out 120ms;
 
-        transition: all ease-in-out 80ms;
-        border-radius: 90px;
-        color: var(--base);
-        line-height: 1;
-        white-space: nowrap;
+      &.show {
+        flex: 1 0 auto;
+        opacity: 1;
+        transition-delay: 15ms;
+      }
+
+      &.ai {
+        border-right-style: dotted;
+      }
+    }
+  }
+
+  .right {
+    margin: 4px 0;
+    width: 100%;
+
+    &.hasReplies {
+      padding-bottom: 12px;
+    }
+  }
+
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 18px;
+
+    .title {
+    }
+
+    .meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-top: -3px;
+
+      .time {
+        position: relative;
+        z-index: 1;
+        color: var(--secondary);
+        font-size: 0.9em;
+        padding: 3px 5px;
+        transition: all ease-in-out 120ms;
+        border-radius: 6px;
+        user-select: none;
+        margin: 0 -5px;
 
         &:hover {
-            cursor: pointer;
-            filter: contrast(1.15);
-            color: var(--base-hover);
-            background: var(--bg-secondary);
+          cursor: pointer;
+          background: var(--bg-secondary);
+          color: var(--primary);
+          opacity: 1;
+        }
+
+        &:focus {
+          cursor: pointer;
+          background: var(--bg-secondary);
+          color: var(--primary);
+          opacity: 1;
         }
 
         &:active {
-            filter: contrast(0.85);
+          cursor: pointer;
+          background: var(--bg-tertiary);
         }
-
-        .icon {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 23px;
-            width: 23px;
-            margin-right: 4px;
-            fill: currentColor;
-            transition: all ease-in-out 120ms;
-        }
-
-        .icon2 {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 20px;
-            width: 20px;
-            margin: 2px 0;
-            margin-right: 6px;
-            margin-left: 5px;
-            // margin-top: -1px;
-            fill: currentColor;
-            transition: all ease-in-out 120ms;
-        }
+      }
     }
+  }
+
+  .editor {
+    width: 100%;
+
+    &.ai {
+      color: var(--secondary);
+    }
+  }
+}
+
+.reply {
+  .left {
+    .connector {
+      margin-top: -30px;
+      height: 48px;
+      width: 2px;
+      background: var(--border);
+      transition: all ease-in-out 120ms;
+      transition-delay: 120ms;
+      opacity: 0;
+
+      &.show {
+        opacity: 1;
+      }
+    }
+  }
+
+  .right {
+    margin-top: 22px;
+  }
+}
+
+.actionsHolder {
+  display: flex;
+  height: 40px;
+  min-height: 40px;
+  margin-top: -10px;
+  position: relative;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+  padding: 0 16px 0 51px;
+  margin: 0 -5px;
+
+  .sep {
+    margin: 0 5px 0 4px;
+    color: var(--secondary);
+    opacity: 0.25;
+  }
+
+  .openReply {
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+    user-select: none;
+    padding: 2px 10px 2px 3px;
+    transition: all ease-in-out 80ms;
+    border-radius: 90px;
+    color: var(--base);
+    line-height: 1;
+    white-space: nowrap;
+
+    &:hover {
+      cursor: pointer;
+      filter: contrast(1.15);
+      color: var(--base-hover);
+      background: var(--bg-secondary);
+    }
+
+    &:focus {
+      cursor: pointer;
+      filter: contrast(1.15);
+      color: var(--base-hover);
+      background: var(--bg-secondary);
+    }
+
+    &:active {
+      filter: contrast(0.85);
+    }
+
+    .icon {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 23px;
+      width: 23px;
+      margin-right: 4px;
+      fill: currentColor;
+      transition: all ease-in-out 120ms;
+    }
+
+    .icon2 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 20px;
+      width: 20px;
+      margin: 2px 0;
+      margin-right: 6px;
+      margin-left: 5px;
+      // margin-top: -1px;
+      fill: currentColor;
+      transition: all ease-in-out 120ms;
+    }
+  }
 }

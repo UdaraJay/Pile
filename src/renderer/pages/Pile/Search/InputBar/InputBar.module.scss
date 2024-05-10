@@ -83,6 +83,11 @@
         background: var(--active-hover);
       }
 
+      &:focus {
+        cursor: pointer;
+        background: var(--active-hover);
+      }
+
       &:active {
         background: var(--base);
       }
@@ -142,6 +147,10 @@
 
     &:active {
       color: var(--primary);
+    }
+
+    &:focus {
+      background: var(--bg-tertiary);
     }
 
     .icon {

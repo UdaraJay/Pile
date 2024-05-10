@@ -2,15 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const matter = require('gray-matter');
-const pileSearchIndex = require('./pileSearchIndex');
 const { Document, VectorStoreIndex } = require('llamaindex');
+const pileSearchIndex = require('./pileSearchIndex');
 
 class PileIndex {
   constructor() {
     this.fileName = 'index.json';
     this.pilePath = null;
     this.index = new Map();
-    this.searchIndex = null;
   }
 
   sortMap(map) {
@@ -42,7 +41,6 @@ class PileIndex {
       const data = fs.readFileSync(indexFilePath);
       const loadedIndex = new Map(JSON.parse(data));
       const sortedIndex = this.sortMap(loadedIndex);
-
       this.index = sortedIndex;
       this.searchIndex = pileSearchIndex.initialize(this.pilePath, sortedIndex);
       return sortedIndex;
@@ -71,6 +69,8 @@ class PileIndex {
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContent);
     this.index.set(relativeFilePath, data);
+
+    this.searchIndex = pileSearchIndex.initialize(this.pilePath, this.index);
     this.save();
     return this.index;
   }
@@ -97,9 +97,7 @@ class PileIndex {
 
     const sortedIndex = this.sortMap(this.index);
     this.index = sortedIndex;
-
     const filePath = path.join(this.pilePath, this.fileName);
-
     const entries = this.index.entries();
 
     if (!entries) return;

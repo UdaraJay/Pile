@@ -1,9 +1,5 @@
 import './App.css';
-import {
-  Routes,
-  Route,
-  useLocation,
-} from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
 import Pile from './pages/Pile';
@@ -28,6 +24,7 @@ const transition = {
   type: 'spring',
   stiffness: 100,
   damping: 20,
+  duration: 0.1,
 };
 
 const AnimatedPage = ({ children, _key = '', down = false }) => {

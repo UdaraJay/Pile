@@ -133,10 +133,7 @@ class PileVectorIndex {
   }
 
   customContextSystemPrompt({ context = '' }) {
-    // You can customize the prompt based on the context or other logic
-    const systemPrompt = `System: You are an AI within my personal journal. Answer you questions primarily based on the context provided, only stray away from it when you think it's helpful. You have access to the user's journal entries as context, the user is aware of this so you don't need to preface that to the user. Don't answer in lists all the time. Make your outputs aesthetically pleasing. You are like a wise librarian of my thoughts, providing advice and counsel. You try to keep responses consise and get to the point quickly. You address the user as 'you', you don't need to know their name. You should engage with the user like you're a human \nCurrent date and time: ${new Date().toISOString()} \nSome relevant past journal entries for context: ${context}\nResponse:`;
-
-    return systemPrompt;
+    return `System: You are an AI within my personal journal. Answer you questions primarily based on the context provided, only stray away from it when you think it's helpful. You have access to the user's journal entries as context, the user is aware of this so you don't need to preface that to the user. Don't answer in lists all the time. Make your outputs aesthetically pleasing. You are like a wise librarian of my thoughts, providing advice and counsel. You try to keep responses consise and get to the point quickly. You address the user as 'you', you don't need to know their name. You should engage with the user like you're a human \nCurrent date and time: ${new Date().toISOString()} \nSome relevant past journal entries for context: ${context}\nResponse:`;
   }
 
   async initChatEngine() {
@@ -148,6 +145,7 @@ class PileVectorIndex {
     retriever.similarityTopK = 50;
     this.chatEngine = new ContextChatEngine({
       retriever,
+      contextSystemPrompt: this.customContextSystemPrompt,
       chatModel: new OpenAI({
         model: 'gpt-4-turbo',
         temperature: 0.85,
@@ -155,7 +153,6 @@ class PileVectorIndex {
         prompt:
           'No markdown syntax. use <br/> tags for line breaks. As a wise librarian of this persons journals respond to this inquiry as concisely as possible.',
       }),
-      contextSystemPrompt: this.customContextSystemPrompt,
     });
   }
 
@@ -293,10 +290,6 @@ class PileVectorIndex {
       stream: true,
     });
 
-    console.log('stream', stream);
-
-    return;
-
     await this.sendMessageToRenderer('streamed_chat', stream.response);
     await this.sendMessageToRenderer('streamed_chat', '@@END@@');
     return stream.response;
@@ -309,7 +302,6 @@ class PileVectorIndex {
     //   message = message.concat(part);
     //   await this.sendMessageToRenderer('streamed_chat', part);
     // }
-
     // await this.sendMessageToRenderer('streamed_chat', '@@END@@');
     // return message;
   }

@@ -46,9 +46,13 @@ class PileEmbeddings {
     try {
       this.pilePath = pilePath;
       await this.initializeAPIKey();
+
+      if (!this.apiKey) {
+        throw new Error('API key not found. Please set it first.');
+      }
       const embeddingsFilePath = path.join(pilePath, this.fileName);
       if (fs.existsSync(embeddingsFilePath)) {
-        const data = fs.readFileSync(this.embeddingsFilePath, 'utf8');
+        const data = fs.readFileSync(embeddingsFilePath, 'utf8');
         this.embeddings = JSON.parse(data);
       } else {
         // Embeddings need to be generated based on the index
@@ -70,9 +74,7 @@ class PileEmbeddings {
     this.apiKey = apikey;
   }
 
-  // Returns a map [entryPath] =>
   async walkAndGenerateEmbeddings(pilePath, index) {
-    //loop throuhg index - a map of [entryPath] => metadata
     console.log('🧮 Generating embeddings for index:', index.size);
     const embeddings = new Map();
     for (let [entryPath, metadata] of index) {
@@ -168,8 +170,8 @@ class PileEmbeddings {
       score: cosineSimilarity(embedding, queryEmbedding),
     }));
 
-    scores.sort((a, b) => b.score - a.score); // Sort by score descending
-    return scores.slice(0, topN); // Return top N results
+    scores.sort((a, b) => b.score - a.score);
+    return scores.slice(0, topN);
   }
 }
 

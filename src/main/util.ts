@@ -22,7 +22,7 @@ export async function walk(dir: string, root = true) {
       const filePath = path.join(dir, file);
       const stats = await stat(filePath);
       if (stats.isDirectory()) {
-        //Validate by YEAR/MMM:2024/Nov folder format
+        //Validate by YEAR/MMM:2024/Nov folder structure
         if (
           !root &&
           !(

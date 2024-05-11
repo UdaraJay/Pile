@@ -8475,10 +8475,10 @@ open@^7.4.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openai@^4.26.0:
-  version "4.42.0"
-  resolved "https://registry.yarnpkg.com/openai/-/openai-4.42.0.tgz#8e6517839dcfbde848b981965989ccd2a4d70b1c"
-  integrity sha512-xbiQQ2YNqdkE6cHqeWKa7lsAvdYfgp84XiNFOVkAMa6+9KpmOL4hCWCRR6e6I/clpaens/T9XeLVtyC5StXoRw==
+openai@^4.44.0:
+  version "4.44.0"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-4.44.0.tgz#7234d98eb459ea913b93e46263a932b233838219"
+  integrity sha512-jVpDIJsBAR83rVbIHPuWRr9UkFc5DaH9ev2kt2IQAhKCs73DBRoFOa5SwtqfN7/CcBdIGBdygpmpc0gsFaV+Ow==
   dependencies:
     "@types/node" "^18.11.18"
     "@types/node-fetch" "^2.6.4"
@@ -9325,13 +9325,12 @@ raw-body@2.5.2:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-dom@^18.2.0:
-  version "18.3.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.1.tgz#c2265d79511b57d479b3dd3fdfa51536494c5cb4"
-  integrity sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==
+react-dom@^19.0.0-beta-04b058868c-20240508:
+  version "19.0.0-beta-04b058868c-20240508"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.0.0-beta-04b058868c-20240508.tgz#c6c23a4f87796fc6d4ac9916b7402fccf4554036"
+  integrity sha512-g8DrqbkLi8ok/0GyVVJky30d5b+WXpIi4baKD+ySsMRzQJlwQHywGh/V+osSMCYmnApq1OYSWPuvOBvrVmhz5Q==
   dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.23.2"
+    scheduler "0.25.0-beta-04b058868c-20240508"
 
 "react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^18.0.0, react-is@^18.3.1:
   version "18.3.1"
@@ -9427,12 +9426,10 @@ react-virtuoso@^4.7.10:
   resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.7.10.tgz#6d4e951d4a62b57f012e411fbb8a16ff84d3732b"
   integrity sha512-l+fnBf/G1Fp6pHCnhFq2Ra4lkZtT6c5XrS9rCS0OA6de7WGLZviCo0y61CUZZG79TeAw3L7O4czeNPiqh9CIrg==
 
-react@^18.2.0:
-  version "18.3.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
-  integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
-  dependencies:
-    loose-envify "^1.1.0"
+react@^19.0.0-beta-04b058868c-20240508:
+  version "19.0.0-beta-04b058868c-20240508"
+  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-beta-04b058868c-20240508.tgz#5f75597ecc881b2f1691670e0f2dd94c2217f068"
+  integrity sha512-Mch4EeDejk1ZgH/O3TIH6KtELBUzcJdTZujQGWFA6tz9Y9J+X7ZgY9WS2VhUCS/alOlEcIdCXAz0Cb/JET1QVg==
 
 read-binary-file-arch@^1.0.6:
   version "1.0.6"
@@ -9809,6 +9806,11 @@ saxes@^6.0.0:
   integrity sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==
   dependencies:
     xmlchars "^2.2.0"
+
+scheduler@0.25.0-beta-04b058868c-20240508:
+  version "0.25.0-beta-04b058868c-20240508"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-beta-04b058868c-20240508.tgz#267892e198ba5ec4c6dafbc5019714d0befd7728"
+  integrity sha512-9BiO+0jJiftEqYhVXGIc7MQTxbDAd7mfRMIctKsH0DxvuN8vzzaOQbG5Jy720Pz6KUAjgAAJJ/2nZW35+XwuHg==
 
 scheduler@^0.23.2:
   version "0.23.2"

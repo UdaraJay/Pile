@@ -113,7 +113,7 @@ input {
 
 .meta {
   border-top: 1px dashed var(--bg-secondary);
-  padding: 7px 1px 0 1px;
+  padding: 7px 1px 1px 1px;
   margin: 10px 6px 0 6px;
   display: flex;
   align-items: center;
@@ -143,6 +143,17 @@ ul {
   height: 20px;
   z-index: 15;
   border-radius: 0 0 9px 9px;
+  pointer-events: none;
+}
+.gradient2 {
+  position: absolute;
+  top: 110px;
+  left: 0;
+  background: var(--bg-secondary);
+  background: linear-gradient(to top, transparent, var(--bg));
+  width: calc(100% - 14px);
+  height: 20px;
+  z-index: 15;
   pointer-events: none;
 }
 

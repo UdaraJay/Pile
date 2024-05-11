@@ -179,7 +179,7 @@ export default function Search() {
 
   return (
     <>
-      <Dialog.Root open={searchOpen} onOpenChange={setSearchOpen}>
+      <Dialog.Root>
         <Dialog.Trigger asChild>
           <div className={styles.iconHolder}>
             <SearchIcon className={styles.settingsIcon} />
@@ -224,6 +224,7 @@ export default function Search() {
               </AnimatePresence>
             </div>
             <div className={styles.gradient}></div>
+            <div className={styles.gradient2}></div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

@@ -4,5 +4,4 @@ import './handlers/file';
 import './handlers/tags';
 import './handlers/highlights';
 import './handlers/index';
-import './handlers/vectorIndex';
 import './handlers/links';

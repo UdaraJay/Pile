@@ -114,8 +114,8 @@
     "lunr": "^2.3.9",
     "luxon": "^3.3.0",
     "openai": "^4.44.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0-beta-04b058868c-20240508",
+    "react-dom": "^19.0.0-beta-04b058868c-20240508",
     "react-router-dom": "^6.11.2",
     "react-textarea-autosize": "^8.5.3",
     "react-virtuoso": "^4.7.10"
@@ -270,7 +270,7 @@
     ]
   },
   "devEngines": {
-    "node": ">=14.x",
+    "node": ">=18.x",
     "npm": ">=7.x"
   },
   "electronmon": {

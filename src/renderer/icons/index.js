@@ -45,3 +45,4 @@ export * from './img/ChatIcon';
 export * from './img/OpenBookIcon';
 export * from './img/PersonIcon';
 export * from './img/HighlightIcon';
+export * from './img/FolderIcon';

@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import styles from './Home.module.scss';
-import { PileIcon } from 'renderer/icons';
 import { Link } from 'react-router-dom';
 import { usePilesContext } from '../../context/PilesContext';
 import DeletePile from './DeletePile';
-import icon from '../../../../assets/icon.svg';
-import { motion } from 'framer-motion';
 import Logo from './logo';
+import OpenPileFolder from './OpenPileFolder';
 
 const quotes = [
   'One moment at a time',
@@ -32,14 +30,17 @@ export default function Home() {
   const renderPiles = () => {
     return piles.map((pile: any) => {
       return (
-        <div className={styles.pile} key={pile.path}>
+        <div
+          className={`${pile.theme && pile.theme + 'Thee'} ${styles.pile}`}
+          key={pile.path}
+        >
           <div className={styles.left}>
             <div className={styles.name}>{pile.name}</div>
-            <div className={styles.src}>{pile.path}</div>
+            {/* <div className={styles.src}>{pile.path}</div> */}
           </div>
           <div className={styles.right}>
             <DeletePile pile={pile} />
-
+            <OpenPileFolder pile={pile} />
             <Link to={`/pile/${pile.name}`} className={styles.button}>
               Open
             </Link>

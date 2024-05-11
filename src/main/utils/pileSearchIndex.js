@@ -90,7 +90,7 @@ class PileSearchIndex {
 
             builder.add(doc);
           } catch (error) {
-            console.error('Failed to process file: ', error);
+            console.error('Failed to process file for search index.');
           }
         }
       });

@@ -1,0 +1,362 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+
+/* Root variables for app theme, dark and light mode */
+:root {
+  --brand: #00ff29;
+  --translucent: rgba(193, 193, 193, 0.5);
+  --sidebar-width: 250px;
+  --nav-height: 52px;
+
+  --primary: #0b0b0b;
+  --secondary: #626262;
+
+  --base: #4d80e6;
+  --base-text: rgb(246, 247, 255);
+  --base-hover: #2b5bbb;
+  --base-yellow: #e6e04d;
+  --base-green: #4de64d;
+  --base-red: #e64d4d;
+  --base-red-light: #ffdbdb;
+
+  --active: #c69100;
+  --active-hover: #946d00;
+  --active-text: #fff;
+
+  --border: #e4e4e4;
+
+  --bg: #fff;
+  --bg-secondary: rgb(246, 246, 246);
+  --bg-tertiary: rgb(220, 220, 220);
+  --bg-color-secondary-hover: rgb(226, 226, 226);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --translucent: rgba(0, 0, 0, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+
+    --primary: #fff;
+    --secondary: #c1c1c1;
+
+    --base: #4d88ff;
+    --base-text: hsl(213, 100%, 93%);
+    --base-hover: #82acff;
+    --base-yellow: #776b0e;
+    --base-green: #128212;
+    --base-red: #cb1d1d;
+    --base-red-light: #3d2323;
+
+    --active: #c69100;
+    --active-hover: #946d00;
+    --active-text: #fff;
+
+    --border: #565656;
+
+    --bg: #171717;
+    --bg-secondary: #373737;
+    --bg-tertiary: #575757;
+    --bg-color-secondary-hover: rgb(108, 108, 108);
+
+    /* Theme 1 */
+    /* --translucent: rgba(13, 10, 35, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+
+    --primary: #ffe9ff;
+    --secondary: #ab92ae;
+
+    --base: #d014e1;
+    --base-hover: #df38e5;
+    --base-yellow: #776b0e;
+    --base-green: #128212;
+    --base-red: rgb(255, 71, 71);
+    --base-red-light: #3d2323;
+
+    --active: #ff9500;
+    --active-hover: #df7000;
+    --active-text: #fff;
+
+    --border: #5f4263;
+
+    --bg: #251b24;
+    --bg-secondary: #481e51;
+    --bg-tertiary: #5a1a5f;
+    --bg-color-secondary-hover: rgb(114, 95, 122);
+    --bg-translucent: rgba(32, 10, 35, 0.45); */
+
+    /* Midnight */
+    /* --translucent: rgba(13, 10, 35, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+
+    --primary: #e9f3ff;
+    --secondary: #9299ae;
+
+    --base: #4d8eff;
+    --base-hover: #8299ff;
+    --base-yellow: #776b0e;
+    --base-green: #128212;
+    --base-red: rgb(255, 25, 25);
+    --base-red-light: #3d2323;
+
+    --active: #ff9634;
+    --active-hover: #ff8000;
+    --active-text: #fff;
+
+    --border: #424a63;
+
+    --bg: #1b1d25;
+    --bg-secondary: #16233c;
+    --bg-tertiary: #1a375f;
+    --bg-color-secondary-hover: rgb(95, 100, 122);
+    --bg-translucent: rgba(10, 15, 35, 0.45); */
+
+    color-scheme: dark;
+  }
+}
+
+.blueTheme {
+  --brand: #00ff29;
+  --translucent: rgba(162, 212, 255, 0.777);
+  --sidebar-width: 250px;
+  --nav-height: 52px;
+  --primary: #1d2730;
+  --secondary: #3c5162;
+  --base: #147dfa;
+  --base-text: #fff;
+  --base-hover: #348fff;
+  --base-yellow: #e6e04d;
+  --base-green: #4de64d;
+  --base-red: #ff2a2a;
+  --base-red-light: #ffdbdb;
+  --active: #147dfa;
+  --active-hover: #ffb158;
+  --active-text: #fff;
+  --border: #7fb9ff;
+  --bg: #b5dafb;
+  --bg-secondary: #7fc3ff;
+  --bg-tertiary: #85b2da;
+  --bg-color-secondary-hover: rgba(0, 136, 255, 0.333);
+
+  @media (prefers-color-scheme: dark) {
+    --brand: #00ff29;
+    --translucent: rgba(162, 212, 255, 0.777);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+    --primary: rgb(205, 232, 255);
+    --secondary: #7fb4f5;
+    --base: #147dfa;
+    --base-text: #fff;
+    --base-hover: #348fff;
+    --base-yellow: #e6e04d;
+    --base-green: #4de64d;
+    --base-red: #ff2a2a;
+    --base-red-light: #ffdbdb;
+    --active: #f06401;
+    --active-hover: #d55900;
+    --active-text: #fff;
+    --border: #2c6bb7;
+    --bg: #1d4b74;
+    --bg-secondary: #235e91;
+    --bg-tertiary: #0f2e4a;
+    --bg-color-secondary-hover: rgba(0, 136, 255, 0.333);
+  }
+}
+
+.purpleTheme {
+  --brand: #00ff29;
+  --translucent: rgba(173, 138, 193, 0.5);
+  --sidebar-width: 250px;
+  --nav-height: 52px;
+  --primary: #57168c;
+  --secondary: #794d92;
+  --base: #b846ff;
+  --base-text: hsl(288, 75%, 13%);
+  --base-hover: #c66aff;
+  --base-yellow: #e6e04d;
+  --base-green: #4de64d;
+  --base-red: #ff2a2a;
+  --base-red-light: #ffdbdb;
+  --active: #248124;
+  --active-hover: #155415;
+  --active-text: #fff;
+  --border: #be84dd;
+  --bg: #f9eeff;
+  --bg-secondary: rgb(229, 174, 255);
+  --bg-tertiary: rgb(207, 178, 225);
+  --bg-color-secondary-hover: rgb(226, 226, 226);
+
+  @media (prefers-color-scheme: dark) {
+    --translucent: rgba(13, 10, 35, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+    --primary: #ffe9ff;
+    --secondary: #ab92ae;
+    --base: #d014e1;
+    --base-text: hsl(295, 100%, 93%);
+    --base-hover: #df38e5;
+    --base-yellow: #776b0e;
+    --base-green: #128212;
+    --base-red: rgb(255, 116, 85);
+    --base-red-light: #3d2323;
+    --active: #ccf263;
+    --active-hover: #ecffb8;
+    --active-text: #251b24;
+    --border: #5f4263;
+    --bg: #251b24;
+    --bg-secondary: #481e51;
+    --bg-tertiary: #5a1a5f;
+    --bg-color-secondary-hover: rgb(114, 95, 122);
+    --bg-translucent: rgba(32, 10, 35, 0.45);
+  }
+}
+
+.yellowTheme {
+  --brand: #00ff29;
+  --translucent: rgba(173, 138, 193, 0.5);
+  --sidebar-width: 250px;
+  --nav-height: 52px;
+  --primary: #412109;
+  --secondary: #88511e;
+  --base: #f18e1c;
+  --base-text: hsl(35, 100%, 93%);
+  --base-hover: #c5751f;
+  --base-yellow: #e6e04d;
+  --base-green: #4de64d;
+  --base-red: #ff3512;
+  --base-red-light: #ffdbdb;
+  --active: #2200ff;
+  --active-hover: #190094;
+  --active-text: #fff;
+  --border: #f6a446;
+  --bg: #fff7ee;
+  --bg-secondary: rgb(230, 154, 82);
+  --bg-tertiary: rgb(225, 208, 178);
+  --bg-color-secondary-hover: rgb(226, 226, 226);
+
+  @media (prefers-color-scheme: dark) {
+    --translucent: rgba(13, 10, 35, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+    --primary: #fff7e9;
+    --secondary: #aea392;
+    --base: #ff9634;
+    --base-text: hsl(34, 76%, 15%);
+    --base-hover: #df7000;
+    --base-yellow: #776b0e;
+    --base-green: #128212;
+    --base-red: rgb(255, 71, 71);
+    --base-red-light: #3d2323;
+    --active: #ffa72b;
+    --active-hover: rgb(255, 184, 85);
+    --active-text: #2a2420;
+    --border: #635342;
+    --bg: #25201b;
+    --bg-secondary: #51371e;
+    --bg-tertiary: #5f3b1a;
+    --bg-color-secondary-hover: rgb(122, 115, 95);
+    --bg-translucent: rgba(32, 10, 35, 0.45);
+  }
+}
+
+.greenTheme {
+  --brand: #00ff29;
+  --translucent: rgba(173, 138, 193, 0.5);
+  --sidebar-width: 250px;
+  --nav-height: 52px;
+  --primary: #1b4109;
+  --secondary: #40881e;
+  --base: #22ff00;
+  --base-text: hsl(118, 66%, 22%);
+  --base-hover: #c5751f;
+  --base-yellow: #e6e04d;
+  --base-green: #4de64d;
+  --base-red: #ff3512;
+  --base-red-light: #ffdbdb;
+  --active: #193bff;
+  --active-hover: #001e94;
+  --active-text: #fff;
+  --border: #81f646;
+  --bg: #eeffee;
+  --bg-secondary: rgb(75, 196, 69);
+  --bg-tertiary: rgb(178, 225, 180);
+  --bg-color-secondary-hover: rgb(226, 226, 226);
+
+  @media (prefers-color-scheme: dark) {
+    --translucent: rgba(13, 10, 35, 0.5);
+    --sidebar-width: 250px;
+    --nav-height: 52px;
+    --primary: #f5fff0;
+    --secondary: #95ae92;
+    --base: #149800;
+    --base-text: hsl(133, 100%, 93%);
+    --base-hover: #10c500;
+    --base-yellow: #776b0e;
+    --base-green: #128212;
+    --base-red: rgb(255, 71, 71);
+    --base-red-light: #3d2323;
+    --active: #ffaa00;
+    --active-hover: #df7000;
+    --active-text: #fff;
+    --border: #3e7138;
+    --bg: #212621;
+    --bg-secondary: #20381e;
+    --bg-tertiary: #2d3d29;
+    --bg-color-secondary-hover: rgb(97, 122, 95);
+    --bg-translucent: rgba(32, 10, 35, 0.45);
+  }
+}
+
+@font-face {
+  font-family: 'Porpora';
+  font-weight: 400;
+  font-display: swap;
+  src: url('../../assets/porpora/Porpora-Regular.woff2') format('woff2'),
+    url('../../assets/porpora/Porpora-Regular.woff') format('woff');
+}
+
+@import '../../assets/inter/inter.css';
+
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  html {
+    font-family: 'Inter var', sans-serif;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  color: var(--primary);
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  height: fit-content;
+  width: fit-content;
+}
+
+a:hover {
+  opacity: 1;
+  text-decoration: none;
+}

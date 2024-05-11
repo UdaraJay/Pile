@@ -21,7 +21,7 @@
     line-height: 1;
     width: 100%;
     padding: 0 15px;
-    height: 42px;
+    height: 40px;
     transition: all ease-in-out 120ms;
     background: var(--bg-tertiary);
     border-radius: 13px 9px 9px 9px;
@@ -52,7 +52,7 @@
       user-select: none;
       font-size: 1em;
       font-weight: 450;
-      height: 42px;
+      height: 40px;
       width: 52px;
       transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
       margin: 0;
@@ -128,8 +128,8 @@
   .close {
     font-family: inherit;
     border-radius: 90px;
-    height: 42px;
-    min-width: 42px;
+    height: 40px;
+    min-width: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

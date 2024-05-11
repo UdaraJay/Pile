@@ -1,19 +1,59 @@
 const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
+const keytar = require('keytar');
+const { walk } = require('../util');
+const matter = require('gray-matter');
 
-class EmbeddingSearch {
-  constructor(embeddingsFilePath, apiKey) {
-    this.embeddingsFilePath = embeddingsFilePath;
-    this.apiKey = apiKey;
-    this.embeddings = this.loadEmbeddings();
+const createCosineSimilarityKernel = (gpu, vectorSize) => {
+  return gpu.createKernel(
+    function (vecA, vecB) {
+      let dotProduct = 0;
+      let normA = 0;
+      let normB = 0;
+
+      for (let i = 0; i < vectorSize; i++) {
+        dotProduct += vecA[i] * vecB[i];
+        normA += vecA[i] * vecA[i];
+        normB += vecB[i] * vecB[i];
+      }
+
+      normA = Math.sqrt(normA);
+      normB = Math.sqrt(normB);
+
+      if (normA === 0 || normB === 0) {
+        return 0; // Avoid division by zero
+      } else {
+        return dotProduct / (normA * normB);
+      }
+    },
+    {
+      output: [1],
+      constants: { vectorSize },
+    }
+  );
+};
+
+class PileEmbeddings {
+  constructor() {
+    this.pilePath = null;
+    this.fileName = 'embeddings.json';
+    this.apiKey = null;
+    this.embeddings = new Map();
   }
 
-  loadEmbeddings() {
+  async initialize(pilePath, index) {
     try {
-      if (fs.existsSync(this.embeddingsFilePath)) {
+      this.pilePath = pilePath;
+      await this.initializeAPIKey();
+      const embeddingsFilePath = path.join(pilePath, this.fileName);
+      if (fs.existsSync(embeddingsFilePath)) {
         const data = fs.readFileSync(this.embeddingsFilePath, 'utf8');
-        return JSON.parse(data);
+        this.embeddings = JSON.parse(data);
+      } else {
+        // Embeddings need to be generated based on the index
+        await this.walkAndGenerateEmbeddings(pilePath, index);
+        this.saveEmbeddings();
       }
     } catch (error) {
       console.error('Failed to load embeddings:', error);
@@ -21,13 +61,66 @@ class EmbeddingSearch {
     return {};
   }
 
+  async initializeAPIKey() {
+    const apikey = await keytar.getPassword('pile', 'aikey');
+    if (!apikey) {
+      throw new Error('API key not found. Please set it first.');
+    }
+
+    this.apiKey = apikey;
+  }
+
+  // Returns a map [entryPath] =>
+  async walkAndGenerateEmbeddings(pilePath, index) {
+    //loop throuhg index - a map of [entryPath] => metadata
+    console.log('🧮 Generating embeddings for index:', index.size);
+    const embeddings = new Map();
+    for (let [entryPath, metadata] of index) {
+      try {
+        //  we only index parent documents
+        // the replies are concatenated to the contents
+        if (metadata.isReply) continue;
+        let fullPath = path.join(pilePath, entryPath);
+        let fileContent = fs.readFileSync(fullPath, 'utf8');
+        let { content } = matter(fileContent);
+
+        content =
+          'Entry on ' +
+          metadata.createdAt +
+          '\n\n' +
+          content +
+          '\n\nReplies:\n';
+
+        // concat the contents of replies
+        for (let replyPath of metadata.replies) {
+          let replyFullPath = path.join(pilePath, replyPath);
+          let replyFileContent = fs.readFileSync(replyFullPath, 'utf8');
+          let { content: replyContent } = matter(replyFileContent);
+          content += '\n' + replyContent;
+        }
+
+        const embedding = await this.generateEmbeddingForDocument(content);
+        embeddings.set(entryPath, embedding);
+        console.log('🧮 Embeddings created for threads: ', entryPath);
+      } catch (error) {
+        console.error('Failed to process thread for vector index.', error);
+        continue;
+      }
+    }
+
+    console.log('🧮 Embeddings generated:', embeddings.size);
+    this.embeddings = embeddings;
+    return embeddings;
+  }
+
   saveEmbeddings() {
     try {
-      fs.writeFileSync(
-        this.embeddingsFilePath,
-        JSON.stringify(this.embeddings, null, 2),
-        'utf8'
-      );
+      const embeddingsFilePath = path.join(this.pilePath, this.fileName);
+
+      const entries = this.embeddings.entries();
+      if (!entries) return;
+      let strMap = JSON.stringify(Array.from(entries));
+      fs.writeFileSync(embeddingsFilePath, strMap, 'utf8');
     } catch (error) {
       console.error('Failed to save embeddings:', error);
     }
@@ -48,7 +141,7 @@ class EmbeddingSearch {
       'Content-Type': 'application/json',
     };
     const data = {
-      model: 'text-embedding-ada-002', // still same for gpt-4?
+      model: 'text-embedding-3-small',
       input: document,
     };
 
@@ -80,4 +173,4 @@ class EmbeddingSearch {
   }
 }
 
-module.exports = EmbeddingSearch;
+module.exports = new PileEmbeddings();

@@ -11,7 +11,7 @@
 
 .wrapper {
   position: relative;
-  max-width: 380px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -142,72 +142,78 @@
 }
 
 .piles {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   font-size: 0.8em;
   border-radius: 12px;
-  overflow: hidden;
-  opacity: 0.999; // Having the opacity set to 1 interferes with 'overflow: hidden'
 
   .pile {
+    width: 320px;
     -webkit-app-region: none;
     display: flex;
     justify-content: space-between;
-    background: var(--translucent);
-    backdrop-filter: blur(10px);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-bottom: none;
     margin-bottom: 1px;
-    padding: 7px 7px 7px 9px;
+    padding: 7px 7px 7px 10px;
     color: var(--primary);
 
+    &:first-child {
+      border-top: 1px solid var(--border);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
     &:last-child {
-      border-bottom: none;
+      border-bottom: 1px solid var(--border);
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
     }
 
-    .name {
-      font-weight: 500;
-      user-select: none;
-    }
+    .left {
+      display: flex;
+      align-items: center;
 
-    .src {
-      margin-top: 1px;
-      font-size: 0.9em;
-      color: var(--secondary);
-      text-overflow: ellipsis;
-      max-width: 180px;
+      .name {
+        font-weight: 500;
+        user-select: none;
+        font-size: 18px;
+        font-family: 'Porpora';
+      }
+
+      .src {
+        margin-top: 1px;
+        font-size: 0.9em;
+        color: var(--secondary);
+        text-overflow: ellipsis;
+      }
     }
 
     .right {
       display: flex;
-      align-items: center;
-      margin-left: 64px;
+      margin-left: 32px;
       user-select: none;
-
-      .icon {
-        margin-right: 8px;
-        color: var(--secondary);
-        height: 18px;
-
-        &:hover {
-          cursor: pointer;
-          color: var(--base-red);
-        }
-      }
     }
   }
 
   .button {
-    background: var(--bg-secondary);
-    color: var(--secondary);
+    background: var(--active);
+    color: var(--active-text);
     font-size: 0.95em;
-    padding: 9px 16px;
-    line-height: 1;
-    border-radius: 7px;
+    padding: 0 14px;
+    height: 28px;
+    line-height: 27px;
+    border-radius: 90px;
     user-select: none;
     transition: all ease-in-out 120ms;
     font-weight: 500;
 
     &:hover {
       cursor: pointer;
-      color: var(--base);
-      background: var(--bg-secondary);
+      background: var(--active-hover);
     }
 
     &:active {

@@ -43,7 +43,8 @@ function usePost(
   } = {}
 ) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-  const { addIndex, removeIndex, refreshIndex } = useIndexContext();
+  const { addIndex, removeIndex, refreshIndex, updateIndex } =
+    useIndexContext();
   const [updates, setUpdates] = useState(0);
   const [path, setPath] = useState(); // absolute path
   const [post, setPost] = useState({ ...defaultPost });
@@ -122,6 +123,7 @@ function usePost(
     };
     const fileContents = await fileOperations.generateMarkdown(content, data);
     await fileOperations.saveFile(fullParentPostPath, fileContents);
+    updateIndex(parentPostPath, data);
     reloadParentPost(parentPostPath);
   };
 

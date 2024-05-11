@@ -24,6 +24,7 @@ import Thinking from '../Toasts/Toast/Loaders/Thinking';
 import InputBar from './InputBar';
 import { AnimatePresence, motion } from 'framer-motion';
 import OptionsBar from './OptionsBar';
+import VirtualList from '../Posts/VirtualList';
 
 const filterResults = (results, options) => {
   const now = new Date();
@@ -85,8 +86,14 @@ const filterResults = (results, options) => {
 
 export default function Search() {
   const { currentTheme, setTheme } = usePilesContext();
-  const { initVectorIndex, rebuildVectorIndex, query, search } =
-    useIndexContext();
+  const {
+    initVectorIndex,
+    rebuildVectorIndex,
+    query,
+    search,
+    searchOpen,
+    setSearchOpen,
+  } = useIndexContext();
   const [container, setContainer] = useState(null);
   const [ready, setReady] = useState(false);
   const [text, setText] = useState('');
@@ -123,7 +130,7 @@ export default function Search() {
   const containerVariants = {
     show: {
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
       },
     },
   };
@@ -139,7 +146,12 @@ export default function Search() {
   }, [response, options]);
 
   const renderResponse = () => {
-    if (!response) return;
+    if (!response || response.length === 0)
+      return (
+        <div className={styles.empty}>
+          Start typing to search this journal...
+        </div>
+      );
 
     return filtered.map((source, index) => {
       const uniqueKey = source.ref;
@@ -167,7 +179,7 @@ export default function Search() {
 
   return (
     <>
-      <Dialog.Root>
+      <Dialog.Root open={searchOpen} onOpenChange={setSearchOpen}>
         <Dialog.Trigger asChild>
           <div className={styles.iconHolder}>
             <SearchIcon className={styles.settingsIcon} />
@@ -211,6 +223,7 @@ export default function Search() {
                 </motion.ul>
               </AnimatePresence>
             </div>
+            <div className={styles.gradient}></div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

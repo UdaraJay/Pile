@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef, memo } from 'react';
+import { useEffect, useState, useCallback, useRef, memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Post.module.scss';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -23,7 +23,7 @@ import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 
-const Post = memo(({ postPath, searchTerm = null }) => {
+const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
   // const { setClosestDate } = useTimelineContext();
@@ -53,14 +53,13 @@ const Post = memo(({ postPath, searchTerm = null }) => {
   const containerRef = useRef();
 
   if (!post) return;
-  if (post.content == '' && post.data.attachments.length == 0) return;
 
   const created = DateTime.fromISO(post.data.createdAt);
   const replies = post?.data?.replies || [];
   const hasReplies = replies.length > 0;
   const isAI = post?.data?.isAI || false;
   const isReply = post?.data?.isReply || false;
-  const highlightColor = post.data.highlight
+  const highlightColor = post?.data?.highlight
     ? highlights.get(post.data.highlight).color
     : 'var(--border)';
 
@@ -95,7 +94,7 @@ const Post = memo(({ postPath, searchTerm = null }) => {
       className={`${styles.root} ${
         (replying || isAIResplying) && styles.focused
       }`}
-      tabindex="0"
+      tabIndex="0"
       onMouseEnter={handleRootMouseEnter}
       onMouseLeave={handleRootMouseLeave}
       onFocus={handleRootMouseEnter}

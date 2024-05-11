@@ -23,14 +23,17 @@ export default function Posts() {
       .filter(([key, metadata]) => !metadata.isReply)
       .reduce((acc, [key, value]) => acc.set(key, value), new Map());
 
-    if (onlyParentEntries.size === data.length - 1) {
-      return;
-    }
-
     // Dummy entry appended to the front to account for the
     // NewPost component at the top of the list.
-    setData([['NewPost', { height: 150 }], ...Array.from(onlyParentEntries)]);
+    setData([
+      ['NewPost', { height: 150, hash: new Date().toString() }],
+      ...Array.from(onlyParentEntries),
+    ]);
   }, [index]);
+
+  const renderList = useMemo(() => {
+    return <VirtualList data={data} />;
+  }, [data]);
 
   // When there are zero entries
   if (index.size == 0) {
@@ -52,7 +55,8 @@ export default function Posts() {
 
   return (
     <div className={styles.posts}>
-      <VirtualList data={data} />
+      <AnimatePresence>{renderList}</AnimatePresence>
+      <div className={styles.gradient}></div>
     </div>
   );
 }

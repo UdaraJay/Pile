@@ -2,8 +2,8 @@ import { ipcMain } from 'electron';
 import { getLinkPreview, getLinkContent } from '../utils/linkPreview';
 import pileIndex from '../utils/pileIndex';
 
-ipcMain.handle('index-load', (event, pilePath) => {
-  const index = pileIndex.load(pilePath);
+ipcMain.handle('index-load', async (event, pilePath) => {
+  const index = await pileIndex.load(pilePath);
   return index;
 });
 

@@ -48,11 +48,12 @@ export default function Chat() {
 
   const appendToLastSystemMessage = (token) => {
     setHistory((history) => {
+      if (!history || history.length === 0) return [];
       const last = history[history.length - 1];
-      if (last.role === 'system') {
+      if (last?.role === 'system') {
         return [
           ...history.slice(0, -1),
-          { role: 'system', content: last.content + (token ?? '') },
+          { role: 'system', content: last?.content + (token ?? '') },
         ];
       }
     });

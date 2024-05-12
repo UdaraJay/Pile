@@ -6,7 +6,6 @@ const pileSearchIndex = require('./pileSearchIndex');
 const pileEmbeddings = require('./pileEmbeddings');
 const { walk } = require('../util');
 const { convertHTMLToPlainText } = require('../util');
-const { ContextReplacementPlugin } = require('webpack');
 
 class PileIndex {
   constructor() {

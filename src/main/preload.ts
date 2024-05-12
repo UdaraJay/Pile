@@ -1,6 +1,6 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { contextBridge, ipcRenderer, IpcRendererEvent, shell } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
@@ -36,6 +36,11 @@ const electronHandler = {
   },
   getConfigPath: () => {
     return ipcRenderer.sendSync('get-config-file-path');
+  },
+  openFolder: (folderPath: string) => {
+    if (folderPath.startsWith('/')) {
+      shell.openPath(folderPath);
+    }
   },
   existsSync: (path: string) => fs.existsSync(path),
   readDir: (path: string, callback: any) => fs.readdir(path, callback),

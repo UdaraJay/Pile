@@ -32,7 +32,7 @@ const useChat = () => {
         content: messsage,
       };
 
-      const relevantEntries = await vectorSearch(messsage, 25);
+      const relevantEntries = await vectorSearch(messsage, 50);
       const entryFilePaths = relevantEntries.map((entry) => entry.ref);
       const threadsAsText = await getThreadsAsText(entryFilePaths);
       const system = {

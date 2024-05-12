@@ -26,7 +26,7 @@ ipcMain.handle('index-search', (event, query) => {
   return results;
 });
 
-ipcMain.handle('index-vector-search', (event, query) => {
+ipcMain.handle('index-vector-search', (event, query, topN = 50) => {
   const results = pileIndex.vectorSearch(query);
   return results;
 });

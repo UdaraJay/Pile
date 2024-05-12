@@ -113,6 +113,7 @@ class PileEmbeddings {
 
       const embedding = await this.generateEmbedding(content);
       this.embeddings.set(entryPath, embedding);
+      this.saveEmbeddings();
       console.log('🧮 Embeddings created for threads: ', entryPath);
     } catch (error) {
       console.error('Failed to process thread for vector index.', error);

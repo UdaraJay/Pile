@@ -191,12 +191,18 @@ export default function Search() {
                 <div className={styles.meta}>
                   {filtered?.length} thread{filtered?.length !== 1 && 's'}
                   <div className={styles.sep}></div>
-                  {filtered.reduce((a, i) => a + 1 + i.replies.length, 0)}{' '}
+                  {filtered.reduce(
+                    (a, i) => a + 1 + i?.replies?.length,
+                    0
+                  )}{' '}
                   entries
                   <div className={styles.sep}></div>
                   {filtered.filter((post) => post.highlight).length} highlighted
                   <div className={styles.sep}></div>
-                  {filtered.reduce((a, i) => a + i.attachments.length, 0)}{' '}
+                  {filtered.reduce(
+                    (a, i) => a + i?.attachments?.length,
+                    0
+                  )}{' '}
                   attachments
                 </div>
               )}

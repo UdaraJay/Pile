@@ -6,6 +6,7 @@ const pileSearchIndex = require('./pileSearchIndex');
 const pileEmbeddings = require('./pileEmbeddings');
 const { walk } = require('../util');
 const { convertHTMLToPlainText } = require('../util');
+const { ContextReplacementPlugin } = require('webpack');
 
 class PileIndex {
   constructor() {
@@ -124,26 +125,34 @@ class PileIndex {
     return this.index;
   }
 
-  getThreadsAsText(filePath) {
-    let fullPath = path.join(this.pilePath, filePath);
-    let fileContent = fs.readFileSync(fullPath, 'utf8');
-    let { content, data: metedata } = matter(fileContent);
+  getThreadAsText(filePath) {
+    try {
+      let fullPath = path.join(this.pilePath, filePath);
+      let fileContent = fs.readFileSync(fullPath, 'utf8');
+      let { content, data: metedata } = matter(fileContent);
 
-    content =
-      `First entry at ${new Date(metedata.createdAt).toString()}:\n ` +
-      convertHTMLToPlainText(content);
+      content =
+        `First entry at ${new Date(metedata.createdAt).toString()}:\n ` +
+        convertHTMLToPlainText(content);
 
-    // concat the contents of replies
-    for (let replyPath of metedata.replies) {
-      let replyFullPath = path.join(this.pilePath, replyPath);
-      let replyFileContent = fs.readFileSync(replyFullPath, 'utf8');
-      let { content: replyContent, data: replyMetadata } =
-        matter(replyFileContent);
-      content += `\n\n Reply at ${new Date(
-        replyMetadata.createdAt
-      ).toString()}:\n  ${convertHTMLToPlainText(replyContent)}`;
+      // concat the contents of replies
+      for (let replyPath of metedata.replies) {
+        try {
+          let replyFullPath = path.join(this.pilePath, replyPath);
+          let replyFileContent = fs.readFileSync(replyFullPath, 'utf8');
+          let { content: replyContent, data: replyMetadata } =
+            matter(replyFileContent);
+          content += `\n\n Reply at ${new Date(
+            replyMetadata.createdAt
+          ).toString()}:\n  ${convertHTMLToPlainText(replyContent)}`;
+        } catch (error) {
+          continue;
+        }
+      }
+      return content;
+    } catch (error) {
+      console.log('Failed to get thread as text');
     }
-    return content;
   }
 
   // reply's parent needs to be found by checking every non isReply entry and

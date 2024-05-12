@@ -62,11 +62,7 @@ class PileSearchIndex {
 
             builder.add(doc);
           } catch (error) {
-            console.error(
-              'Failed to add entry to search index: ',
-              filePath,
-              error
-            );
+            console.error('Failed to add entry to search index: ', filePath);
           }
         }
       });

@@ -35,7 +35,7 @@ ipcMain.handle('index-get-threads-as-text', (event, filePaths = []) => {
   const results = [];
 
   for (const filePath of filePaths) {
-    const entry = pileIndex.getThreadsAsText(filePath);
+    const entry = pileIndex.getThreadAsText(filePath);
     results.push(entry);
   }
   return results;

@@ -46,7 +46,10 @@ class PileEmbeddings {
       await this.initializeAPIKey();
 
       if (!this.apiKey) {
-        throw new Error('API key not found. Please set it first.');
+        console.log(
+          'API key not found. Please set it first to use AI features.'
+        );
+        return;
       }
       const embeddingsFilePath = path.join(pilePath, this.fileName);
       if (fs.existsSync(embeddingsFilePath)) {

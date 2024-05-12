@@ -100,28 +100,39 @@ export default function Chat() {
           <Dialog.Overlay className={styles.DialogOverlay} />
           <Dialog.Content className={styles.DialogContent}>
             <div className={styles.scroller}>
-              <div className={styles.wrapper}>
-                <div className={styles.wrapperUnderlay}></div>
-                <Blobs show={querying} />
-                <Dialog.Title className={styles.DialogTitle}>
-                  <Status setReady={setReady} />
-                </Dialog.Title>
-                <div className={styles.buttons}>
-                  <div className={styles.button} onClick={onResetConversation}>
-                    <RefreshIcon className={styles.icon} />
-                    Clear chat
-                  </div>
-                  <Dialog.Close asChild>
-                    <button
-                      className={`${styles.close} ${osStyles}`}
-                      aria-label="Close Chat"
-                    >
-                      <CrossIcon />
-                    </button>
-                  </Dialog.Close>
-                </div>
-              </div>
               <AnimatePresence>
+                <motion.div
+                  key="header"
+                  initial={{ y: -50 }}
+                  animate={{ y: 0 }}
+                  transition={{ delay: 0.05 }}
+                  className={styles.header}
+                >
+                  <div className={styles.wrapper}>
+                    <Blobs show={querying} />
+                    <Dialog.Title className={styles.DialogTitle}>
+                      <Status setReady={setReady} />
+                    </Dialog.Title>
+                    <div className={styles.buttons}>
+                      <div
+                        className={styles.button}
+                        onClick={onResetConversation}
+                      >
+                        <RefreshIcon className={styles.icon} />
+                        Clear chat
+                      </div>
+                      <Dialog.Close asChild>
+                        <button
+                          className={`${styles.close} ${osStyles}`}
+                          aria-label="Close Chat"
+                        >
+                          <CrossIcon />
+                        </button>
+                      </Dialog.Close>
+                    </div>
+                  </div>
+                </motion.div>
+
                 <div className={styles.answer}>
                   <VirtualList data={history} />
                 </div>
@@ -129,55 +140,56 @@ export default function Chat() {
 
               <div className={styles.inputBar}>
                 <AnimatePresence>
-                  <div className={styles.inputbaroverlay}></div>
                   <motion.div
                     key="input"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ delay: 0.1 }}
-                    className={styles.bar}
+                    className={styles.holder}
                   >
-                    <TextareaAutosize
-                      value={text}
-                      onChange={onChangeText}
-                      className={styles.textarea}
-                      onKeyDown={handleKeyPress}
-                      placeholder="Start chatting..."
-                      autoFocus
-                    />
-                    <div className={styles.buttons}>
-                      <button
-                        className={`${styles.ask} ${
-                          querying && styles.processing
-                        }`}
-                        onClick={onSubmit}
-                        disabled={querying}
-                      >
-                        {querying ? (
-                          <Thinking className={styles.spinner} />
-                        ) : (
-                          'Ask'
-                        )}
-                      </button>
+                    <div className={styles.inputbaroverlay}></div>
+                    <div className={styles.bar}>
+                      <TextareaAutosize
+                        value={text}
+                        onChange={onChangeText}
+                        className={styles.textarea}
+                        onKeyDown={handleKeyPress}
+                        placeholder="Start chatting..."
+                        autoFocus
+                      />
+                      <div className={styles.buttons}>
+                        <button
+                          className={`${styles.ask} ${
+                            querying && styles.processing
+                          }`}
+                          onClick={onSubmit}
+                          disabled={querying}
+                        >
+                          {querying ? (
+                            <Thinking className={styles.spinner} />
+                          ) : (
+                            'Ask'
+                          )}
+                        </button>
+                      </div>
                     </div>
-                  </motion.div>
-                  <motion.div
-                    key="disclaimer"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className={styles.disclaimer}
-                  >
-                    *AI can make mistakes. Consider checking important
-                    information.
+                    <motion.div
+                      key="disclaimer"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 0.6 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className={styles.disclaimer}
+                    >
+                      *AI can make mistakes. Consider checking important
+                      information.
+                    </motion.div>
                   </motion.div>
                 </AnimatePresence>
               </div>
             </div>
           </Dialog.Content>
-          {/* <div className={styles.DialogContentOverlay}></div> */}
         </Dialog.Portal>
       </Dialog.Root>
       <div ref={setContainer} />

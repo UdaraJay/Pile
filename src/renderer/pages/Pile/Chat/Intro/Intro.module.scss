@@ -5,30 +5,36 @@
   align-content: center;
   width: 500px;
   margin: 0 auto;
-  padding: 70px 0 50px 0;
+  padding: 55px 0 50px 0;
   text-align: center;
 
-  .icon{
+  .icon {
     height: 55px;
     width: 60px;
     margin: 22px auto;
   }
 
+  .line {
+    height: 100px;
+    width: 1px;
+    margin: 20px auto;
+    border-right: 2px dotted var(--border);
+  }
+
   .title {
     font-family: 'Porpora';
-    font-size: 3.4em;
+    font-size: 2.4em;
     margin: 0 auto;
-    max-width: 400px;
+    max-width: 300px;
     line-height: 1.1;
     color: var(--primary);
     text-shadow: 0 0 50px var(--base), 20px -230px 100px var(--base-hover);
   }
-  
+
   .des {
-    font-size: 1.3em;
+    font-size: 1.2em;
     line-height: 1.4;
     margin: 0 auto;
-    margin-top: 20px;
-    max-width: 340px;
+    max-width: 240px;
   }
 }

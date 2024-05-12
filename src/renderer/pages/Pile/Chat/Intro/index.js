@@ -22,11 +22,13 @@ const Intro = () => {
         <div className={styles.intro}>
           <OpenBookIcon className={styles.icon} />
           <div className={styles.title}>
-          Start a conversation with your journal
+            Start a conversation with your journal
           </div>
+          <div className={styles.line}></div>
           <div className={styles.des}>
-            The AI will use your journal entries as context for the conversation.
-            It's not perfect yet, but we will improve it with time.
+            The AI will use your journal entries as context for the
+            conversation. It's not perfect yet, but we will improve it with
+            time.
           </div>
         </div>
       </motion.div>

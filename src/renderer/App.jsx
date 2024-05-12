@@ -1,14 +1,9 @@
-import './App.css';
-import {
-  Routes,
-  Route,
-  useLocation,
-} from 'react-router-dom';
+import './App.scss';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
 import Pile from './pages/Pile';
 import License from './pages/License';
-import Credits from './pages/Credits';
 import CreatePile from './pages/CreatePile';
 import { PilesContextProvider } from './context/PilesContext';
 import { IndexContextProvider } from './context/IndexContext';
@@ -28,6 +23,7 @@ const transition = {
   type: 'spring',
   stiffness: 100,
   damping: 20,
+  duration: 0.1,
 };
 
 const AnimatedPage = ({ children, _key = '', down = false }) => {
@@ -72,14 +68,6 @@ export default function App() {
                             element={
                               <AnimatedPage _key="license">
                                 <License />
-                              </AnimatedPage>
-                            }
-                          />
-                          <Route
-                            path="/credits"
-                            element={
-                              <AnimatedPage _key="credits">
-                                <Credits />
                               </AnimatedPage>
                             }
                           />

@@ -1,0 +1,23 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  color: var(--secondary);
+  height: 28px;
+  width: 28px;
+  border-radius: 90px;
+  transition: all ease-in-out 120ms;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--primary);
+    background: var(--bg-tertiary);
+  }
+
+  .icon {
+    height: 20px;
+    margin: 0;
+    padding: 0;
+  }
+}

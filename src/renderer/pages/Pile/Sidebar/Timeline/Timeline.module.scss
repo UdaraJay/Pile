@@ -1,163 +1,163 @@
 .timeline {
-    -webkit-app-region: none;
-    overflow-y: auto;
-    height: calc(100vh - var(--nav-height));
-    font-size: 0.8em;
-    user-select: none;
-    position: relative;
+  -webkit-app-region: none;
+  overflow-y: auto;
+  height: calc(100vh - var(--nav-height));
+  font-size: 0.8em;
+  user-select: none;
+  position: relative;
+  padding-bottom: 12px;
 
-    &::-webkit-scrollbar {
-        display: none;
-    }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .week {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    padding: 0 8px 0 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 0 8px 0 20px;
 
-    &:nth-child(odd) {
-        // border-left: 2px solid rgba(0, 0, 0, 0.5);
-    }
+  &:nth-child(odd) {
+    // border-left: 2px solid rgba(0, 0, 0, 0.5);
+  }
 
-    .line {
-        display: none;
-        align-self: flex-end;
-        width: 60px;
-        height: 1px;
-        background: var(--secondary);
-        opacity: 0.1;
-    }
+  .line {
+    display: none;
+    align-self: flex-end;
+    width: 60px;
+    height: 1px;
+    background: var(--secondary);
+    opacity: 0.1;
+  }
 
-    .text {
-        position: absolute;
-        bottom: -6px;
-        left: 24px;
-        color: var(--secondary);
-        opacity: 0.5;
-        user-select: none;
-        // transform: rotate(180deg);
-        // writing-mode: vertical-rl;
+  .text {
+    position: absolute;
+    bottom: -6px;
+    left: 24px;
+    color: var(--secondary);
+    opacity: 0.5;
+    user-select: none;
+    // transform: rotate(180deg);
+    // writing-mode: vertical-rl;
+  }
 
-    }
-
-    .start {
-        position: absolute;
-        bottom: -25px;
-        left: 24px;
-        color: var(--secondary);
-        opacity: 0.5;
-        user-select: none;
-    }
+  .start {
+    position: absolute;
+    bottom: -25px;
+    left: 24px;
+    color: var(--secondary);
+    opacity: 0.5;
+    user-select: none;
+  }
 }
 
 .day {
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  // padding: 5px 0;
+  height: 22px;
+  font-size: 11px;
+  color: var(--secondary);
+  text-align: right;
+  transition: all ease-in-out 120ms;
+
+  .counts {
     display: flex;
-    align-items: center;
-    align-self: flex-end;
-    // padding: 5px 0;
-    height: 22px;
-    font-size: 11px;
-    color: var(--secondary);
-    text-align: right;
-    transition: all ease-in-out 120ms;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-right: 5px;
+    max-width: 80px;
 
-    .counts {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        justify-content: flex-end;
-        margin-right: 5px;
-        max-width: 80px;
-
-        .count {
-            display: flex;
-            height: 4px;
-            width: 4px;
-            background: currentColor;
-            margin: 1px 2px 1px 0;
-            border-radius: 90px;
-            opacity: 0.9;
-        }
+    .count {
+      display: flex;
+      height: 4px;
+      width: 4px;
+      background: currentColor;
+      margin: 1px 2px 1px 0;
+      border-radius: 90px;
+      opacity: 0.9;
     }
+  }
+
+  .dayLine {
+    width: 20px;
+    height: 1px;
+    background: var(--secondary);
+    opacity: 0.2;
+    margin-right: 8px;
+    transition: all ease-in-out 120ms;
+  }
+
+  .dayNumber {
+    margin-right: 4px;
+    opacity: 0.6;
+    width: 18px;
+    transition: all ease-in-out 220ms;
+  }
+
+  .dayName {
+    width: 10px;
+    font-weight: 500;
+  }
+
+  &.today {
+    color: var(--base-red);
 
     .dayLine {
-        width: 20px;
-        height: 1px;
-        background: var(--secondary);
-        opacity: 0.2;
-        margin-right: 8px;
-        transition: all ease-in-out 120ms;
+      background: var(--base-red);
+    }
+  }
+
+  &.monday {
+    color: var(--active);
+
+    .dayLine {
+      background: var(--active);
+    }
+  }
+
+  &:hover {
+    .dayLine {
+      width: 25px;
     }
 
     .dayNumber {
-        margin-right: 4px;
-        opacity: 0.6;
-        width: 18px;
-        transition: all ease-in-out 220ms;
+      opacity: 1;
     }
 
     .dayName {
-        width: 10px;
-        font-weight: 500;
     }
-
-    &.today {
-        color: var(--base-red);
-
-        .dayLine {
-            background: var(--base-red)
-        }
-    }
-
-    &.monday {
-        color: var(--active);
-
-        .dayLine {
-            background: var(--active);
-        }
-    }
-
-    &:hover {
-        .dayLine {
-            width: 25px;
-        }
-
-        .dayNumber {
-            opacity: 1;
-        }
-
-        .dayName {}
-    }
+  }
 }
 
 .scrubber {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: calc(100% - 85px);
+  height: 1px;
+  background: var(--base-red);
+  transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 500ms;
+
+  &:before {
     position: absolute;
-    top: 0;
-    left: 10px;
-    width: calc(100% - 85px);
-    height: 1px;
-    background: var(--base-red);
-    transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 500ms;
+    content: '';
+    width: 100%;
+    height: 40px;
+    margin-top: -20px;
+    background: none;
+  }
 
-    &:before {
-        position: absolute;
-        content: '';
-        width: 100%;
-        height: 40px;
-        margin-top: -20px;
-        background: none;
-    }
+  &:hover {
+    height: 6px;
+    cursor: grab;
+  }
 
-    &:hover {
-        height: 6px;
-        cursor: grab;
-    }
-
-
-    &:active {
-        height: 2px;
-        filter: brightness(0.8);
-    }
+  &:active {
+    height: 2px;
+    filter: brightness(0.8);
+  }
 }

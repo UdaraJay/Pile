@@ -80,6 +80,9 @@
 
 .uneditable {
   cursor: default;
+  .highlight {
+    color: var(--active);
+  }
 }
 
 .media {
@@ -87,6 +90,7 @@
   position: relative;
   height: 0px;
   margin-top: 14px;
+  margin-bottom: 20px;
 
   &.open {
     height: 360px;
@@ -95,7 +99,7 @@
   .scroll {
     position: absolute;
     top: 0;
-    left: -51px;
+    left: -47px;
     width: calc(100vw - var(--sidebar-width));
     padding-left: 40px;
     padding-bottom: 12px;
@@ -143,16 +147,13 @@
       border-radius: 9px;
       transition: all ease-in-out 120ms;
       margin-right: 7px;
+      z-index: 1;
 
       .icon {
         height: 23px;
         width: 23px;
         fill: var(--secondary);
         transition: all ease-in-out 120ms;
-      }
-
-      &.active {
-        background: var(--bg-secondary);
       }
 
       &:hover {
@@ -163,6 +164,10 @@
         .icon {
           fill: var(--primary);
         }
+      }
+
+      &.active {
+        background: var(--bg-secondary);
       }
 
       &:active {

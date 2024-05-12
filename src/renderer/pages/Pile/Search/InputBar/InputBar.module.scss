@@ -3,12 +3,14 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  padding: 3px 3px 2px 3px;
+  // border-bottom: 1px solid var(--bg-secondary);
 
   .wrapper {
     display: flex;
     align-items: center;
-    width: 600px;
-    gap: 10px;
+    width: 100%;
+    gap: 4px;
   }
 
   .bar {
@@ -16,14 +18,13 @@
     display: flex;
     align-items: center;
     font-weight: 400;
-    font-size: 15px;
-    line-height: 1.5;
-    background: var(--bg);
+    line-height: 1;
     width: 100%;
-    border-radius: 90px;
-    padding: 0 13px;
+    padding: 0 15px;
     height: 40px;
     transition: all ease-in-out 120ms;
+    background: var(--bg-tertiary);
+    border-radius: 13px 9px 9px 9px;
 
     &:focus-within {
       .reflectIcon {
@@ -35,7 +36,8 @@
   .buttons {
     display: flex;
     align-items: center;
-    height: 38px;
+    gap: 4px;
+    height: 36px;
 
     .ask {
       display: flex;
@@ -44,21 +46,21 @@
       align-items: center;
       height: 100%;
       background: var(--active);
-      border-radius: 8px;
       transition: all ease-in-out 120ms;
       padding: 0 12px;
       color: var(--active-text);
-      border-radius: 90px;
       user-select: none;
       font-size: 1em;
       font-weight: 450;
-      width: 90px;
+      height: 40px;
+      width: 52px;
       transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
       margin: 0;
       font-size: 15px;
+      border-radius: 9px;
 
       &.processing {
-        width: 75px;
+        width: 44px;
       }
 
       .icon {
@@ -77,6 +79,11 @@
       }
 
       &:hover {
+        cursor: pointer;
+        background: var(--active-hover);
+      }
+
+      &:focus {
         cursor: pointer;
         background: var(--active-hover);
       }
@@ -107,10 +114,11 @@
     background: none;
     resize: none;
     width: 100%;
-    font-size: 16px;
-    line-height: 40px;
+    font-size: 15px;
+    line-height: 1;
     outline: none;
     color: var(--primary);
+    background: none;
 
     &::placeholder {
       color: var(--secondary);
@@ -120,28 +128,34 @@
   .close {
     font-family: inherit;
     border-radius: 90px;
-    height: 36px;
-    min-width: 36px;
+    height: 40px;
+    min-width: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     transition: all ease-in-out 120ms;
     stroke-width: 2px;
-    background: var(--bg-tertiary);
-    color: var(--secondary);
+    background: var(--bg-secondary);
+    color: var(--primary);
+    border-radius: 9px 13px 9px 9px;
 
     &:hover {
       cursor: pointer;
-      color: var(--primary);
+      background: var(--bg-tertiary);
+      color: var(--secondary);
     }
 
     &:active {
-      transform: scale(0.9);
+      color: var(--primary);
+    }
+
+    &:focus {
+      background: var(--bg-tertiary);
     }
 
     .icon {
-      height: 25px;
-      width: 25px;
+      height: 22px;
+      width: 22px;
     }
   }
 }

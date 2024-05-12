@@ -153,15 +153,26 @@ const Timeline = memo(() => {
   const { visibleIndex, scrollToIndex, closestDate, setClosestDate } =
     useTimelineContext();
   const [parentEntries, setParentEntries] = useState([]);
+  const [oldestDate, setOldestDate] = useState(new Date());
 
+  //  Extract parent entries
   useEffect(() => {
     if (!index) return;
     const onlyParentEntries = Array.from(index).filter(
       ([key, metadata]) => !metadata.isReply
     );
+
+    const lastEntry = onlyParentEntries[onlyParentEntries.length - 1];
+    if (lastEntry) {
+      const lastEntryDate = new Date(lastEntry[1].createdAt);
+      setOldestDate(lastEntryDate);
+    }
+
     setParentEntries(onlyParentEntries);
   }, [index]);
 
+  // Identify most recent entry and it's date
+  // This is for placing the scroller at the right position
   useEffect(() => {
     if (!parentEntries || parentEntries.length == 0) return;
     if (visibleIndex == 0) return;
@@ -196,14 +207,13 @@ const Timeline = memo(() => {
     [parentEntries]
   );
 
-  const getWeeks = () => {
+  const getWeeks = useCallback(() => {
     let weeks = [];
     let now = new Date();
     now.setHours(0, 0, 0, 0);
 
     let weekEnd = new Date(now);
 
-    // If it's not Monday, find the previous Monday
     while (now.getDay() !== 1) {
       now.setDate(now.getDate() - 1);
     }
@@ -211,7 +221,11 @@ const Timeline = memo(() => {
     let weekStart = new Date(now);
     weeks.push({ start: weekStart, end: weekEnd });
 
-    for (let i = 0; i < 25; i++) {
+    // Adding empty days to
+    let oldestDatePadded = new Date(oldestDate);
+    oldestDatePadded.setDate(oldestDatePadded.getDate() - 40);
+
+    while (weekStart > oldestDatePadded) {
       weekEnd = new Date(weekStart);
       weekEnd.setDate(weekEnd.getDate() - 1);
       weekStart = new Date(weekEnd);
@@ -220,7 +234,7 @@ const Timeline = memo(() => {
     }
 
     return weeks;
-  };
+  }, [oldestDate]);
 
   const createWeeks = () =>
     getWeeks().map((week, index) => (

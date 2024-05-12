@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import styles from './Home.module.scss';
-import { PileIcon } from 'renderer/icons';
 import { Link } from 'react-router-dom';
 import { usePilesContext } from '../../context/PilesContext';
 import DeletePile from './DeletePile';
-import icon from '../../../../assets/icon.svg';
-import { motion } from 'framer-motion';
 import Logo from './logo';
+import OpenPileFolder from './OpenPileFolder';
 
 const quotes = [
   'One moment at a time',
@@ -32,14 +30,17 @@ export default function Home() {
   const renderPiles = () => {
     return piles.map((pile: any) => {
       return (
-        <div className={styles.pile} key={pile.path}>
+        <div
+          className={`${pile.theme && pile.theme + 'Thee'} ${styles.pile}`}
+          key={pile.path}
+        >
           <div className={styles.left}>
             <div className={styles.name}>{pile.name}</div>
-            <div className={styles.src}>{pile.path}</div>
+            {/* <div className={styles.src}>{pile.path}</div> */}
           </div>
           <div className={styles.right}>
             <DeletePile pile={pile} />
-
+            <OpenPileFolder pile={pile} />
             <Link to={`/pile/${pile.name}`} className={styles.button}>
               Open
             </Link>
@@ -57,9 +58,6 @@ export default function Home() {
           <div className={styles.holder}>
             <Logo className={styles.icon} />
           </div>
-
-          {/* <div className={styles.name}>Pile</div>
-          <div className={styles.version}>{quote}</div> */}
         </div>
 
         <Link to="/new-pile" className={styles.create}>
@@ -73,7 +71,7 @@ export default function Home() {
         <div className={styles.footer}>
           <a href="https://udara.io/pile" target="_blank">
             <div className={styles.unms}></div>
-            {quote} – <b>Pile</b>
+            {quote}
           </a>
 
           <div className={styles.nav}>
@@ -81,7 +79,7 @@ export default function Home() {
               License
             </Link>
             <a
-              href="https://x.com/TGUPJ/status/1712868302312051112"
+              href="https://udara.io/pile"
               target="_blank"
               className={styles.link}
             >

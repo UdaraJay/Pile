@@ -17,7 +17,8 @@ const Attachments = ({
     const image_exts = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
     const extension = attachment.split('.').pop();
     const sep = window.electron.pathSeparator;
-    const imgPath = 'local:' + sep + sep + getCurrentPilePath() + sep + attachment;
+    const imgPath =
+      'local:' + sep + sep + getCurrentPilePath() + sep + attachment;
 
     if (image_exts.includes(extension)) {
       return (
@@ -37,7 +38,9 @@ const Attachments = ({
                 <TrashIcon className={styles.icon} />
               </div>
             )}
-            <img src={imgPath} draggable="false" />
+            <div className={styles.holder}>
+              <img src={imgPath} draggable="false" />
+            </div>
           </div>
         </motion.div>
       );

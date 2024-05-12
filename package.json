@@ -1,6 +1,6 @@
 {
   "description": "Pile",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "keywords": [
     "pile"
   ],
@@ -95,6 +95,7 @@
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
+    "@radix-ui/react-switch": "^1.0.3",
     "@tanstack/react-virtual": "^3.0.1",
     "@tiptap/extension-character-count": "^2.1.12",
     "@tiptap/extension-link": "^2.1.12",
@@ -109,16 +110,16 @@
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^5.3.0",
-    "undici": "^5.28.4",
     "framer-motion": "^10.12.18",
     "gray-matter": "^4.0.3",
+    "lunr": "^2.3.9",
     "luxon": "^3.3.0",
-    "openai": "^4.26.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "openai": "^4.44.0",
+    "react": "^19.0.0-beta-04b058868c-20240508",
+    "react-dom": "^19.0.0-beta-04b058868c-20240508",
     "react-router-dom": "^6.11.2",
     "react-textarea-autosize": "^8.5.3",
-    "react-virtuoso": "^4.6.3"
+    "react-virtuoso": "^4.7.10"
   },
   "devDependencies": {
     "@adobe/css-tools": "^4.3.2",
@@ -270,7 +271,7 @@
     ]
   },
   "devEngines": {
-    "node": ">=14.x",
+    "node": ">=18.x",
     "npm": ">=7.x"
   },
   "electronmon": {

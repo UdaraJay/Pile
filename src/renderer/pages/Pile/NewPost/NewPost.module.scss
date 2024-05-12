@@ -1,44 +1,44 @@
 .post {
-    display: block;
-    z-index: 2;
-    background: var(--bg);
-    margin-left: 1px;
-    margin: 18px;
-    padding-top: 58px;
-    padding-bottom: 20px;
-    margin-top: 6px;
-    margin-bottom: 6px;
-    // border-bottom: 1px solid var(--border);
-    position: relative;
+  display: block;
+  z-index: 2;
+  background: var(--bg);
+  margin-left: 1px;
+  margin: 18px;
+  padding-top: 58px;
+  padding-bottom: 20px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  // border-bottom: 1px solid var(--border);
+  position: relative;
 }
 
 .now {
-    position: absolute;
-    top: 12px;
-    right: 0px;
-    z-index: 1;
-    color: var(--secondary);
-    font-size: 0.9em;
-    margin-top: -3px;
-    padding: 3px 5px;
-    transition: all ease-in-out 120ms;
-    border-radius: 6px;
-    user-select: none;
+  position: absolute;
+  top: 12px;
+  right: 0px;
+  z-index: 1;
+  color: var(--secondary);
+  font-size: 0.9em;
+  margin-top: -3px;
+  padding: 3px 5px;
+  transition: all ease-in-out 120ms;
+  border-radius: 6px;
+  user-select: none;
 
-    &:hover {
-        cursor: pointer;
-        background: var(--bg-secondary);
-        color: var(--primary);
-        opacity: 1;
-    }
+  &:hover {
+    cursor: pointer;
+    background: var(--bg-secondary);
+    color: var(--primary);
+    opacity: 1;
+  }
 
-    &:active {
-        cursor: pointer;
-        background: var(--bg-tertiary);
-    }
+  &:active {
+    cursor: pointer;
+    background: var(--bg-tertiary);
+  }
 }
 
 .editor {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
 }

@@ -43,7 +43,8 @@ function usePost(
   } = {}
 ) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-  const { addIndex, removeIndex, refreshIndex } = useIndexContext();
+  const { addIndex, removeIndex, refreshIndex, updateIndex } =
+    useIndexContext();
   const [updates, setUpdates] = useState(0);
   const [path, setPath] = useState(); // absolute path
   const [post, setPost] = useState({ ...defaultPost });
@@ -70,7 +71,6 @@ function usePost(
       const saveToPath = path
         ? path
         : fileOperations.getFilePathForNewPost(currentPile.path);
-
       const directoryPath = fileOperations.getDirectoryPath(saveToPath);
       const now = new Date().toISOString();
       const content = post.content;
@@ -88,6 +88,7 @@ function usePost(
           content,
           data
         );
+
         await fileOperations.createDirectory(directoryPath);
         await fileOperations.saveFile(saveToPath, fileContents);
 
@@ -110,7 +111,9 @@ function usePost(
   );
 
   const addReplyToParent = async (parentPostPath, replyPostPath) => {
-    const relativeReplyPath = window.electron.joinPath(...replyPostPath.split(/[/\\]/).slice(-3));
+    const relativeReplyPath = window.electron.joinPath(
+      ...replyPostPath.split(/[/\\]/).slice(-3)
+    );
     const fullParentPostPath = getCurrentPilePath(parentPostPath);
     const parentPost = await getPost(fullParentPostPath);
     const content = parentPost.content;
@@ -120,6 +123,7 @@ function usePost(
     };
     const fileContents = await fileOperations.generateMarkdown(content, data);
     await fileOperations.saveFile(fullParentPostPath, fileContents);
+    updateIndex(parentPostPath, data);
     reloadParentPost(parentPostPath);
   };
 

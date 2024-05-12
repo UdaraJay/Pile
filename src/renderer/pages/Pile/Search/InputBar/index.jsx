@@ -9,6 +9,7 @@ import {
   FlameIcon,
   InfoIcon,
   SearchIcon,
+  Search2Icon,
 } from 'renderer/icons';
 import { useEffect, useState, useMemo } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -17,7 +18,6 @@ import {
   availableThemes,
   usePilesContext,
 } from 'renderer/context/PilesContext';
-import { useIndexContext } from 'renderer/context/IndexContext';
 import TextareaAutosize from 'react-textarea-autosize';
 import useIPCListener from 'renderer/hooks/useIPCListener';
 import Waiting from '../../Toasts/Toast/Loaders/Waiting';
@@ -44,8 +44,6 @@ export default function InputBar({
     type: 'loading',
     message: 'Loading index...',
   });
-  const { initVectorIndex, rebuildVectorIndex, query, getVectorIndex } =
-    useIndexContext();
 
   useEffect(() => {
     if (statusFromMain) {
@@ -65,11 +63,8 @@ export default function InputBar({
   // Setup sequence for the vector store
   const setup = async () => {
     // 1. Get the vector store
-    const vIndex = await getVectorIndex();
-    if (vIndex) {
-      setStatus('');
-      return;
-    }
+
+    setStatus('');
     // 2. Initialize the vector store
     // 3. If the index is empty and there are more than 1 entires
   };
@@ -107,13 +102,12 @@ export default function InputBar({
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.bar}>
-          {renderIcon(status)}
           <input
             value={value}
             onChange={onChange}
             className={styles.textarea}
             onKeyDown={handleKeyPress}
-            placeholder={'Search your journal...'}
+            placeholder={'What are you looking for?'}
           />
         </div>
         <div className={styles.buttons}>
@@ -122,15 +116,18 @@ export default function InputBar({
             onClick={onSubmit}
             disabled={querying}
           >
-            {querying ? <Thinking className={styles.spinner} /> : 'Search'}
+            {querying ? (
+              <Thinking className={styles.spinner} />
+            ) : (
+              <Search2Icon className={styles.icon} />
+            )}
           </button>
+          <Dialog.Close asChild>
+            <button className={styles.close} aria-label="Close search">
+              <CrossIcon className={styles.icon} />
+            </button>
+          </Dialog.Close>
         </div>
-
-        <Dialog.Close asChild>
-          <button className={styles.close} aria-label="Close search">
-            <CrossIcon className={styles.icon} />
-          </button>
-        </Dialog.Close>
       </div>
     </div>
   );

@@ -1,273 +1,279 @@
 .frame {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    overflow-y: overlay;
-    position: relative;
-    -webkit-app-region: drag;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: overlay;
+  position: relative;
+  -webkit-app-region: drag;
 }
 
 .wrapper {
-    position: relative;
-    max-width: 380px;
-    margin: 0 auto;
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background:
-        linear-gradient(to bottom, var(--brand), 30%, transparent);
-    opacity: 1;
-    opacity: 0.3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to bottom, var(--brand), 30%, transparent);
+  opacity: 1;
+  opacity: 0.3;
 }
 
 .header {
-    -webkit-app-region: none;
-    user-select: none;
+  -webkit-app-region: none;
+  user-select: none;
 
-    @keyframes grow {
-        0% {
-            transform: scaley(0.5)
-        }
-
-        100% {
-            transform: scaley(1)
-        }
+  @keyframes grow {
+    0% {
+      transform: scaley(0.5);
     }
 
-    .holder {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        // border: 1px solid var(--border);
-        border-radius: 22px;
-        height: 72px;
-        width: 72px;
-        margin: 0 auto;
-        margin-bottom: 44px;
-        background: rgba(0, 0, 0, 0.25);
-        box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5);
-
-        @media (prefers-color-scheme: dark) {
-            background: rgba(0, 0, 0, 0.25);
-            box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
-        }
+    100% {
+      transform: scaley(1);
     }
+  }
 
-    .icon {
-        display: block;
-        margin: 0 auto;
-        color: #fff;
-        fill: var(--secondary);
-        width: 45px;
-        height: 45px;
+  .holder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // border: 1px solid var(--border);
+    border-radius: 22px;
+    height: 72px;
+    width: 72px;
+    margin: 0 auto;
+    margin-bottom: 44px;
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5);
+
+    @media (prefers-color-scheme: dark) {
+      background: rgba(0, 0, 0, 0.25);
+      box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
     }
+  }
 
-    .logoLine {
-        display: block;
-        background: var(--base);
-        height: 128px;
-        width: 5px;
-        border-radius: 0;
-        margin: 0 auto;
-        margin-bottom: 10px;
-        position: relative;
-    }
+  .icon {
+    display: block;
+    margin: 0 auto;
+    color: #fff;
+    fill: var(--secondary);
+    width: 45px;
+    height: 45px;
+  }
 
-    .logo {
-        height: 24px;
-        width: 24px;
-        background: var(--base);
-        border-radius: 90px;
-        margin: 0 auto;
-        margin-top: 6px;
-        margin-bottom: 32px;
-    }
+  .logoLine {
+    display: block;
+    background: var(--base);
+    height: 128px;
+    width: 5px;
+    border-radius: 0;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    position: relative;
+  }
 
-    .name {
-        font-family: "Porpora";
-        font-size: 1.6em;
-        text-align: center;
-        margin-top: 16px;
-        color: var(--primary);
+  .logo {
+    height: 24px;
+    width: 24px;
+    background: var(--base);
+    border-radius: 90px;
+    margin: 0 auto;
+    margin-top: 6px;
+    margin-bottom: 32px;
+  }
 
-    }
+  .name {
+    font-family: 'Porpora';
+    font-size: 1.6em;
+    text-align: center;
+    margin-top: 16px;
+    color: var(--primary);
+  }
 
-    .version {
-        text-align: center;
-        color: var(--secondary);
-        margin-top: 4px;
-        font-size: 0.85em;
-        max-width: 200px;
-        margin: 6px auto;
-        line-height: 1.45;
-
-    }
+  .version {
+    text-align: center;
+    color: var(--secondary);
+    margin-top: 4px;
+    font-size: 0.85em;
+    max-width: 200px;
+    margin: 6px auto;
+    line-height: 1.45;
+  }
 }
 
 .create {
-    -webkit-app-region: none;
-    display: block;
-    text-align: center;
-    font-size: 0.8em;
-    padding: 9px 12px;
-    font-weight: 500;
-    color: var(--secondary);
-    background: Var(--bg-secondary);
-    border-radius: 12px;
-    margin: 32px auto;
-    user-select: none;
-    transition: all ease-in-out 120ms;
+  -webkit-app-region: none;
+  display: block;
+  text-align: center;
+  font-size: 0.8em;
+  padding: 9px 12px;
+  font-weight: 500;
+  color: var(--secondary);
+  background: Var(--bg);
+  border-radius: 12px;
+  margin: 32px auto;
+  user-select: none;
+  transition: all ease-in-out 120ms;
 
-    &:hover {
-        cursor: pointer;
-        color: var(--base);
-        background: var(--bg);
-    }
+  &:hover {
+    cursor: pointer;
+    color: var(--base);
+    background: var(--bg);
+  }
 
-    &:active {
-        background: var(--bg);
-    }
+  &:active {
+    background: var(--bg);
+  }
 }
 
 .or {
-    font-size: 0.75em;
-    color: var(--secondary);
-    margin-bottom: 12px;
-    text-align: center;
-    user-select: none;
+  font-size: 0.75em;
+  color: var(--secondary);
+  margin-bottom: 12px;
+  text-align: center;
+  user-select: none;
 }
 
 .piles {
-    font-size: 0.8em;
-    border-radius: 12px;
-    overflow: hidden;
-    opacity: 0.999; // Having the opacity set to 1 interferes with 'overflow: hidden'
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  font-size: 0.8em;
+  border-radius: 12px;
+  gap: 1px;
 
-    .pile {
-        -webkit-app-region: none;
-        display: flex;
-        justify-content: space-between;
-        background: var(--translucent);
-        backdrop-filter: blur(10px);
-        margin-bottom: 1px;
-        padding: 7px 7px 7px 9px;
-        color: var(--primary);
+  .pile {
+    width: 270px;
+    -webkit-app-region: none;
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg);
+    padding: 7px 7px 7px 12px;
+    color: var(--primary);
 
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        .name {
-            font-weight: 500;
-            user-select: none;
-        }
-
-        .src {
-            margin-top: 1px;
-            font-size: 0.9em;
-            color: var(--secondary);
-            text-overflow: ellipsis;
-            max-width: 180px;
-        }
-
-        .right {
-            display: flex;
-            align-items: center;
-            margin-left: 64px;
-            user-select: none;
-
-            .icon {
-                margin-right: 8px;
-                color: var(--secondary);
-                height: 18px;
-
-                &:hover {
-                    cursor: pointer;
-                    color: var(--base-red);
-                }
-            }
-        }
+    &:first-child {
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
     }
 
-    .button {
-        background: var(--bg-secondary);
-        color: var(--secondary);
-        font-size: 0.95em;
-        padding: 9px 16px;
-        line-height: 1;
-        border-radius: 9px;
-        user-select: none;
-        transition: all ease-in-out 120ms;
+    &:last-child {
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+      flex: 1 1 auto;
+
+      .name {
+        flex: 1 1 auto;
         font-weight: 500;
+        max-width: 95px;
+        user-select: none;
+        font-size: 16px;
+        font-family: 'Porpora';
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-        &:hover {
-            cursor: pointer;
-            color: var(--base);
-            background: var(--bg-secondary);
-        }
-
-        &:active {
-            cursor: pointer;
-            background: var(--bg-tertiary);
-            transform: scale(0.97);
-        }
+      .src {
+        margin-top: 1px;
+        font-size: 0.9em;
+        color: var(--secondary);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
+
+    .right {
+      display: flex;
+      flex: 0 0 auto;
+      margin-left: 32px;
+      user-select: none;
+    }
+  }
+
+  .button {
+    background: var(--active);
+    color: var(--active-text);
+    font-size: 0.95em;
+    padding: 0 14px;
+    height: 28px;
+    line-height: 27px;
+    border-radius: 7px;
+    user-select: none;
+    transition: all ease-in-out 120ms;
+    font-weight: 500;
+
+    &:hover {
+      cursor: pointer;
+      background: var(--active-hover);
+    }
+
+    &:active {
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      transform: scale(0.97);
+    }
+  }
 }
 
 .footer {
-    margin: 0 auto;
-    font-size: 0.75em;
+  margin: 0 auto;
+  font-size: 0.75em;
+  color: var(--secondary);
+  text-align: center;
+  margin-top: 25%;
+  line-height: 1.4;
+  opacity: 0.5;
+  -webkit-app-region: none;
+
+  a {
     color: var(--secondary);
-    text-align: center;
-    margin-top: 25%;
-    line-height: 1.4;
-    opacity: 0.5;
-    -webkit-app-region: none;
+    transition: all ease-in-out 180ms;
 
+    &:hover {
+      color: var(--primary);
 
-    a {
-        color: var(--secondary);
-        transition: all ease-in-out 180ms;
-
-        &:hover {
-            color: var(--primary);
-
-            .unms {
-                background: var(--primary);
-            }
-        }
+      .unms {
+        background: var(--primary);
+      }
     }
+  }
 
-    .unms {
-        display: block;
-        height: 16px;
-        width: 30px;
-        background: var(--secondary);
-        border-radius: 0 90px 90px 0;
-        margin: 0 auto;
-        margin-bottom: 10px;
-        transition: all ease-in-out 120ms;
+  .unms {
+    display: block;
+    height: 16px;
+    width: 30px;
+    background: var(--secondary);
+    border-radius: 0 90px 90px 0;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    transition: all ease-in-out 120ms;
+  }
+
+  .nav {
+    margin-top: 22px;
+
+    .link {
+      color: Var(--secondary);
+      margin: 0 1em;
+      transition: all ease-in-out 120ms;
+
+      &:hover {
+        color: var(--primary);
+      }
     }
-
-    .nav {
-        margin-top: 22px;
-
-        .link {
-            color: Var(--secondary);
-            margin: 0 1em;
-            transition: all ease-in-out 120ms;
-
-            &:hover {
-                color: var(--primary);
-            }
-        }
-    }
+  }
 }

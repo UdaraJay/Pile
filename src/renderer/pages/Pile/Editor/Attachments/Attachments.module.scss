@@ -1,51 +1,68 @@
-    .image {
-        display: inline-block;
-        margin-right: 16px;
-        user-select: none;
-        position: relative;
+.image {
+  display: inline-block;
+  margin-right: 16px;
+  user-select: none;
+  position: relative;
 
-        img {
-            max-height: 350px;
-            max-width: 100%;
-            border-radius: 22px;
-            transition: all ease-in-out 120ms;
+  .holder {
+    max-height: 350px;
+    min-width: 500px;
+    max-width: 100%;
+    position: relative;
+    background: radial-gradient(circle, var(--bg) 1px, transparent 1px),
+      radial-gradient(circle, var(--bg) 1px, transparent 1px);
+    background-color: var(--bg-tertiary);
+    background-position: 0 0, 15px 15px;
+    background-size: 32px 32px;
+    border-radius: 22px;
+    overflow: hidden;
+  }
 
-            &:hover {
-                cursor: default;
-            }
+  img {
+    max-height: 350px;
+    min-width: 500px;
+    max-width: 100%;
+    object-fit: contain;
+    width: auto;
 
-            &:active {
-                cursor: grabbing;
-                filter: brightness(0.9);
-            }
-        }
+    transition: all ease-in-out 120ms;
 
-        .remove {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            height: 32px;
-            width: 32px;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--translucent);
-            color: var(--secondary);
-            backdrop-filter: filter(20px);
-            font-weight: 500;
-            border-radius: 90px;
-            transition: all ease-in-out 120ms;
-
-            .icon {
-                height: 20px;
-                width: 20px;
-            }
-
-            &:hover {
-                cursor: pointer;
-                background: var(--bg);
-                color: var(--base-red);
-            }
-        }
+    &:hover {
+      cursor: default;
     }
+
+    &:active {
+      cursor: grabbing;
+      filter: brightness(0.9);
+    }
+  }
+
+  .remove {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    height: 32px;
+    width: 32px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--translucent);
+    color: var(--secondary);
+    backdrop-filter: filter(20px);
+    font-weight: 500;
+    border-radius: 90px;
+    transition: all ease-in-out 120ms;
+
+    .icon {
+      height: 20px;
+      width: 20px;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background: var(--bg);
+      color: var(--base-red);
+    }
+  }
+}

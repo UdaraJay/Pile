@@ -1,0 +1,125 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 400;
+  gap: 6px;
+  margin: 4px;
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sep {
+    margin: 0 2px;
+    color: var(--bg-secondary);
+  }
+
+  .button {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    height: 100%;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    transition: all ease-in-out 120ms;
+    padding: 0 10px 0 8px;
+    color: var(--secondary);
+    border-radius: 90px;
+    user-select: none;
+    height: 26px;
+    transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
+    margin: 0;
+    border-radius: 9px;
+    font-weight: 450;
+    font-size: 12px;
+    gap: 5px;
+
+    .icon {
+      height: 16px;
+      width: 16px;
+      opacity: 0.6;
+    }
+
+    &:hover {
+      cursor: pointer;
+      color: var(--primary);
+
+      .homeIcon,
+      .settingsIcon {
+        opacity: 1;
+      }
+    }
+
+    &:active {
+      background: var(--bg-tertiary);
+    }
+
+    &:focus {
+      color: var(--primary);
+    }
+
+    &.active {
+      background: var(--active);
+      color: var(--active-text);
+
+      &:hover {
+        background: var(--active-hover);
+      }
+      &:focus {
+        background: var(--active-hover);
+      }
+    }
+  }
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .SwitchRoot {
+    display: block;
+    width: 42px;
+    height: 25px;
+    background-color: var(--bg-tertiary);
+    border-radius: 9999px;
+    position: relative;
+    box-shadow: 0 2px 10px var(--bg);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+  .SwitchRoot:focus {
+    background: var(--bg-secondary);
+  }
+  .SwitchRoot[data-state='checked'] {
+    background-color: var(--active);
+  }
+
+  .SwitchThumb {
+    display: block;
+    width: 19px;
+    height: 19px;
+    background-color: white;
+    border-radius: 9999px;
+    transition: transform 100ms;
+    transform: translateX(4px);
+    will-change: transform;
+  }
+  .SwitchThumb[data-state='checked'] {
+    transform: translateX(20px);
+  }
+
+  .Label {
+    color: var(--secondary);
+    font-size: 13px;
+  }
+}

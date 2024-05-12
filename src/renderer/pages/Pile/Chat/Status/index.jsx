@@ -17,7 +17,6 @@ import {
   availableThemes,
   usePilesContext,
 } from 'renderer/context/PilesContext';
-import { useIndexContext } from 'renderer/context/IndexContext';
 import TextareaAutosize from 'react-textarea-autosize';
 import useIPCListener from 'renderer/hooks/useIPCListener';
 import Waiting from '../../Toasts/Toast/Loaders/Waiting';
@@ -30,8 +29,6 @@ export default function Status() {
     type: 'loading',
     message: 'Loading index...',
   });
-  const { initVectorIndex, rebuildVectorIndex, query, getVectorIndex } =
-    useIndexContext();
 
   useEffect(() => {
     if (statusFromMain) {
@@ -51,11 +48,12 @@ export default function Status() {
   // Setup sequence for the vector store
   const setup = async () => {
     // 1. Get the vector store
-    const vIndex = await getVectorIndex();
-    if (vIndex) {
-      setStatus('');
-      return;
-    }
+    // const vIndex = await getVectorIndex();
+    // if (vIndex) {
+    //   setStatus('');
+    //   return;
+    // }
+    setStatus('');
     // 2. Initialize the vector store
     // 3. If the index is empty and there are more than 1 entires
   };

@@ -1,6 +1,6 @@
 {
   "name": "pile",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Pile: Everyday journal and thought companion.",
   "license": "MIT",
   "author": {
@@ -15,7 +15,6 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
-    "keytar": "^7.9.0",
-    "llamaindex": "^0.1.9"
+    "keytar": "^7.9.0"
   }
 }

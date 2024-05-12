@@ -13,9 +13,16 @@ const postFormat = {
 };
 
 const getDirectoryPath = (filePath) => {
+  const isAbsolute = filePath.startsWith('/');
   const pathArr = filePath.split(/[/\\]/);
   pathArr.pop();
-  return window.electron.joinPath(...pathArr);
+  let directoryPath = window.electron.joinPath(...pathArr);
+
+  if (isAbsolute && !directoryPath.startsWith('/')) {
+    directoryPath = '/' + directoryPath;
+  }
+
+  return directoryPath;
 };
 
 const getFormattedTimestamp = () => {
@@ -44,21 +51,7 @@ const getFilePathForNewPost = (basePath, timestamp = new Date()) => {
 };
 
 const createDirectory = (directoryPath) => {
-  return new Promise((resolve, reject) => {
-    console.log('creating directory', directoryPath)
-    window.electron.mkdir(directoryPath, { recursive: true }, (err) => {
-      if (err) {
-        if (err.code === 'EEXIST') {
-          console.log('Directory already exists.');
-        } else {
-          reject(err);
-        }
-      } else {
-        console.log('Directory created successfully.');
-        resolve();
-      }
-    });
-  });
+  return window.electron.mkdir(directoryPath);
 };
 
 const getFiles = async (dir) => {

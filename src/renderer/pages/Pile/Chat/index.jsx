@@ -25,16 +25,15 @@ import Status from './Status';
 import { AnimatePresence, motion } from 'framer-motion';
 import VirtualList from './VirtualList';
 import Blobs from './Blobs';
+import useChat from 'renderer/hooks/useChat';
 
 export default function Chat() {
   const { currentTheme, setTheme } = usePilesContext();
-  const { initVectorIndex, rebuildVectorIndex, resetChat, query, chat } =
-    useIndexContext();
+  const { getAIResponse, addMessage, resetMessages } = useChat();
   const [container, setContainer] = useState(null);
   const [ready, setReady] = useState(false);
   const [text, setText] = useState('');
   const [querying, setQuerying] = useState(false);
-  const [response, setResponse] = useState(null);
   const [history, setHistory] = useState([]);
 
   const onChangeText = (e) => {
@@ -44,26 +43,31 @@ export default function Chat() {
   const onResetConversation = () => {
     setText('');
     setHistory([]);
-    resetChat();
+    resetMessages();
   };
 
-  const onSubmit = () => {
+  const appendToLastSystemMessage = (token) => {
+    setHistory((history) => {
+      const last = history[history.length - 1];
+      if (last.role === 'system') {
+        return [
+          ...history.slice(0, -1),
+          { role: 'system', content: last.content + (token ?? '') },
+        ];
+      }
+    });
+  };
+
+  const onSubmit = async () => {
+    if (text === '') return;
     setQuerying(true);
     const message = `${text}`;
     setText('');
-    setHistory((his) => [...his, text, '@@PENDING@@']);
-    chat(message)
-      .then((res) => {
-        setHistory((his) =>
-          his.map((message) => {
-            if (message == '@@PENDING@@') return res;
-            return message;
-          })
-        );
-      })
-      .finally(() => {
-        setQuerying(false);
-      });
+    setHistory((history) => [...history, { role: 'user', content: message }]);
+    const messages = await addMessage(message);
+    setHistory((history) => [...history, { role: 'system', content: '' }]);
+    await getAIResponse(messages, appendToLastSystemMessage);
+    setQuerying(false);
   };
 
   const handleKeyPress = (event) => {
@@ -72,21 +76,6 @@ export default function Chat() {
       event.preventDefault();
       return false;
     }
-  };
-
-  const renderResponse = () => {
-    if (!response) return;
-    const sources = response.sourceNodes;
-    return sources.map((source, index) => {
-      return (
-        <div key={index} className={styles.post}>
-          <Post
-            key={`post-${source.metadata.relativeFilePath}`}
-            postPath={source.metadata.relativeFilePath}
-          />
-        </div>
-      );
-    });
   };
 
   const renderHistory = () => {

@@ -23,7 +23,7 @@ import { Virtuoso } from 'react-virtuoso';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Scrollbar from './Scrollbar';
 
-const VirtualList = memo(({ data }) => {
+const VirtualList = ({ data }) => {
   const { virtualListRef, setVisibleIndex } = useTimelineContext();
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -34,44 +34,53 @@ const VirtualList = memo(({ data }) => {
 
   const renderItem = useCallback((index, entry) => {
     const [postPath] = entry;
-
+    const updatedAt = entry[1].updatedAt;
+    const repliesCount = entry[1].replies?.length;
+    const key = postPath + updatedAt;
     if (index == 0) return <NewPost />;
 
     return (
       <div style={{ minHeight: 72 }}>
         <motion.div
-          key={postPath}
+          key={key}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Post postPath={postPath} />
+          <Post postPath={postPath} repliesCount={repliesCount} />
         </motion.div>
       </div>
     );
   }, []);
 
-  const getKey = useCallback((index) => data[index][0], [data]);
+  const getKey = useCallback(
+    (index) => {
+      const entry = data[index];
+      const updatedAt = entry[1].updatedAt;
+      const repliesCount = entry[1].replies?.length;
+      const key = entry[0] + repliesCount;
+      return key;
+    },
+    [data]
+  );
 
   const handleIsScrolling = (bool) => {
     setIsScrolling(bool);
   };
 
   return (
-    <AnimatePresence>
-      <Virtuoso
-        ref={virtualListRef}
-        data={data}
-        rangeChanged={handleRangeChanged}
-        itemContent={renderItem}
-        computeItemKey={getKey}
-        atTopThreshold={100}
-        increaseViewportBy={2000}
-        components={{ Scroller: Scrollbar }}
-      />
-    </AnimatePresence>
+    <Virtuoso
+      ref={virtualListRef}
+      data={data}
+      rangeChanged={handleRangeChanged}
+      itemContent={renderItem}
+      computeItemKey={getKey}
+      atTopThreshold={100}
+      increaseViewportBy={2000}
+      components={{ Scroller: Scrollbar }}
+    />
   );
-});
+};
 
 export default VirtualList;

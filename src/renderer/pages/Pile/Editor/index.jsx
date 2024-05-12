@@ -22,6 +22,20 @@ import useThread from 'renderer/hooks/useThread';
 import LinkPreviews from './LinkPreviews';
 import { useToastsContext } from 'renderer/context/ToastsContext';
 
+// Escape special characters
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+const highlightTerms = (text, term) => {
+  if (!term.trim()) return text;
+  const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+  return text.replace(
+    regex,
+    '<span class="' + styles.highlight + '">$1</span>'
+  );
+};
+
 const Editor = memo(
   ({
     postPath = null,
@@ -32,6 +46,7 @@ const Editor = memo(
     closeReply = () => {},
     setEditable = () => {},
     reloadParentPost,
+    searchTerm = null,
   }) => {
     const {
       post,
@@ -261,7 +276,7 @@ const Editor = memo(
             type: 'failed',
             message: 'AI request failed',
             dismissTime: 12000,
-            onEnter: closeReply
+            onEnter: closeReply,
           });
           setIsAiResponding(false);
           return;
@@ -313,6 +328,11 @@ const Editor = memo(
 
     if (!post) return;
 
+    let previewContent = post.content;
+    if (searchTerm && !editable) {
+      previewContent = highlightTerms(post.content, searchTerm);
+    }
+
     return (
       <div className={`${styles.frame} ${isNew && styles.isNew}`}>
         {editable ? (
@@ -328,7 +348,7 @@ const Editor = memo(
             <div
               key="uneditable"
               className={`${styles.editor} ${isBig() && styles.editorBig}`}
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: previewContent }}
             />
           </div>
         )}

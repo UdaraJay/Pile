@@ -3,8 +3,9 @@ const path = require('path');
 const glob = require('glob');
 const matter = require('gray-matter');
 const pileSearchIndex = require('./pileSearchIndex');
-const { walk } = require('../util');
 const pileEmbeddings = require('./pileEmbeddings');
+const { walk } = require('../util');
+const { convertHTMLToPlainText } = require('../util');
 
 class PileIndex {
   constructor() {
@@ -38,17 +39,11 @@ class PileIndex {
     this.pilePath = pilePath;
     const indexFilePath = path.join(this.pilePath, this.fileName);
 
-    // test generating index on the fly
-    // const index = await this.walkAndGenerateIndex(pilePath);
-    // return index;
     if (fs.existsSync(indexFilePath)) {
       const data = fs.readFileSync(indexFilePath);
       const loadedIndex = new Map(JSON.parse(data));
       const sortedIndex = this.sortMap(loadedIndex);
       this.index = sortedIndex;
-      this.searchIndex = pileSearchIndex.initialize(this.pilePath, sortedIndex);
-      this.vectorIndex = pileEmbeddings.initialize(this.pilePath, sortedIndex);
-      return sortedIndex;
     } else {
       // init empty index
       this.save();
@@ -56,8 +51,14 @@ class PileIndex {
       const index = await this.walkAndGenerateIndex(pilePath);
       this.index = index;
       this.save();
-      return this.index;
     }
+
+    pileSearchIndex.initialize(this.pilePath, this.index);
+    console.log('📍 SEARCH INDEX LOADED');
+    await pileEmbeddings.initialize(this.pilePath, this.index);
+    console.log('📍 VECTOR INDEX LOADED');
+
+    return this.index;
   }
 
   walkAndGenerateIndex = (pilePath) => {
@@ -77,9 +78,32 @@ class PileIndex {
   search(query) {
     let results = [];
     try {
-      results = this.searchIndex.search(query);
+      console.time('search-time');
+      const entries = pileSearchIndex.search(query);
+      results = entries.map((entry) => {
+        const res = { ref: entry.ref, ...this.index.get(entry.ref) };
+        return res;
+      });
+      console.timeEnd('search-time');
     } catch (error) {
       console.log('failed to search', error);
+    }
+
+    return results;
+  }
+
+  async vectorSearch(query, topN = 50) {
+    let results = [];
+    try {
+      console.time('vector-search-time');
+      const entries = await pileEmbeddings.search(query, topN);
+      results = entries.map((entry) => {
+        const res = { ref: entry, ...this.index.get(entry) };
+        return res;
+      });
+      console.timeEnd('vector-search-time');
+    } catch (error) {
+      console.log('failed to vector search', error);
     }
     return results;
   }
@@ -93,9 +117,33 @@ class PileIndex {
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContent);
     this.index.set(relativeFilePath, data);
-    this.searchIndex = pileSearchIndex.initialize(this.pilePath, this.index);
+    // add to search and vector index
+    pileSearchIndex.initialize(this.pilePath, this.index);
+    pileEmbeddings.addDocument(relativeFilePath, data);
     this.save();
     return this.index;
+  }
+
+  getThreadsAsText(filePath) {
+    let fullPath = path.join(this.pilePath, filePath);
+    let fileContent = fs.readFileSync(fullPath, 'utf8');
+    let { content, data: metedata } = matter(fileContent);
+
+    content =
+      `First entry at ${new Date(metedata.createdAt).toString()}:\n ` +
+      convertHTMLToPlainText(content);
+
+    // concat the contents of replies
+    for (let replyPath of metedata.replies) {
+      let replyFullPath = path.join(this.pilePath, replyPath);
+      let replyFileContent = fs.readFileSync(replyFullPath, 'utf8');
+      let { content: replyContent, data: replyMetadata } =
+        matter(replyFileContent);
+      content += `\n\n Reply at ${new Date(
+        replyMetadata.createdAt
+      ).toString()}:\n  ${convertHTMLToPlainText(replyContent)}`;
+    }
+    return content;
   }
 
   // reply's parent needs to be found by checking every non isReply entry and
@@ -121,8 +169,9 @@ class PileIndex {
 
   update(relativeFilePath, data) {
     this.index.set(relativeFilePath, data);
+    pileSearchIndex.initialize(this.pilePath, this.index);
+    pileEmbeddings.addDocument(relativeFilePath, data);
     this.save();
-
     return this.index;
   }
 

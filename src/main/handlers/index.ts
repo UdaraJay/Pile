@@ -1,5 +1,4 @@
 import { ipcMain } from 'electron';
-import { getLinkPreview, getLinkContent } from '../utils/linkPreview';
 import pileIndex from '../utils/pileIndex';
 
 ipcMain.handle('index-load', async (event, pilePath) => {
@@ -23,12 +22,22 @@ ipcMain.handle('index-update', (event, filePath, data) => {
 });
 
 ipcMain.handle('index-search', (event, query) => {
-  const index = pileIndex.get();
-  const refs = pileIndex.search(query).map((ref: any) => ref.ref);
-  const results = refs.map((ref: any) => {
-    const res = { ref, ...index.get(ref) };
-    return res;
-  });
+  const results = pileIndex.search(query);
+  return results;
+});
+
+ipcMain.handle('index-vector-search', (event, query) => {
+  const results = pileIndex.vectorSearch(query);
+  return results;
+});
+
+ipcMain.handle('index-get-threads-as-text', (event, filePaths = []) => {
+  const results = [];
+
+  for (const filePath of filePaths) {
+    const entry = pileIndex.getThreadsAsText(filePath);
+    results.push(entry);
+  }
   return results;
 });
 

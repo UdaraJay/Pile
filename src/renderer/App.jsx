@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
 import Pile from './pages/Pile';
 import License from './pages/License';
-import Credits from './pages/Credits';
 import CreatePile from './pages/CreatePile';
 import { PilesContextProvider } from './context/PilesContext';
 import { IndexContextProvider } from './context/IndexContext';
@@ -69,14 +68,6 @@ export default function App() {
                             element={
                               <AnimatedPage _key="license">
                                 <License />
-                              </AnimatedPage>
-                            }
-                          />
-                          <Route
-                            path="/credits"
-                            element={
-                              <AnimatedPage _key="credits">
-                                <Credits />
                               </AnimatedPage>
                             }
                           />

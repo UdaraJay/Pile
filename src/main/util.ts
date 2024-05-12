@@ -15,6 +15,21 @@ export function resolveHtmlPath(htmlFileName: string) {
   return `file://${path.resolve(__dirname, '../renderer/', htmlFileName)}`;
 }
 
+export function convertHTMLToPlainText(html: string) {
+  // Replace <a> tags with the value of their href attribute
+  html = html.replace(
+    /<a [^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/gi,
+    (match, href, anchorText) => {
+      return href; // Replace with the href content
+    }
+  );
+
+  // Strip out remaining <p>, <strong> tags
+  html = html.replace(/<\/?p>|<\/?strong>/gi, '');
+
+  return html;
+}
+
 export async function walk(dir: string, root = true) {
   let files = await readdir(dir);
   files = await Promise.all(

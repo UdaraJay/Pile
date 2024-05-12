@@ -47,6 +47,10 @@ export const IndexContextProvider = ({ children }) => {
     [currentPile]
   );
 
+  const getThreadsAsText = useCallback(async (filePaths) => {
+    return window.electron.ipc.invoke('index-get-threads-as-text', filePaths);
+  }, []);
+
   const updateIndex = useCallback(async (filePath, data) => {
     window.electron.ipc.invoke('index-update', filePath, data).then((index) => {
       setIndex(index);
@@ -63,6 +67,10 @@ export const IndexContextProvider = ({ children }) => {
     return window.electron.ipc.invoke('index-search', query);
   }, []);
 
+  const vectorSearch = useCallback(async (query, topN = 50) => {
+    return window.electron.ipc.invoke('index-vector-search', query, topN);
+  }, []);
+
   const indexContextValue = {
     index,
     refreshIndex,
@@ -72,6 +80,8 @@ export const IndexContextProvider = ({ children }) => {
     search,
     searchOpen,
     setSearchOpen,
+    vectorSearch,
+    getThreadsAsText,
   };
 
   return (

@@ -17,6 +17,7 @@ export const AIContextProvider = ({ children }) => {
   const { currentPile, updateCurrentPile } = usePilesContext();
   const [ai, setAi] = useState(null);
   const [prompt, setPrompt] = useState(defaultPrompt);
+  const [memory, setMemory] = useState([]);
 
   // Sync AI settings from currentPile
   useEffect(() => {
@@ -35,7 +36,7 @@ export const AIContextProvider = ({ children }) => {
     const openaiInstance = new OpenAI({
       baseURL: getBaseUrl(),
       apiKey: key,
-      dangerouslyAllowBrowser: true
+      dangerouslyAllowBrowser: true,
     });
 
     setAi(openaiInstance);
@@ -69,16 +70,6 @@ export const AIContextProvider = ({ children }) => {
     });
   };
 
-  const getCompletion = async (model = 'gpt-3', context) => {
-    const response = await ai.chat.completions.create({
-      model: model,
-      max_tokens: 200,
-      messages: context,
-    });
-
-    return response;
-  };
-
   const AIContextValue = {
     ai,
     getBaseUrl,
@@ -88,7 +79,6 @@ export const AIContextProvider = ({ children }) => {
     setKey,
     getKey,
     deleteKey,
-    getCompletion,
     updateSettings,
   };
 

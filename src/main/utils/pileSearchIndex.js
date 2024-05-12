@@ -3,20 +3,7 @@ const path = require('path');
 const lunr = require('lunr');
 const matter = require('gray-matter');
 const { BrowserWindow } = require('electron');
-
-function customTokenizer(str) {
-  var strLower = str.toLowerCase();
-  return strLower.split(/[\s\-]+/).flatMap((part) => {
-    var tokens = [];
-    // Create tokens by extracting all substrings of each part
-    for (let i = 0; i < part.length; i++) {
-      for (let j = i + 1; j <= part.length; j++) {
-        tokens.push(part.substring(i, j));
-      }
-    }
-    return tokens;
-  });
-}
+const { convertHTMLToPlainText } = require('../util');
 
 class PileSearchIndex {
   constructor() {
@@ -29,21 +16,6 @@ class PileSearchIndex {
     this.pilePath = pilePath;
     this.index = this.loadIndex(pilePath, index);
     return this.index;
-  }
-
-  convertHTMLToPlainText(html) {
-    // Replace <a> tags with the value of their href attribute
-    html = html.replace(
-      /<a [^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/gi,
-      (match, href, anchorText) => {
-        return href; // Replace with the href content
-      }
-    );
-
-    // Strip out remaining <p>, <strong> tags
-    html = html.replace(/<\/?p>|<\/?strong>/gi, '');
-
-    return html;
   }
 
   loadIndex(pilePath, index) {
@@ -80,7 +52,7 @@ class PileSearchIndex {
               id: filePath,
               title: metadata.title,
               attachments: metadata.attachments.join(' '),
-              content: this.convertHTMLToPlainText(content),
+              content: convertHTMLToPlainText(content),
               isReply: metadata.isReply,
               isAI: metadata.isAI,
               highlight: metadata.highlight,
@@ -90,7 +62,11 @@ class PileSearchIndex {
 
             builder.add(doc);
           } catch (error) {
-            console.error('Failed to process file for search index.');
+            console.error(
+              'Failed to add entry to search index: ',
+              filePath,
+              error
+            );
           }
         }
       });

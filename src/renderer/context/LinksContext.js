@@ -14,7 +14,7 @@ export const LinksContext = createContext();
 
 export const LinksContextProvider = ({ children }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-  const { ai, getCompletion } = useAIContext();
+  const { ai } = useAIContext();
   const { addNotification, updateNotification, removeNotification } =
     useToastsContext();
 
@@ -106,20 +106,20 @@ export const LinksContextProvider = ({ children }) => {
 
     context.push({
       role: 'system',
-      content: `Provided below is some extracted plaintext response of a website. Use it to generate the content for a rich preview card for the webpage. 
-        The content is as follows: 
+      content: `Provided below is some extracted plaintext response of a website. Use it to generate the content for a rich preview card for the webpage.
+        The content is as follows:
         ${trimmedContent}
         `,
     });
     context.push({
       role: 'system',
-      content: `These are the links on the page: 
+      content: `These are the links on the page:
         ${links}
         `,
     });
     context.push({
       role: 'system',
-      content: `These are the images on the page: 
+      content: `These are the images on the page:
         ${images}
         `,
     });
@@ -127,9 +127,9 @@ export const LinksContextProvider = ({ children }) => {
       role: 'system',
       content: `Provide your response as a JSON object that follows this schema:
         {
-          "url": ${url}, 
+          "url": ${url},
           "category": '', // suggest the best category for this page based on the content. eg: video, book, recipie, app, research paper, news, opinion, blog, social media etc.
-          "images": [{src: '', alt: ''}], // key images  
+          "images": [{src: '', alt: ''}], // key images
           "summary": string, // tldr summary of this webpage
           "highlights": [''], // plaintext sentences of 3-8 key insights, facts or quotes. Like an executive summary.
           "buttons": [{title: '', href: ''}], // use the links to generate a primary and secondary buttons appropriate for this preview. ONLY use relevant links from the page.

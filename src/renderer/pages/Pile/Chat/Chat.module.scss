@@ -24,8 +24,7 @@
     background: var(--bg-secondary);
     color: var(--primary);
 
-    .homeIcon,
-    .settingsIcon {
+    .chatIcon {
       opacity: 1;
     }
   }
@@ -334,8 +333,6 @@ input {
   height: calc(100vh - 4px);
   color: var(--secondary);
 }
-
-
 
 .text_context {
   font-size: 0.95em;

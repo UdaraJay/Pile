@@ -5,34 +5,32 @@ const keytar = require('keytar');
 const { walk } = require('../util');
 const matter = require('gray-matter');
 
-const createCosineSimilarityKernel = (gpu, vectorSize) => {
-  return gpu.createKernel(
-    function (vecA, vecB) {
-      let dotProduct = 0;
-      let normA = 0;
-      let normB = 0;
+// Todo: Cache the norms alongside embeddings at some point
+// to avoid recomputing them for every query
+function cosineSimilarity(embedding, queryEmbedding) {
+  if (embedding.length !== queryEmbedding.length) {
+    throw new Error('Vectors have different dimensions');
+  }
 
-      for (let i = 0; i < vectorSize; i++) {
-        dotProduct += vecA[i] * vecB[i];
-        normA += vecA[i] * vecA[i];
-        normB += vecB[i] * vecB[i];
-      }
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
 
-      normA = Math.sqrt(normA);
-      normB = Math.sqrt(normB);
+  for (let i = 0; i < embedding.length; i++) {
+    dotProduct += embedding[i] * queryEmbedding[i];
+    normA += embedding[i] ** 2;
+    normB += queryEmbedding[i] ** 2;
+  }
 
-      if (normA === 0 || normB === 0) {
-        return 0; // Avoid division by zero
-      } else {
-        return dotProduct / (normA * normB);
-      }
-    },
-    {
-      output: [1],
-      constants: { vectorSize },
-    }
-  );
-};
+  normA = Math.sqrt(normA);
+  normB = Math.sqrt(normB);
+
+  if (normA === 0 || normB === 0) {
+    throw new Error('One of the vectors is zero, cannot compute similarity');
+  }
+
+  return dotProduct / (normA * normB);
+}
 
 class PileEmbeddings {
   constructor() {
@@ -53,7 +51,7 @@ class PileEmbeddings {
       const embeddingsFilePath = path.join(pilePath, this.fileName);
       if (fs.existsSync(embeddingsFilePath)) {
         const data = fs.readFileSync(embeddingsFilePath, 'utf8');
-        this.embeddings = JSON.parse(data);
+        this.embeddings = new Map(JSON.parse(data));
       } else {
         // Embeddings need to be generated based on the index
         await this.walkAndGenerateEmbeddings(pilePath, index);
@@ -70,55 +68,20 @@ class PileEmbeddings {
     if (!apikey) {
       throw new Error('API key not found. Please set it first.');
     }
-
     this.apiKey = apikey;
   }
 
   async walkAndGenerateEmbeddings(pilePath, index) {
     console.log('🧮 Generating embeddings for index:', index.size);
-    const embeddings = new Map();
+    this.embeddings = new Map();
     for (let [entryPath, metadata] of index) {
-      try {
-        //  we only index parent documents
-        // the replies are concatenated to the contents
-        if (metadata.isReply) continue;
-        let fullPath = path.join(pilePath, entryPath);
-        let fileContent = fs.readFileSync(fullPath, 'utf8');
-        let { content } = matter(fileContent);
-
-        content =
-          'Entry on ' +
-          metadata.createdAt +
-          '\n\n' +
-          content +
-          '\n\nReplies:\n';
-
-        // concat the contents of replies
-        for (let replyPath of metadata.replies) {
-          let replyFullPath = path.join(pilePath, replyPath);
-          let replyFileContent = fs.readFileSync(replyFullPath, 'utf8');
-          let { content: replyContent } = matter(replyFileContent);
-          content += '\n' + replyContent;
-        }
-
-        const embedding = await this.generateEmbeddingForDocument(content);
-        embeddings.set(entryPath, embedding);
-        console.log('🧮 Embeddings created for threads: ', entryPath);
-      } catch (error) {
-        console.error('Failed to process thread for vector index.', error);
-        continue;
-      }
+      this.addDocument(entryPath, metadata);
     }
-
-    console.log('🧮 Embeddings generated:', embeddings.size);
-    this.embeddings = embeddings;
-    return embeddings;
   }
 
   saveEmbeddings() {
     try {
       const embeddingsFilePath = path.join(this.pilePath, this.fileName);
-
       const entries = this.embeddings.entries();
       if (!entries) return;
       let strMap = JSON.stringify(Array.from(entries));
@@ -128,15 +91,36 @@ class PileEmbeddings {
     }
   }
 
-  async addDocument(docId, document) {
-    const embedding = await this.generateEmbeddingForDocument(document);
-    if (embedding) {
-      this.embeddings[docId] = embedding;
-      this.saveEmbeddings();
+  async addDocument(entryPath, metadata) {
+    try {
+      //  we only index parent documents
+      // the replies are concatenated to the contents
+      if (metadata.isReply) return;
+      let fullPath = path.join(this.pilePath, entryPath);
+      let fileContent = fs.readFileSync(fullPath, 'utf8');
+      let { content } = matter(fileContent);
+
+      content =
+        'Entry on ' + metadata.createdAt + '\n\n' + content + '\n\nReplies:\n';
+
+      // concat the contents of replies
+      for (let replyPath of metadata.replies) {
+        let replyFullPath = path.join(this.pilePath, replyPath);
+        let replyFileContent = fs.readFileSync(replyFullPath, 'utf8');
+        let { content: replyContent } = matter(replyFileContent);
+        content += '\n' + replyContent;
+      }
+
+      const embedding = await this.generateEmbedding(content);
+      this.embeddings.set(entryPath, embedding);
+      console.log('🧮 Embeddings created for threads: ', entryPath);
+    } catch (error) {
+      console.error('Failed to process thread for vector index.', error);
+      return;
     }
   }
 
-  async generateEmbeddingForDocument(document) {
+  async generateEmbedding(document) {
     const url = 'https://api.openai.com/v1/embeddings';
     const headers = {
       Authorization: `Bearer ${this.apiKey}`,
@@ -156,22 +140,23 @@ class PileEmbeddings {
     }
   }
 
-  async searchDocuments(queryDocument, topN = 50) {
-    const queryEmbedding = await this.generateEmbeddingForDocument(
-      queryDocument
-    );
+  async search(query, topN = 50) {
+    const queryEmbedding = await this.generateEmbedding(query);
+
     if (!queryEmbedding) {
       console.error('Failed to generate query embedding.');
       return [];
     }
 
-    let scores = Object.entries(this.embeddings).map(([docId, embedding]) => ({
-      docId,
-      score: cosineSimilarity(embedding, queryEmbedding),
-    }));
+    let scores = [];
+    this.embeddings.forEach((embedding, entryPath) => {
+      let score = cosineSimilarity(embedding, queryEmbedding);
+      scores.push({ entryPath, score });
+    });
 
     scores.sort((a, b) => b.score - a.score);
-    return scores.slice(0, topN);
+    const topNEntries = scores.slice(0, topN).map((s) => s.entryPath);
+    return topNEntries;
   }
 }
 

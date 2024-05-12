@@ -9,7 +9,7 @@ import {
   FlameIcon,
   SearchIcon,
 } from 'renderer/icons';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAIContext } from 'renderer/context/AIContext';
 import {
@@ -27,40 +27,7 @@ import OptionsBar from './OptionsBar';
 import VirtualList from '../Posts/VirtualList';
 
 const filterResults = (results, options) => {
-  const now = new Date();
-
   const filtered = results.filter((result) => {
-    const createdAt = new Date(result.createdAt);
-
-    // Filter by date range
-    let dateCondition = true;
-    switch (options.dateRange) {
-      case 'lastMonth':
-        const lastMonth = new Date(
-          now.getFullYear(),
-          now.getMonth() - 1,
-          now.getDate()
-        );
-        dateCondition = createdAt > lastMonth;
-        break;
-      case 'last3Months':
-        const last3Months = new Date(
-          now.getFullYear(),
-          now.getMonth() - 3,
-          now.getDate()
-        );
-        dateCondition = createdAt > last3Months;
-        break;
-      case 'lastYear':
-        const lastYear = new Date(
-          now.getFullYear() - 1,
-          now.getMonth(),
-          now.getDate()
-        );
-        dateCondition = createdAt > lastYear;
-        break;
-    }
-
     // Filter by highlight
     const highlightCondition = options.onlyHighlighted
       ? result.highlight != null
@@ -71,7 +38,7 @@ const filterResults = (results, options) => {
       ? result.attachments.length > 0
       : true;
 
-    return dateCondition && highlightCondition && mediaCondition;
+    return highlightCondition && mediaCondition;
   });
 
   // Sort the filtered results based on the sortOrder option
@@ -93,6 +60,7 @@ export default function Search() {
     search,
     searchOpen,
     setSearchOpen,
+    vectorSearch,
   } = useIndexContext();
   const [container, setContainer] = useState(null);
   const [ready, setReady] = useState(false);
@@ -104,20 +72,36 @@ export default function Search() {
     onlyHighlighted: false,
     notReplies: false,
     hasAttachments: false,
-    sortOrder: 'mostRecent',
+    sortOrder: 'relevance',
+    semanticSearch: false,
   });
 
   const onChangeText = (e) => {
     setText(e.target.value);
   };
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
+    if (text === '') return;
     setQuerying(true);
+
+    if (options.semanticSearch) {
+      vectorSearch(text).then((res) => {
+        setResponse(res);
+        setQuerying(false);
+      });
+
+      return;
+    }
+
     search(text).then((res) => {
       setResponse(res);
       setQuerying(false);
     });
-  };
+  }, [options, text]);
+
+  useEffect(() => {
+    onSubmit();
+  }, [options.semanticSearch]);
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -197,7 +181,11 @@ export default function Search() {
                   onSubmit={onSubmit}
                   querying={querying}
                 />
-                <OptionsBar options={options} setOptions={setOptions} />
+                <OptionsBar
+                  options={options}
+                  setOptions={setOptions}
+                  onSubmit={onSubmit}
+                />
               </Dialog.Title>
               {filtered && (
                 <div className={styles.meta}>

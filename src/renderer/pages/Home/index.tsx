@@ -58,9 +58,6 @@ export default function Home() {
           <div className={styles.holder}>
             <Logo className={styles.icon} />
           </div>
-
-          {/* <div className={styles.name}>Pile</div>
-          <div className={styles.version}>{quote}</div> */}
         </div>
 
         <Link to="/new-pile" className={styles.create}>
@@ -74,7 +71,7 @@ export default function Home() {
         <div className={styles.footer}>
           <a href="https://udara.io/pile" target="_blank">
             <div className={styles.unms}></div>
-            {quote} – <b>Pile</b>
+            {quote}
           </a>
 
           <div className={styles.nav}>
@@ -82,7 +79,7 @@ export default function Home() {
               License
             </Link>
             <a
-              href="https://x.com/TGUPJ/status/1712868302312051112"
+              href="https://udara.io/pile"
               target="_blank"
               className={styles.link}
             >

@@ -33,12 +33,18 @@ const VirtualList = memo(({ data }) => {
   const scrollToBottom = (align = 'end') => {
     virtualListRef?.current?.scrollToIndex({
       index: data.length - 1,
-      align
+      align,
     });
-  }
+  };
 
   const renderItem = useCallback(
-    (index, text) => <Message index={index} text={text} scrollToBottom={scrollToBottom} />,
+    (index, message) => (
+      <Message
+        index={index}
+        message={message}
+        scrollToBottom={scrollToBottom}
+      />
+    ),
     [data]
   );
 

@@ -4,11 +4,27 @@
   user-select: none;
   position: relative;
 
+  .holder {
+    max-height: 350px;
+    min-width: 500px;
+    max-width: 100%;
+    position: relative;
+    background: radial-gradient(circle, var(--bg) 1px, transparent 1px),
+      radial-gradient(circle, var(--bg) 1px, transparent 1px);
+    background-color: var(--bg-tertiary);
+    background-position: 0 0, 15px 15px;
+    background-size: 32px 32px;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+
   img {
     max-height: 350px;
     min-width: 500px;
     max-width: 100%;
-    border-radius: 22px;
+    object-fit: contain;
+    width: auto;
+
     transition: all ease-in-out 120ms;
 
     &:hover {

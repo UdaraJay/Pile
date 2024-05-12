@@ -116,7 +116,7 @@
   padding: 9px 12px;
   font-weight: 500;
   color: var(--secondary);
-  background: Var(--bg-secondary);
+  background: Var(--bg);
   border-radius: 12px;
   margin: 32px auto;
   user-select: none;
@@ -147,28 +147,23 @@
   flex-wrap: wrap;
   font-size: 0.8em;
   border-radius: 12px;
+  gap: 1px;
 
   .pile {
-    width: 300px;
+    width: 270px;
     -webkit-app-region: none;
     display: flex;
     justify-content: space-between;
-    // background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-top: none;
+    background: var(--bg);
     padding: 7px 7px 7px 12px;
     color: var(--primary);
 
     &:first-child {
-      border-top: 1px solid var(--border);
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
+      border-radius: 12px 12px 0 0;
     }
 
     &:last-child {
-      border-bottom: 1px solid var(--border);
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
+      border-radius: 0 0 12px 12px;
     }
 
     .left {
@@ -179,7 +174,7 @@
       .name {
         flex: 1 1 auto;
         font-weight: 500;
-        max-width: 115px;
+        max-width: 95px;
         user-select: none;
         font-size: 16px;
         font-family: 'Porpora';
@@ -214,7 +209,7 @@
     padding: 0 14px;
     height: 28px;
     line-height: 27px;
-    border-radius: 90px;
+    border-radius: 7px;
     user-select: none;
     transition: all ease-in-out 120ms;
     font-weight: 500;

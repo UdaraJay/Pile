@@ -1,5 +1,5 @@
 import styles from './Settings.module.scss';
-import { SettingsIcon, CrossIcon } from 'renderer/icons';
+import { SettingsIcon, CrossIcon, OllamaIcon } from 'renderer/icons';
 import { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAIContext } from 'renderer/context/AIContext';
@@ -7,6 +7,7 @@ import {
   availableThemes,
   usePilesContext,
 } from 'renderer/context/PilesContext';
+import * as Switch from '@radix-ui/react-switch';
 
 export default function Settings() {
   const {
@@ -14,13 +15,17 @@ export default function Settings() {
     prompt,
     setPrompt,
     updateSettings,
-    getBaseUrl,
     setBaseUrl,
     getKey,
     setKey,
     deleteKey,
+    model,
+    setModel,
+    ollama,
+    toggleOllama,
+    baseUrl,
   } = useAIContext();
-  const [baseUrl, setCurrentBaseUrl] = useState(getBaseUrl());
+  // const [baseUrl, setCurrentBaseUrl] = useState(originalBaseUrl);
   const [key, setCurrentKey] = useState('');
   const { currentTheme, setTheme } = usePilesContext();
 
@@ -34,7 +39,11 @@ export default function Settings() {
   }, []);
 
   const handleOnChangeBaseUrl = (e) => {
-    setCurrentBaseUrl(e.target.value);
+    setBaseUrl(e.target.value);
+  };
+
+  const handleOnChangeModel = (e) => {
+    setModel(e.target.value);
   };
 
   const handleOnChangeKey = (e) => {
@@ -103,41 +112,72 @@ export default function Settings() {
             <div className={styles.themes}>{renderThemes()}</div>
           </fieldset>
 
-          <fieldset className={styles.Fieldset}>
-            <label className={styles.Label} htmlFor="name">
-              Base url (defaults to OpenAI)
-            </label>
-            <input
-              className={styles.Input}
-              onChange={handleOnChangeBaseUrl}
-              value={baseUrl}
-              placeholder="https://api.openai.com/v1"
-              defaultValue="https://api.openai.com/v1"
-            />
-          </fieldset>
+          <div className={styles.providers}>
+            <fieldset className={styles.switch}>
+              <label className={styles.Label} htmlFor="toggle-ollama">
+                <OllamaIcon className={styles.icon} /> Use Ollama API
+                (experimental)
+              </label>
+              <Switch.Root
+                id={'toggle-ollama'}
+                className={styles.SwitchRoot}
+                checked={ollama}
+                onCheckedChange={toggleOllama}
+              >
+                <Switch.Thumb className={styles.SwitchThumb} />
+              </Switch.Root>
+            </fieldset>
 
-          <fieldset className={styles.Fieldset}>
-            <label className={styles.Label} htmlFor="name">
-              API key (OpenAI)
-            </label>
-            <input
-              className={styles.Input}
-              onChange={handleOnChangeKey}
-              value={key}
-              placeholder="Paste an OpenAI API key to enable AI reflections"
-            />
-          </fieldset>
-          <div className={styles.disclaimer}>
-            Before you use the AI-powered features within this app, we{' '}
-            <b>strongly recommend</b> that you configure a{' '}
-            <a
-              href="https://platform.openai.com/account/limits"
-              target="_blank"
-            >
-              spending limit within OpenAI's interface
-            </a>{' '}
-            to prevent unexpected costs.
+            <fieldset className={styles.Fieldset}>
+              <label className={styles.Label} htmlFor="name">
+                Base url (defaults to OpenAI)
+              </label>
+              <input
+                className={styles.Input}
+                onChange={handleOnChangeBaseUrl}
+                value={baseUrl}
+                placeholder="https://api.openai.com/v1"
+                defaultValue="https://api.openai.com/v1"
+              />
+            </fieldset>
+
+            <fieldset className={styles.Fieldset}>
+              <label className={styles.Label} htmlFor="name">
+                Model
+              </label>
+              <input
+                className={styles.Input}
+                onChange={handleOnChangeModel}
+                value={model}
+                placeholder="gpt-4-turbo"
+                defaultValue="gpt-4-turbo"
+              />
+            </fieldset>
+
+            <fieldset className={styles.Fieldset}>
+              <label className={styles.Label} htmlFor="name">
+                API key (OpenAI)
+              </label>
+              <input
+                className={styles.Input}
+                onChange={handleOnChangeKey}
+                value={key}
+                placeholder="Paste an OpenAI API key to enable AI reflections"
+              />
+            </fieldset>
+            <div className={styles.disclaimer}>
+              Before you use the AI-powered features within this app, we{' '}
+              <b>strongly recommend</b> that you configure a{' '}
+              <a
+                href="https://platform.openai.com/account/limits"
+                target="_blank"
+              >
+                spending limit within OpenAI's interface
+              </a>{' '}
+              to prevent unexpected costs.
+            </div>
           </div>
+
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
               AI personality prompt

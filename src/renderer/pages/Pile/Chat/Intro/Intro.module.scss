@@ -3,9 +3,12 @@
   flex-direction: column;
   justify-content: center;
   align-content: center;
+  align-self: center;
+  justify-self: center;
+  height: calc(100vh - 200px);
   width: 500px;
   margin: 0 auto;
-  padding: 55px 0 50px 0;
+  margin-top: 40px;
   text-align: center;
 
   .icon {
@@ -15,7 +18,7 @@
   }
 
   .line {
-    height: 100px;
+    height: 80px;
     width: 1px;
     margin: 20px auto;
     border-right: 2px dotted var(--border);

@@ -15,7 +15,7 @@ const Intro = () => {
           type: 'spring',
           stiffness: 50,
           duration: 1,
-          scale: { duration: 1 },
+          scale: { duration: 0.5 },
         }}
         className={styles.intro}
       >

@@ -101,13 +101,7 @@ export default function Chat() {
           <Dialog.Content className={styles.DialogContent}>
             <div className={styles.scroller}>
               <AnimatePresence>
-                <motion.div
-                  key="header"
-                  initial={{ y: -50 }}
-                  animate={{ y: 0 }}
-                  transition={{ delay: 0.05 }}
-                  className={styles.header}
-                >
+                <div className={styles.header}>
                   <div className={styles.wrapper}>
                     <Blobs show={querying} />
                     <Dialog.Title className={styles.DialogTitle}>
@@ -131,7 +125,7 @@ export default function Chat() {
                       </Dialog.Close>
                     </div>
                   </div>
-                </motion.div>
+                </div>
 
                 <div className={styles.answer}>
                   <VirtualList data={history} />
@@ -140,14 +134,7 @@ export default function Chat() {
 
               <div className={styles.inputBar}>
                 <AnimatePresence>
-                  <motion.div
-                    key="input"
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className={styles.holder}
-                  >
+                  <div className={styles.holder}>
                     <div className={styles.inputbaroverlay}></div>
                     <div className={styles.bar}>
                       <TextareaAutosize
@@ -158,34 +145,26 @@ export default function Chat() {
                         placeholder="Start chatting..."
                         autoFocus
                       />
-                      <div className={styles.buttons}>
-                        <button
-                          className={`${styles.ask} ${
-                            querying && styles.processing
-                          }`}
-                          onClick={onSubmit}
-                          disabled={querying}
-                        >
-                          {querying ? (
-                            <Thinking className={styles.spinner} />
-                          ) : (
-                            'Ask'
-                          )}
-                        </button>
-                      </div>
+
+                      <button
+                        className={`${styles.ask} ${
+                          querying && styles.processing
+                        }`}
+                        onClick={onSubmit}
+                        disabled={querying}
+                      >
+                        {querying ? (
+                          <Thinking className={styles.spinner} />
+                        ) : (
+                          'Ask'
+                        )}
+                      </button>
                     </div>
-                    <motion.div
-                      key="disclaimer"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.6 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className={styles.disclaimer}
-                    >
+                    <div className={styles.disclaimer}>
                       *AI can make mistakes. Consider checking important
                       information.
-                    </motion.div>
-                  </motion.div>
+                    </div>
+                  </div>
                 </AnimatePresence>
               </div>
             </div>

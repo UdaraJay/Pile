@@ -104,13 +104,12 @@ input {
   position: relative;
   max-width: 610px;
   margin: 0 auto;
-  height: 42px;
+  height: 50px;
   display: flex;
   align-items: center;
   z-index: 5;
   background: var(--bg-tertiary);
-  border-radius: 7px 7px 17px 17px;
-  margin-top: 4px;
+  border-radius: 0 0 17px 17px;
 
   .DialogTitle {
     display: flex;
@@ -119,13 +118,12 @@ input {
     width: 100%;
     color: var(--primary);
     font-weight: 400;
-    font-size: 15px;
+    font-size: 14px;
     position: relative;
     z-index: 10 !important;
     user-select: none;
-    height: 28px;
     padding: 0 10px;
-    margin: 0 0 2px 0;
+    margin: 0 0 2px 5px;
   }
 
   .buttons {
@@ -140,7 +138,7 @@ input {
       text-wrap: nowrap;
       background: var(--bg);
       color: var(--secondary);
-      font-size: 14px;
+      font-size: 13px;
       padding: 5px 14px 5px 10px;
       transition: all ease-in-out 150ms;
       -webkit-app-region: none;
@@ -148,7 +146,7 @@ input {
       font-weight: 400;
       display: flex;
       align-items: center;
-      height: 33px;
+      height: 40px;
       border-radius: 7px;
 
       &:hover {
@@ -173,8 +171,8 @@ input {
   text-wrap: nowrap;
   background: var(--bg);
   color: var(--secondary);
-  border-radius: 7px 4px 13px 7px;
-  height: 33px;
+  border-radius: 7px 7px 13px 7px;
+  height: 40px;
   font-size: 13px;
   padding: 0 9px;
   transition: all ease-in-out 150ms;
@@ -193,13 +191,6 @@ input {
   &:active {
     transform: scale(0.9);
   }
-
-  &.win {
-    position: relative;
-    margin: -5px 0 0 0;
-    top: 0;
-    left: 0;
-  }
 }
 
 .inputBar {
@@ -217,25 +208,13 @@ input {
   .holder {
     display: flex;
     flex-direction: column;
-    align-items: center;
     background: var(--bg-tertiary);
-    padding: 4px 4px 10px 4px;
-    border-radius: 17px 17px 12px 12px;
-    margin-bottom: 4px;
-  }
-
-  .inputbaroverlay {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    pointer-events: none;
-    width: 100%;
-    height: 250px;
-    // background: linear-gradient(transparent, 60%, var(--bg-secondary));
+    padding: 4px 4px 4px 4px;
+    border-radius: 17px 17px 0 0;
   }
 
   .disclaimer {
-    margin: 10px 0 0 0;
+    margin: 7px 0 3px 7px;
     color: var(--secondary);
     position: relative;
   }
@@ -245,7 +224,6 @@ input {
     width: 600px;
     max-width: 600px;
     display: flex;
-    align-items: center;
     border-radius: 13px;
     transition: all cubic-bezier(0.215, 0.61, 0.355, 1) 120ms;
     gap: 4px;
@@ -261,11 +239,10 @@ input {
     resize: none;
     width: 100%;
     outline: none;
-    padding: 0 12px;
+    padding: 11px 14px;
     font-family: 'Inter', sans-serif;
     overflow: hidden;
     min-height: 40px;
-    line-height: 40px;
     border-radius: 13px 7px 7px 7px;
 
     &::placeholder {
@@ -277,56 +254,51 @@ input {
     }
   }
 
-  .buttons {
+  .ask {
     display: flex;
+    justify-content: center;
+    text-align: center;
     align-items: center;
+    background: var(--active);
+    border-radius: 8px;
+    transition: all ease-in-out 120ms;
+    padding: 0 12px;
+    color: var(--active-text);
+    border-radius: 90px;
+    user-select: none;
+    font-size: 1.2em;
+    font-weight: 500;
+    width: 60px;
+    height: 40px;
+    transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
+    border-radius: 7px 13px 7px 7px;
 
-    .ask {
-      display: flex;
-      justify-content: center;
-      text-align: center;
-      align-items: center;
-      background: var(--active);
-      border-radius: 8px;
-      transition: all ease-in-out 120ms;
-      padding: 0 12px;
-      color: var(--active-text);
-      border-radius: 90px;
-      user-select: none;
-      font-size: 1.2em;
-      font-weight: 500;
-      width: 60px;
-      height: 40px;
-      transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
-      border-radius: 7px 13px 7px 7px;
+    &.processing {
+      width: 75px;
+    }
 
-      &.processing {
-        width: 75px;
-      }
+    .icon {
+      height: 18px;
+      width: 18px;
+    }
 
-      .icon {
-        height: 18px;
-        width: 18px;
-      }
+    .spinner {
+      height: 22px;
+      width: 22px;
+      align-self: center;
+    }
 
-      .spinner {
-        height: 22px;
-        width: 22px;
-        align-self: center;
-      }
+    &.active {
+      background: var(--bg-secondary);
+    }
 
-      &.active {
-        background: var(--bg-secondary);
-      }
+    &:hover {
+      cursor: pointer;
+      background: var(--active-hover);
+    }
 
-      &:hover {
-        cursor: pointer;
-        background: var(--active-hover);
-      }
-
-      &:active {
-        background: var(--base);
-      }
+    &:active {
+      background: var(--base);
     }
   }
 }
@@ -370,11 +342,9 @@ input {
 @keyframes contentShow {
   from {
     opacity: 0;
-    transform: translate(-50%, 20%);
   }
 
   to {
     opacity: 1;
-    transform: translate(-50%, 0);
   }
 }

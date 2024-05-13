@@ -140,7 +140,7 @@ export default function Settings() {
           </div>
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">
-              Prompt
+              AI personality prompt
             </label>
             <textarea
               className={styles.Textarea}

@@ -28,10 +28,19 @@ export default function Home() {
   }, []);
 
   const renderPiles = () => {
+    if (piles.length == 0)
+      return (
+        <div className={styles.noPiles}>
+          No existing piles.
+          <br />
+          Start by creating a new pile.
+        </div>
+      );
+
     return piles.map((pile: any) => {
       return (
         <div
-          className={`${pile.theme && pile.theme + 'Thee'} ${styles.pile}`}
+          className={`${pile.theme && pile.theme + 'Theme'} ${styles.pile}`}
           key={pile.path}
         >
           <div className={styles.left}>
@@ -52,11 +61,13 @@ export default function Home() {
 
   return (
     <div className={styles.frame}>
-      {/* <div className={styles.bg}></div> */}
       <div className={styles.wrapper}>
         <div className={styles.header}>
           <div className={styles.holder}>
-            <Logo className={styles.icon} />
+            <div className={styles.iconHolder}>
+              <Logo className={styles.icon} />
+            </div>
+            <div className={styles.name}>Pile</div>
           </div>
         </div>
 

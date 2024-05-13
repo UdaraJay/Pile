@@ -21,15 +21,15 @@
   --base-red: #e64d4d;
   --base-red-light: #ffdbdb;
 
-  --active: #c69100;
-  --active-hover: #946d00;
+  --active: #4d80e6;
+  --active-hover: #2b5bbb;
   --active-text: #fff;
 
   --border: #e4e4e4;
 
   --bg: #fff;
   --bg-secondary: rgb(246, 246, 246);
-  --bg-tertiary: rgb(220, 220, 220);
+  --bg-tertiary: #dedede;
   --bg-color-secondary-hover: rgb(226, 226, 226);
 }
 
@@ -49,10 +49,6 @@
     --base-green: #128212;
     --base-red: #cb1d1d;
     --base-red-light: #3d2323;
-
-    --active: #c69100;
-    --active-hover: #946d00;
-    --active-text: #fff;
 
     --border: #565656;
 
@@ -196,20 +192,20 @@
     --nav-height: 52px;
     --primary: #ffe9ff;
     --secondary: #ab92ae;
-    --base: #d014e1;
+    --base: #ab13b9;
     --base-text: hsl(295, 100%, 93%);
     --base-hover: #df38e5;
     --base-yellow: #776b0e;
     --base-green: #128212;
     --base-red: rgb(255, 116, 85);
     --base-red-light: #3d2323;
-    --active: #ccf263;
+    --active: #a6b776;
     --active-hover: #ecffb8;
     --active-text: #251b24;
     --border: #5f4263;
     --bg: #251b24;
-    --bg-secondary: #481e51;
-    --bg-tertiary: #5a1a5f;
+    --bg-secondary: #45264d;
+    --bg-tertiary: #4d2750;
     --bg-color-secondary-hover: rgb(114, 95, 122);
     --bg-translucent: rgba(32, 10, 35, 0.45);
   }
@@ -257,7 +253,7 @@
     --border: #635342;
     --bg: #25201b;
     --bg-secondary: #51371e;
-    --bg-tertiary: #5f3b1a;
+    --bg-tertiary: #3b2a1a;
     --bg-color-secondary-hover: rgb(122, 115, 95);
     --bg-translucent: rgba(32, 10, 35, 0.45);
   }
@@ -269,10 +265,10 @@
   --sidebar-width: 250px;
   --nav-height: 52px;
   --primary: #1b4109;
-  --secondary: #40881e;
+  --secondary: #306915;
   --base: #22ff00;
   --base-text: hsl(118, 66%, 22%);
-  --base-hover: #c5751f;
+  --base-hover: #21ed0a;
   --base-yellow: #e6e04d;
   --base-green: #4de64d;
   --base-red: #ff3512;
@@ -282,8 +278,8 @@
   --active-text: #fff;
   --border: #81f646;
   --bg: #eeffee;
-  --bg-secondary: rgb(75, 196, 69);
-  --bg-tertiary: rgb(178, 225, 180);
+  --bg-secondary: rgb(155, 230, 151);
+  --bg-tertiary: rgb(151, 198, 154);
   --bg-color-secondary-hover: rgb(226, 226, 226);
 
   @media (prefers-color-scheme: dark) {

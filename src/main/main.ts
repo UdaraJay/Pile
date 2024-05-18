@@ -7,6 +7,7 @@ import {
   net,
   Menu,
   nativeTheme,
+  session,
 } from 'electron';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';

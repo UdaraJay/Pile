@@ -47,11 +47,11 @@ input {
   inset: 0;
   animation: overlayShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
   opacity: 0.9;
-  z-index: 4;
+  z-index: 40;
 }
 
 .DialogContent {
-  z-index: 6;
+  z-index: 50;
   background-color: var(--bg);
   border-radius: 22px;
   position: fixed;
@@ -63,6 +63,7 @@ input {
   max-height: 85vh;
   padding: 18px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  // min-height: 640px;
 }
 
 .DialogContent:focus {
@@ -150,6 +151,101 @@ input {
   display: flex;
   flex-direction: column;
   margin-top: 14px;
+}
+
+.group {
+  display: flex;
+  gap: 14px;
+
+  .Fieldset {
+    &:first-child {
+      flex: 2 1 70%;
+    }
+
+    &:last-child {
+      flex: 1 1 auto;
+    }
+  }
+}
+
+.switch {
+  margin-top: 14px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background-color: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  .Label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--secondary);
+    font-size: 13px;
+    margin: 0;
+
+    .icon {
+      height: 17px;
+      width: 17px;
+      margin-top: -1px;
+      color: var(--primary);
+    }
+  }
+
+  .switchRoot {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 27px;
+
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg);
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: '';
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--active);
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px var(--active-hover);
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(20px);
+      -ms-transform: translateX(20px);
+      transform: translateX(20px);
+    }
+  }
 }
 
 .disclaimer {

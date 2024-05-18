@@ -47,3 +47,6 @@ export * from './img/PersonIcon';
 export * from './img/HighlightIcon';
 export * from './img/FolderIcon';
 export * from './img/RelevantIcon';
+
+// logos
+export * from './logos/OllamaIcon';

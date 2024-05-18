@@ -54,7 +54,7 @@ input {
 .DialogContent {
   z-index: 6;
   background-color: var(--bg);
-  border-radius: 17px 17px 9px 9px;
+  border-radius: 17px;
   position: fixed;
   left: 50%;
   top: 10vh;
@@ -142,7 +142,7 @@ ul {
   width: calc(100% - 14px);
   height: 20px;
   z-index: 15;
-  border-radius: 0 0 9px 9px;
+  border-radius: 0 0 17px 17px;
   pointer-events: none;
 }
 .gradient2 {

@@ -104,7 +104,8 @@ input {
   position: relative;
   max-width: 610px;
   margin: 0 auto;
-  height: 50px;
+  padding-top: 2px;
+  height: 47px;
   display: flex;
   align-items: center;
   z-index: 5;
@@ -146,7 +147,7 @@ input {
       font-weight: 400;
       display: flex;
       align-items: center;
-      height: 40px;
+      height: 36px;
       border-radius: 7px;
 
       &:hover {
@@ -172,7 +173,7 @@ input {
   background: var(--bg);
   color: var(--secondary);
   border-radius: 7px 7px 13px 7px;
-  height: 40px;
+  height: 36px;
   font-size: 13px;
   padding: 0 9px;
   transition: all ease-in-out 150ms;
@@ -310,6 +311,7 @@ input {
   width: calc(100vw - 4px);
   height: calc(100vh - 4px);
   color: var(--secondary);
+  padding-top: 100px;
 }
 
 .text_context {

@@ -36,11 +36,48 @@
     .text {
       color: var(--primary);
       text-wrap: wrap;
-      background: var(--bg-tertiary);
+      background: var(--bg);
       padding: 7px 12px;
       border-radius: 13px;
       min-width: 50px;
       min-height: 30px;
+
+      p {
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      ol,
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style-position: inside;
+
+        li {
+          margin: 0;
+          padding: 0;
+
+          p {
+            padding: 0;
+            margin: 0;
+          }
+        }
+      }
+
+      blockqoute {
+        margin: 0;
+        padding: 0;
+        border-left: 3px solid var(--primary);
+        margin-left: 10px;
+        padding-left: 10px;
+        font-size: 1.1em;
+        font-style: italic;
+      }
     }
   }
 

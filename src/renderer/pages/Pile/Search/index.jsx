@@ -130,13 +130,6 @@ export default function Search() {
   }, [response, options]);
 
   const renderResponse = () => {
-    if (!response || response.length === 0)
-      return (
-        <div className={styles.empty}>
-          Start typing to search this journal...
-        </div>
-      );
-
     return filtered.map((source, index) => {
       const uniqueKey = source.ref;
       if (!uniqueKey) return null;

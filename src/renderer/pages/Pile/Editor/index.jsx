@@ -60,7 +60,7 @@ const Editor = memo(
       deletePost,
     } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
     const { getThread } = useThread();
-    const { ai, prompt } = useAIContext();
+    const { ai, prompt, model } = useAIContext();
     const { addNotification, removeNotification } = useToastsContext();
 
     const isNew = !postPath;
@@ -260,7 +260,7 @@ const Editor = memo(
 
         try {
           const stream = await ai.chat.completions.create({
-            model: 'gpt-4',
+            model: model,
             stream: true,
             max_tokens: 200,
             messages: context,

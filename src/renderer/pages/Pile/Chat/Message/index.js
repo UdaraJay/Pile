@@ -2,6 +2,7 @@ import styles from './Message.module.scss';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { AIIcon, PersonIcon } from 'renderer/icons';
+import Markdown from 'react-markdown';
 
 const Message = ({ index, message, scrollToBottom }) => {
   const isUser = message.role === 'user';

@@ -15,10 +15,12 @@ export const IndexContextProvider = ({ children }) => {
   const [filters, setFilters] = useState();
   const [searchOpen, setSearchOpen] = useState(false);
   const [index, setIndex] = useState(new Map());
+  const [latestThreads, setLatestThreads] = useState([]);
 
   useEffect(() => {
     if (currentPile) {
       loadIndex(getCurrentPilePath());
+      loadLatestThreads();
     }
   }, [currentPile]);
 
@@ -42,6 +44,7 @@ export const IndexContextProvider = ({ children }) => {
         .invoke('index-add', newEntryPath)
         .then((index) => {
           setIndex(index);
+          loadLatestThreads();
         });
     },
     [currentPile]
@@ -54,6 +57,7 @@ export const IndexContextProvider = ({ children }) => {
   const updateIndex = useCallback(async (filePath, data) => {
     window.electron.ipc.invoke('index-update', filePath, data).then((index) => {
       setIndex(index);
+      loadLatestThreads();
     });
   }, []);
 
@@ -71,6 +75,16 @@ export const IndexContextProvider = ({ children }) => {
     return window.electron.ipc.invoke('index-vector-search', query, topN);
   }, []);
 
+  const loadLatestThreads = useCallback(async (count = 25) => {
+    const items = await search('');
+    const latest = items.slice(0, count);
+
+    const entryFilePaths = latest.map((entry) => entry.ref);
+    const latestThreadsAsText = await getThreadsAsText(entryFilePaths);
+
+    setLatestThreads(latestThreadsAsText);
+  }, []);
+
   const indexContextValue = {
     index,
     refreshIndex,
@@ -82,6 +96,7 @@ export const IndexContextProvider = ({ children }) => {
     setSearchOpen,
     vectorSearch,
     getThreadsAsText,
+    latestThreads,
   };
 
   return (

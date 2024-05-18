@@ -23,7 +23,7 @@ import { Virtuoso } from 'react-virtuoso';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Scrollbar from './Scrollbar';
 
-const VirtualList = ({ data }) => {
+const VirtualList = memo(({ data }) => {
   const { virtualListRef, setVisibleIndex } = useTimelineContext();
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -81,6 +81,6 @@ const VirtualList = ({ data }) => {
       components={{ Scroller: Scrollbar }}
     />
   );
-};
+});
 
 export default VirtualList;

@@ -50,7 +50,7 @@ export const AIContextProvider = ({ children }) => {
   const setupAi = useCallback(async () => {
     const key = await getKey();
 
-    if (!key) return;
+    if (!key && !getOllamaStatus()) return;
 
     const openaiInstance = new OpenAI({
       baseURL: baseUrl,

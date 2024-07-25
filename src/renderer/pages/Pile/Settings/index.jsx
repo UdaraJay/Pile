@@ -103,7 +103,7 @@ export default function Settings() {
           </fieldset>
 
           <div className={styles.providers}>
-            {/* <fieldset className={styles.switch}>
+            <fieldset className={styles.switch}>
               <label className={styles.Label} htmlFor="toggle-ollama">
                 <OllamaIcon className={styles.icon} /> Use Ollama API
               </label>
@@ -115,7 +115,7 @@ export default function Settings() {
                 />
                 <span className={styles.slider}></span>
               </label>
-            </fieldset> */}
+            </fieldset>
 
             <div className={styles.group}>
               <fieldset className={styles.Fieldset}>

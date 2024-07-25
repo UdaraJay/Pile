@@ -7,126 +7,93 @@ import {
 } from 'react';
 import OpenAI from 'openai';
 import { usePilesContext } from './PilesContext';
+import { useLocalStorage } from 'renderer/hooks/useLocalStorage';
 
 const OLLAMA_URL = 'http://localhost:11434/v1';
 const OPENAI_URL = 'https://api.openai.com/v1';
-
-const defaultPrompt =
+const DEFAULT_PROMPT =
   'You are an AI within a journaling app. Your job is to help the user reflect on their thoughts in a thoughtful and kind manner. The user can never directly address you or directly respond to you. Try not to repeat what the user said, instead try to seed new ideas, encourage or debate. Keep your responses concise, but meaningful.';
 
 export const AIContext = createContext();
 
-const getBaseUrl = () => {
-  return localStorage.getItem('baseUrl') ?? OPENAI_URL;
-};
-
-const getOllamaStatus = () => {
-  return JSON.parse(localStorage.getItem('ollamaEnabled')) ?? false;
-};
-
-const getModel = () => {
-  return localStorage.getItem('model') ?? 'gpt-4o';
-};
-
 export const AIContextProvider = ({ children }) => {
   const { currentPile, updateCurrentPile } = usePilesContext();
   const [ai, setAi] = useState(null);
-  const [prompt, setPrompt] = useState(defaultPrompt);
-  const [memory, setMemory] = useState([]);
-  const [ollama, setOllama] = useState(getOllamaStatus() ?? false);
-  const [model, setModelState] = useState(getModel());
-  const [baseUrl, setBaseUrlState] = useState(getBaseUrl());
+  const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
 
-  // Sync AI settings from currentPile
-  useEffect(() => {
-    if (currentPile) {
-      console.log('🧠 Syncing current pile');
-      if (currentPile.AIPrompt && currentPile.AIPrompt !== '')
-        setPrompt(currentPile.AIPrompt);
-      setupAi();
-    }
-  }, [currentPile, ollama, baseUrl]);
+  const [ollama, setOllama] = useLocalStorage('ollamaEnabled', false);
+  const [model, setModel] = useLocalStorage('model', 'gpt-4o');
+  const [baseUrl, setBaseUrl] = useLocalStorage('baseUrl', OPENAI_URL);
 
   const setupAi = useCallback(async () => {
-    const key = await getKey();
-
+    const key = await window.electron.ipc.invoke('get-ai-key');
     if (!key) return;
 
     const openaiInstance = new OpenAI({
       baseURL: baseUrl,
-      apiKey: ollama == true ? 'ollama' : key,
+      apiKey: ollama ? 'ollama' : key,
       dangerouslyAllowBrowser: true,
     });
 
     setAi(openaiInstance);
   }, [ollama, baseUrl]);
 
-  const setBaseUrl = (baseUrl) => {
-    localStorage.setItem('baseUrl', baseUrl);
-    setBaseUrlState(baseUrl);
-  };
-
-  const setModel = async (model) => {
-    localStorage.setItem('model', model);
-    setModelState(model);
-  };
+  useEffect(() => {
+    if (currentPile) {
+      console.log('🧠 Syncing current pile');
+      if (currentPile.AIPrompt) setPrompt(currentPile.AIPrompt);
+      setupAi();
+    }
+  }, [currentPile, ollama, baseUrl, setupAi]);
 
   const toggleOllama = () => {
     setOllama((prev) => {
-      if (!prev == true) {
-        localStorage.setItem('ollamaEnabled', true);
-        setModel('llama3');
-        setBaseUrl(OLLAMA_URL);
-      } else {
-        localStorage.setItem('ollamaEnabled', false);
-        setModel('gpt-4o');
-        setBaseUrl(OPENAI_URL);
-      }
-      return !prev;
+      const newValue = !prev;
+      setModel(newValue ? 'llama3' : 'gpt-4o');
+      setBaseUrl(newValue ? OLLAMA_URL : OPENAI_URL);
+      return newValue;
     });
   };
 
-  const getKey = (accountName) => {
-    return window.electron.ipc.invoke('get-ai-key');
+  const updateSettings = (newPrompt) => {
+    updateCurrentPile({ ...currentPile, AIPrompt: newPrompt });
   };
 
-  const setKey = (secretKey) => {
-    return window.electron.ipc.invoke('set-ai-key', secretKey);
-  };
+  const generateCompletion = useCallback(
+    async (context, callback) => {
+      if (!ai) return;
 
-  const deleteKey = () => {
-    return window.electron.ipc.invoke('delete-ai-key');
-  };
-
-  const updateSettings = (prompt) => {
-    updateCurrentPile({
-      ...currentPile,
-      AIPrompt: prompt,
-    });
-  };
-
-  const getResponse = useCallback(
-    async (stream = false, messages = [], callback = () => {}) => {
       try {
-        const stream = await ai({
-          model: 'gpt-4-turbo',
-          maxTokens: 400,
-          messages: messages,
+        const stream = await ai.chat.completions.create({
+          model,
           stream: true,
+          max_tokens: 400,
+          messages: context,
         });
 
-        if (stream === true) {
-          for await (const part of stream) {
-            const token = part.choices[0].delta.content;
-            callback(token);
-          }
-        } else {
+        for await (const part of stream) {
+          callback(part.choices[0].delta.content);
         }
       } catch (error) {
-        console.error(error.message);
+        console.error('AI request failed:', error);
+        throw error;
       }
     },
-    [ai]
+    [ai, model]
+  );
+
+  const prepareCompletionContext = useCallback(
+    (thread) => {
+      return [
+        { role: 'system', content: prompt },
+        ...thread.map((post) => ({ role: 'user', content: post.content })),
+        {
+          role: 'system',
+          content: 'You can only respond in plaintext, do NOT use HTML.',
+        },
+      ];
+    },
+    [prompt]
   );
 
   const AIContextValue = {
@@ -135,14 +102,16 @@ export const AIContextProvider = ({ children }) => {
     setBaseUrl,
     prompt,
     setPrompt,
-    setKey,
-    getKey,
-    deleteKey,
+    setKey: (secretKey) => window.electron.ipc.invoke('set-ai-key', secretKey),
+    getKey: () => window.electron.ipc.invoke('get-ai-key'),
+    deleteKey: () => window.electron.ipc.invoke('delete-ai-key'),
     updateSettings,
     ollama,
     toggleOllama,
     model,
     setModel,
+    generateCompletion,
+    prepareCompletionContext,
   };
 
   return (

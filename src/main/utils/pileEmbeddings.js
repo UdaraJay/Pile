@@ -8,7 +8,7 @@ const matter = require('gray-matter');
 // Todo: Cache the norms alongside embeddings at some point
 // to avoid recomputing them for every query
 function cosineSimilarity(embedding, queryEmbedding) {
-  if (embedding.length !== queryEmbedding.length) {
+  if (embedding?.length !== queryEmbedding?.length) {
     throw new Error('Vectors have different dimensions');
   }
 

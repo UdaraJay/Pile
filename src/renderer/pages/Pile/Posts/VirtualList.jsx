@@ -48,7 +48,7 @@ const VirtualList = memo(({ data }) => {
           exit={{ opacity: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Post postPath={postPath} repliesCount={repliesCount} />
+          <Post postPath={postPath} />
         </motion.div>
       </div>
     );
@@ -59,7 +59,7 @@ const VirtualList = memo(({ data }) => {
       const entry = data[index];
       const updatedAt = entry[1].updatedAt;
       const repliesCount = entry[1].replies?.length;
-      const key = entry[0] + repliesCount;
+      const key = entry[0];
       return key;
     },
     [data]

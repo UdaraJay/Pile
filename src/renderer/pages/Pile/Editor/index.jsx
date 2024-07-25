@@ -60,7 +60,8 @@ const Editor = memo(
       deletePost,
     } = usePost(postPath, { isReply, parentPostPath, reloadParentPost, isAI });
     const { getThread } = useThread();
-    const { ai, prompt, model } = useAIContext();
+    const { ai, prompt, model, generateCompletion, prepareCompletionContext } =
+      useAIContext();
     const { addNotification, removeNotification } = useToastsContext();
 
     const isNew = !postPath;
@@ -221,71 +222,52 @@ const Editor = memo(
     // This has to ensure that it only calls the AI generate function
     // on entries added for the AI that are empty.
     const generateAiResponse = useCallback(async () => {
-      if (!editor) return;
-      if (isAIResponding) return;
+      if (
+        !editor ||
+        isAIResponding ||
+        !isAI ||
+        !editor.state.doc.textContent.length === 0
+      )
+        return;
 
-      const isEmpty = editor.state.doc.textContent.length === 0;
+      addNotification({
+        id: 'reflecting',
+        type: 'thinking',
+        message: 'talking to AI',
+        dismissTime: 10000,
+      });
+      setEditable(false);
+      setIsAiResponding(true);
 
-      // isAI makes sure AI responses are only generated for
-      // AI entries that are empty.
-      if (isAI && isEmpty) {
-        addNotification({
-          id: 'reflecting',
-          type: 'thinking',
-          message: 'talking to AI',
-          dismissTime: 10000,
-        });
-        setEditable(false);
-        setIsAiResponding(true);
+      try {
         const thread = await getThread(parentPostPath);
-        let context = [];
-        context.push({
-          role: 'system',
-          content: prompt,
-        });
-
-        // todo: if post content contains links then attach their summary
-        // as context as well
-        thread.forEach((post) => {
-          const message = { role: 'user', content: post.content };
-          context.push(message);
-        });
-
-        context.push({
-          role: 'system',
-          content: 'You can only respond in plaintext, do NOT use HTML.',
-        });
+        const context = prepareCompletionContext(thread);
 
         if (context.length === 0) return;
 
-        try {
-          const stream = await ai.chat.completions.create({
-            model: model,
-            stream: true,
-            max_tokens: 200,
-            messages: context,
-          });
-
-          for await (const part of stream) {
-            const token = part.choices[0].delta.content;
-            editor.commands.insertContent(token);
-          }
-        } catch (error) {
-          addNotification({
-            id: 'reflecting',
-            type: 'failed',
-            message: 'AI request failed',
-            dismissTime: 12000,
-            onEnter: closeReply,
-          });
-          setIsAiResponding(false);
-          return;
-        }
-
+        await generateCompletion(context, (token) => {
+          editor.commands.insertContent(token);
+        });
+      } catch (error) {
+        addNotification({
+          id: 'reflecting',
+          type: 'failed',
+          message: 'AI request failed',
+          dismissTime: 12000,
+          onEnter: closeReply,
+        });
+      } finally {
         removeNotification('reflecting');
         setIsAiResponding(false);
       }
-    }, [editor, isAI]);
+    }, [
+      editor,
+      isAI,
+      generateCompletion,
+      prepareCompletionContext,
+      getThread,
+      parentPostPath,
+    ]);
 
     useEffect(() => {
       if (editor) {

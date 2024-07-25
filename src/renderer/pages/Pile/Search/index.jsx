@@ -85,6 +85,7 @@ export default function Search() {
     setQuerying(true);
 
     if (options.semanticSearch) {
+      console.log('Semantic search', text);
       vectorSearch(text).then((res) => {
         setResponse(res);
         setQuerying(false);

@@ -72,6 +72,7 @@ export const IndexContextProvider = ({ children }) => {
   }, []);
 
   const vectorSearch = useCallback(async (query, topN = 50) => {
+    console.log('Vector search', query);
     return window.electron.ipc.invoke('index-vector-search', query, topN);
   }, []);
 

@@ -19,6 +19,8 @@ export default function AISettingTabs() {
     deleteKey,
     model,
     setModel,
+    embeddingModel,
+    setEmbeddingModel,
     ollama,
     baseUrl,
     pileAIProvider,
@@ -165,8 +167,8 @@ export default function AISettingTabs() {
               <input
                 id="ollama-embedding-model"
                 className={styles.input}
-                // onChange={handleInputChange(setModel)}
-                // value={model}
+                onChange={handleInputChange(setEmbeddingModel)}
+                value={embeddingModel}
                 defaultValue="mxbai-embed-large"
                 placeholder="mxbai-embed-large"
                 disabled

@@ -5,11 +5,11 @@ const keytar = require('keytar');
 const { walk } = require('../util');
 const matter = require('gray-matter');
 const settings = require('electron-settings');
+
 // Todo: Cache the norms alongside embeddings at some point
 // to avoid recomputing them for every query
 function cosineSimilarity(embedding, queryEmbedding) {
   if (embedding?.length !== queryEmbedding?.length) {
-    console.log('Skipped item because vectors had different dimensions');
     return 0;
   }
 
@@ -138,7 +138,7 @@ class PileEmbeddings {
   // use ollama or openai
   async generateEmbedding(document) {
     const pileAIProvider = await settings.get('pileAIProvider');
-    const embeddingModel = await settings.get('model-embedding');
+    const embeddingModel = await settings.get('embeddingModel');
     const isOllama = pileAIProvider === 'ollama';
 
     if (isOllama) {

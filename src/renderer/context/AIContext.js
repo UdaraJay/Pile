@@ -24,7 +24,11 @@ export const AIContextProvider = ({ children }) => {
     'pileAIProvider',
     'subscription'
   );
-  const [model, setModel] = useElectronStore('model', 'gpt-4');
+  const [model, setModel] = useElectronStore('model', 'gpt-4o');
+  const [embeddingModel, setEmbeddingModel] = useElectronStore(
+    'embeddingModel',
+    'mxbai-embed-large'
+  );
   const [baseUrl, setBaseUrl] = useElectronStore('baseUrl', OPENAI_URL);
 
   const setupAi = useCallback(async () => {
@@ -132,6 +136,8 @@ export const AIContextProvider = ({ children }) => {
       updateCurrentPile({ ...currentPile, AIPrompt: newPrompt }),
     model,
     setModel,
+    embeddingModel,
+    setEmbeddingModel,
     generateCompletion,
     prepareCompletionContext,
     pileAIProvider,

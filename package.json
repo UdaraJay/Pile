@@ -117,13 +117,13 @@
     "lunr": "^2.3.9",
     "luxon": "^3.3.0",
     "openai": "^4.44.0",
-    "react": "^19.0.0-beta-26f2496093-20240514",
-    "react-dom": "^19.0.0-beta-26f2496093-20240514",
+    "react": "19.0.0-rc-14a4699f-20240725",
+    "react-dom": "19.0.0-rc-14a4699f-20240725",
     "react-markdown": "^9.0.1",
     "react-router": "^6.23.1",
     "react-router-dom": "^6.23.1",
     "react-textarea-autosize": "^8.5.3",
-    "react-virtuoso": "^4.7.10"
+    "react-virtuoso": "^4.7.13"
   },
   "devDependencies": {
     "@adobe/css-tools": "^4.3.2",

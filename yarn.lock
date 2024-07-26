@@ -9930,12 +9930,12 @@ raw-body@2.5.2:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-dom@^19.0.0-beta-26f2496093-20240514:
-  version "19.0.0-beta-26f2496093-20240514"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.0.0-beta-26f2496093-20240514.tgz#5fe4e829db8d379303057f539900a61ed6ca2615"
-  integrity sha512-UvQ+K1l3DFQ34LDgfFSNuUGi9EC+yfE9tS6MdpNTd5fx7qC7KLfepfC/KpxWMQZ7JfE3axD4ZO6H4cBSpAZpqw==
+react-dom@19.0.0-rc-14a4699f-20240725:
+  version "19.0.0-rc-14a4699f-20240725"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.0.0-rc-14a4699f-20240725.tgz#754ff37b54c530bf6ea6bed813406e1f25bea1cf"
+  integrity sha512-KSkYfNQRXFwuYoXIhLygkILo1NFSU4xkjUnjMzXuo2oyuyJMYQwx/i/EOGBHE+N/3KumG9T6a9xKwR/AMov+yQ==
   dependencies:
-    scheduler "0.25.0-beta-26f2496093-20240514"
+    scheduler "0.25.0-rc-14a4699f-20240725"
 
 "react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^18.0.0, react-is@^18.3.1:
   version "18.3.1"
@@ -10042,15 +10042,15 @@ react-textarea-autosize@^8.5.3:
     use-composed-ref "^1.3.0"
     use-latest "^1.2.1"
 
-react-virtuoso@^4.7.10:
-  version "4.7.10"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.7.10.tgz#6d4e951d4a62b57f012e411fbb8a16ff84d3732b"
-  integrity sha512-l+fnBf/G1Fp6pHCnhFq2Ra4lkZtT6c5XrS9rCS0OA6de7WGLZviCo0y61CUZZG79TeAw3L7O4czeNPiqh9CIrg==
+react-virtuoso@^4.7.13:
+  version "4.7.13"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.7.13.tgz#58ac7c5386c1f1a00f0f83a60ecb2ebdfcab35be"
+  integrity sha512-rabPhipwJ8rdA6TDk1vdVqVoU6eOkWukqoC1pNQVBCsvjBvIeJMi9nO079s0L7EsRzAxFFQNahX+8vuuY4F1Qg==
 
-react@^19.0.0-beta-26f2496093-20240514:
-  version "19.0.0-beta-26f2496093-20240514"
-  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-beta-26f2496093-20240514.tgz#3a0d63746b3f9ebd461a0731191bd08047fb1dbb"
-  integrity sha512-ZsU/WjNZ6GfzMWsq2DcGjElpV9it8JmETHm9mAJuOJNhuJcWJxt8ltCJabONFRpDFq1A/DP0d0KFj9CTJVM4VA==
+react@19.0.0-rc-14a4699f-20240725:
+  version "19.0.0-rc-14a4699f-20240725"
+  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-rc-14a4699f-20240725.tgz#1bb4f4b4f659b50a99a104b5659e56bc320c2472"
+  integrity sha512-aQjMEsPBkRyzy3j5N8b2enjZmBNfidooV8cs0GyymL5uZRLZbXXyHWRJTKrdIjgRKIhzR73DoZYrAYP+/wT1Qw==
 
 read-binary-file-arch@^1.0.6:
   version "1.0.6"
@@ -10449,10 +10449,10 @@ saxes@^6.0.0:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@0.25.0-beta-26f2496093-20240514:
-  version "0.25.0-beta-26f2496093-20240514"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-beta-26f2496093-20240514.tgz#a3bc0ff694ec6de7a78c1e48e1f8f4a8555bd77d"
-  integrity sha512-vDwOytLHFnA3SW2B1lNcbO+/qKVyLCX+KLpm+tRGNDsXpyxzRgkIaYGWmX+S70AJGchUHCtuqQ50GFeFgDbXUw==
+scheduler@0.25.0-rc-14a4699f-20240725:
+  version "0.25.0-rc-14a4699f-20240725"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-rc-14a4699f-20240725.tgz#e5b7468362caa77b04cf69ac03177049f9908cb0"
+  integrity sha512-wDsJQOyw+9SeWUqfeaPiJsWmP68G0OrMeOLkV5Uh6LnBW4usDrHyYhIQuj7nd+UUqF3ejbxU25ubT9+R1sIlCw==
 
 scheduler@^0.23.2:
   version "0.23.2"

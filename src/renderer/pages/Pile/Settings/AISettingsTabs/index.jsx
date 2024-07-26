@@ -7,6 +7,7 @@ import {
   availableThemes,
 } from 'renderer/context/PilesContext';
 import { CardIcon, OllamaIcon, BoxOpenIcon } from 'renderer/icons';
+import { useIndexContext } from 'renderer/context/IndexContext';
 
 export default function AISettingTabs() {
   const {
@@ -50,7 +51,7 @@ export default function AISettingTabs() {
   const handleInputChange = (setter) => (e) => setter(e.target.value);
 
   const handleSaveChanges = () => {
-    if (key === '') {
+    if (!key || key == '') {
       deleteKey();
     } else {
       setKey(key);
@@ -78,7 +79,7 @@ export default function AISettingTabs() {
   return (
     <Tabs.Root
       className={styles.tabsRoot}
-      defaultValue="subscription"
+      defaultValue="openai"
       value={pileAIProvider}
       onValueChange={handleTabChange}
     >

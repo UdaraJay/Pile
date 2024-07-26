@@ -22,7 +22,7 @@ export const AIContextProvider = ({ children }) => {
   const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
   const [pileAIProvider, setPileAIProvider] = useElectronStore(
     'pileAIProvider',
-    'subscription'
+    'openai'
   );
   const [model, setModel] = useElectronStore('model', 'gpt-4o');
   const [embeddingModel, setEmbeddingModel] = useElectronStore(

@@ -8,8 +8,10 @@ import {
   usePilesContext,
 } from 'renderer/context/PilesContext';
 import AISettingTabs from './AISettingsTabs';
+import { useIndexContext } from 'renderer/context/IndexContext';
 
 export default function Settings() {
+  const { regenerateEmbeddings } = useIndexContext();
   const {
     ai,
     prompt,
@@ -54,13 +56,14 @@ export default function Settings() {
   };
 
   const handleSaveChanges = () => {
-    if (key == '') {
+    if (!key || key == '') {
       deleteKey();
     } else {
       setKey(key);
     }
 
     updateSettings(prompt);
+    regenerateEmbeddings();
   };
 
   const renderThemes = () => {

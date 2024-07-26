@@ -78,11 +78,13 @@ class PileIndex {
   search(query) {
     let results = [];
     try {
+      console.time('search-time');
       const entries = pileSearchIndex.search(query);
       results = entries.map((entry) => {
         const res = { ref: entry.ref, ...this.index.get(entry.ref) };
         return res;
       });
+      console.timeEnd('search-time');
     } catch (error) {
       console.log('failed to search', error);
     }
@@ -171,6 +173,12 @@ class PileIndex {
         }
       }
     }
+  }
+
+  regenerateEmbeddings() {
+    pileEmbeddings.regenerateEmbeddings(this.index);
+    this.save();
+    return;
   }
 
   update(relativeFilePath, data) {

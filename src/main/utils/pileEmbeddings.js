@@ -36,7 +36,7 @@ function cosineSimilarity(embedding, queryEmbedding) {
 class PileEmbeddings {
   constructor() {
     this.pilePath = null;
-    this.fileName = 'embeddings.json';
+    this.fileName = `embeddings.json`;
     this.apiKey = null;
     this.embeddings = new Map();
   }
@@ -174,6 +174,16 @@ class PileEmbeddings {
         return null;
       }
     }
+  }
+
+  async regenerateEmbeddings(index) {
+    console.log('🧮 Regenerating embeddings for index:', index.size);
+    this.embeddings.clear();
+    for (let [entryPath, metadata] of index) {
+      await this.addDocument(entryPath, metadata);
+    }
+    this.saveEmbeddings();
+    console.log('✅ Embeddings regeneration complete');
   }
 
   async search(query, topN = 50) {

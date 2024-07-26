@@ -7,9 +7,9 @@ import {
 } from 'react';
 import OpenAI from 'openai';
 import { usePilesContext } from './PilesContext';
-import { useLocalStorage } from 'renderer/hooks/useLocalStorage';
+import { useElectronStore } from 'renderer/hooks/useElectronStore';
 
-const OLLAMA_URL = 'http://localhost:11434/v1';
+const OLLAMA_URL = 'http://localhost:11434/api';
 const OPENAI_URL = 'https://api.openai.com/v1';
 const DEFAULT_PROMPT =
   'You are an AI within a journaling app. Your job is to help the user reflect on their thoughts in a thoughtful and kind manner. The user can never directly address you or directly respond to you. Try not to repeat what the user said, instead try to seed new ideas, encourage or debate. Keep your responses concise, but meaningful.';
@@ -20,23 +20,28 @@ export const AIContextProvider = ({ children }) => {
   const { currentPile, updateCurrentPile } = usePilesContext();
   const [ai, setAi] = useState(null);
   const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
-
-  const [ollama, setOllama] = useLocalStorage('ollamaEnabled', false);
-  const [model, setModel] = useLocalStorage('model', 'gpt-4o');
-  const [baseUrl, setBaseUrl] = useLocalStorage('baseUrl', OPENAI_URL);
+  const [pileAIProvider, setPileAIProvider] = useElectronStore(
+    'pileAIProvider',
+    'subscription'
+  );
+  const [model, setModel] = useElectronStore('model', 'gpt-4');
+  const [baseUrl, setBaseUrl] = useElectronStore('baseUrl', OPENAI_URL);
 
   const setupAi = useCallback(async () => {
     const key = await window.electron.ipc.invoke('get-ai-key');
-    if (!key) return;
+    if (!key && pileAIProvider !== 'ollama') return;
 
-    const openaiInstance = new OpenAI({
-      baseURL: baseUrl,
-      apiKey: ollama ? 'ollama' : key,
-      dangerouslyAllowBrowser: true,
-    });
-
-    setAi(openaiInstance);
-  }, [ollama, baseUrl]);
+    if (pileAIProvider === 'ollama') {
+      setAi({ type: 'ollama' });
+    } else {
+      const openaiInstance = new OpenAI({
+        baseURL: baseUrl,
+        apiKey: key,
+        dangerouslyAllowBrowser: true,
+      });
+      setAi({ type: 'openai', instance: openaiInstance });
+    }
+  }, [pileAIProvider, baseUrl]);
 
   useEffect(() => {
     if (currentPile) {
@@ -44,35 +49,53 @@ export const AIContextProvider = ({ children }) => {
       if (currentPile.AIPrompt) setPrompt(currentPile.AIPrompt);
       setupAi();
     }
-  }, [currentPile, ollama, baseUrl, setupAi]);
-
-  const toggleOllama = () => {
-    setOllama((prev) => {
-      const newValue = !prev;
-      setModel(newValue ? 'llama3' : 'gpt-4o');
-      setBaseUrl(newValue ? OLLAMA_URL : OPENAI_URL);
-      return newValue;
-    });
-  };
-
-  const updateSettings = (newPrompt) => {
-    updateCurrentPile({ ...currentPile, AIPrompt: newPrompt });
-  };
+  }, [currentPile, baseUrl, setupAi]);
 
   const generateCompletion = useCallback(
     async (context, callback) => {
       if (!ai) return;
 
       try {
-        const stream = await ai.chat.completions.create({
-          model,
-          stream: true,
-          max_tokens: 400,
-          messages: context,
-        });
+        if (ai.type === 'ollama') {
+          const response = await fetch(`${OLLAMA_URL}/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model, messages: context }),
+          });
 
-        for await (const part of stream) {
-          callback(part.choices[0].delta.content);
+          if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            const lines = chunk.split('\n');
+
+            for (const line of lines) {
+              if (line.trim() !== '') {
+                const jsonResponse = JSON.parse(line);
+                if (!jsonResponse.done) {
+                  callback(jsonResponse.message.content);
+                }
+              }
+            }
+          }
+        } else {
+          const stream = await ai.instance.chat.completions.create({
+            model,
+            stream: true,
+            max_tokens: 500,
+            messages: context,
+          });
+
+          for await (const part of stream) {
+            callback(part.choices[0].delta.content);
+          }
         }
       } catch (error) {
         console.error('AI request failed:', error);
@@ -86,11 +109,11 @@ export const AIContextProvider = ({ children }) => {
     (thread) => {
       return [
         { role: 'system', content: prompt },
-        ...thread.map((post) => ({ role: 'user', content: post.content })),
         {
           role: 'system',
           content: 'You can only respond in plaintext, do NOT use HTML.',
         },
+        ...thread.map((post) => ({ role: 'user', content: post.content })),
       ];
     },
     [prompt]
@@ -105,13 +128,14 @@ export const AIContextProvider = ({ children }) => {
     setKey: (secretKey) => window.electron.ipc.invoke('set-ai-key', secretKey),
     getKey: () => window.electron.ipc.invoke('get-ai-key'),
     deleteKey: () => window.electron.ipc.invoke('delete-ai-key'),
-    updateSettings,
-    ollama,
-    toggleOllama,
+    updateSettings: (newPrompt) =>
+      updateCurrentPile({ ...currentPile, AIPrompt: newPrompt }),
     model,
     setModel,
     generateCompletion,
     prepareCompletionContext,
+    pileAIProvider,
+    setPileAIProvider,
   };
 
   return (

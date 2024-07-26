@@ -66,6 +66,9 @@ const electronHandler = {
   isMac: process.platform === 'darwin',
   isWindows: process.platform === 'win32',
   pathSeparator: path.sep,
+  settingsGet: (key: string) => ipcRenderer.invoke('electron-store-get', key),
+  settingsSet: (key: string, value: string) =>
+    ipcRenderer.invoke('electron-store-set', key, value),
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

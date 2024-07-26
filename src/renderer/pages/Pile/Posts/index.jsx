@@ -19,16 +19,26 @@ export default function Posts() {
   // We use this to generate the data array which consists of
   // all the items that are going to be rendered on the virtual list.
   useEffect(() => {
-    const onlyParentEntries = Array.from(index)
-      .filter(([key, metadata]) => !metadata.isReply)
-      .reduce((acc, [key, value]) => acc.set(key, value), new Map());
+    const onlyParentEntries = [];
+    const estimatedSize = Math.floor(index.size * 0.7); // Assuming ~70% are parent entries
 
-    // Dummy entry appended to the front to account for the
-    // NewPost component at the top of the list.
-    setData([
-      ['NewPost', { height: 150, hash: new Date().toString() }],
-      ...Array.from(onlyParentEntries),
-    ]);
+    onlyParentEntries.length = estimatedSize + 1; // +1 for NewPost
+    let i = 1; // Start at 1 to leave space for NewPost
+
+    for (const [key, metadata] of index) {
+      if (!metadata.isReply) {
+        onlyParentEntries[i] = [key, metadata];
+        i++;
+      }
+    }
+
+    onlyParentEntries[0] = [
+      'NewPost',
+      { height: 150, hash: Date.now().toString() },
+    ];
+    onlyParentEntries.length = i; // Trim any excess pre-allocated space
+
+    setData(onlyParentEntries);
   }, [index]);
 
   const renderList = useMemo(() => {

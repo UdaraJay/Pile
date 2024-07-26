@@ -7,8 +7,11 @@ import {
   availableThemes,
   usePilesContext,
 } from 'renderer/context/PilesContext';
+import AISettingTabs from './AISettingsTabs';
+import { useIndexContext } from 'renderer/context/IndexContext';
 
 export default function Settings() {
+  const { regenerateEmbeddings } = useIndexContext();
   const {
     ai,
     prompt,
@@ -21,7 +24,6 @@ export default function Settings() {
     model,
     setModel,
     ollama,
-    toggleOllama,
     baseUrl,
   } = useAIContext();
   const [key, setCurrentKey] = useState('');
@@ -54,13 +56,14 @@ export default function Settings() {
   };
 
   const handleSaveChanges = () => {
-    if (key == '') {
+    if (!key || key == '') {
       deleteKey();
     } else {
       setKey(key);
     }
 
     updateSettings(prompt);
+    regenerateEmbeddings();
   };
 
   const renderThemes = () => {
@@ -102,65 +105,12 @@ export default function Settings() {
             <div className={styles.themes}>{renderThemes()}</div>
           </fieldset>
 
-          <div className={styles.providers}>
-            {/* <fieldset className={styles.switch}>
-              <label className={styles.Label} htmlFor="toggle-ollama">
-                <OllamaIcon className={styles.icon} /> Use Ollama API
-              </label>
-              <label className={styles.switchRoot}>
-                <input
-                  type="checkbox"
-                  checked={ollama}
-                  onChange={toggleOllama}
-                />
-                <span className={styles.slider}></span>
-              </label>
-            </fieldset> */}
-
-            <div className={styles.group}>
-              <fieldset className={styles.Fieldset}>
-                <label className={styles.Label} htmlFor="name">
-                  Base url
-                </label>
-                <input
-                  className={styles.Input}
-                  onChange={handleOnChangeBaseUrl}
-                  value={baseUrl}
-                  placeholder="https://api.openai.com/v1"
-                  defaultValue="https://api.openai.com/v1"
-                />
-              </fieldset>
-
-              <fieldset className={styles.Fieldset}>
-                <label className={styles.Label} htmlFor="name">
-                  Model
-                </label>
-                <input
-                  className={styles.Input}
-                  onChange={handleOnChangeModel}
-                  value={model}
-                  placeholder="gpt-4-turbo"
-                  defaultValue="gpt-4-turbo"
-                />
-              </fieldset>
-            </div>
-
-            <fieldset className={styles.Fieldset}>
-              <label className={styles.Label} htmlFor="name">
-                API key (OpenAI)
-              </label>
-              <input
-                className={styles.Input}
-                onChange={handleOnChangeKey}
-                value={key}
-                placeholder="Paste an OpenAI API key to enable AI reflections"
-              />
-            </fieldset>
-            <div className={styles.disclaimer}>
-              Remember to manage your spend by setting up a budget in the API
-              service you choose to use.
-            </div>
-          </div>
+          <fieldset className={styles.Fieldset}>
+            <label className={styles.Label} htmlFor="name">
+              Select your AI provider
+            </label>
+            <AISettingTabs />
+          </fieldset>
 
           <fieldset className={styles.Fieldset}>
             <label className={styles.Label} htmlFor="name">

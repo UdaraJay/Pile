@@ -50,6 +50,10 @@ export const IndexContextProvider = ({ children }) => {
     [currentPile]
   );
 
+  const regenerateEmbeddings = () => {
+    window.electron.ipc.invoke('index-regenerate-embeddings');
+  };
+
   const getThreadsAsText = useCallback(async (filePaths) => {
     return window.electron.ipc.invoke('index-get-threads-as-text', filePaths);
   }, []);
@@ -97,6 +101,7 @@ export const IndexContextProvider = ({ children }) => {
     vectorSearch,
     getThreadsAsText,
     latestThreads,
+    regenerateEmbeddings,
   };
 
   return (

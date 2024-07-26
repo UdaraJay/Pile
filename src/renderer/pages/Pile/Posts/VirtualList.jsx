@@ -33,24 +33,23 @@ const VirtualList = memo(({ data }) => {
   };
 
   const renderItem = useCallback((index, entry) => {
-    const [postPath] = entry;
-    const updatedAt = entry[1].updatedAt;
-    const repliesCount = entry[1].replies?.length;
+    const [postPath, post] = entry;
+    const updatedAt = post.updatedAt;
+    const repliesCount = post.replies?.length;
     const key = postPath + updatedAt;
     if (index == 0) return <NewPost />;
 
     return (
-      <div style={{ minHeight: 72 }}>
-        <motion.div
-          key={key}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Post postPath={postPath} repliesCount={repliesCount} />
-        </motion.div>
-      </div>
+      <motion.div
+        key={key}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ delay: 0.1 }}
+        style={{ minHeight: 72 }}
+      >
+        <Post postPath={postPath} />
+      </motion.div>
     );
   }, []);
 
@@ -59,7 +58,7 @@ const VirtualList = memo(({ data }) => {
       const entry = data[index];
       const updatedAt = entry[1].updatedAt;
       const repliesCount = entry[1].replies?.length;
-      const key = entry[0] + repliesCount;
+      const key = entry[0];
       return key;
     },
     [data]
@@ -79,6 +78,7 @@ const VirtualList = memo(({ data }) => {
       atTopThreshold={100}
       increaseViewportBy={2000}
       components={{ Scroller: Scrollbar }}
+      incremental
     />
   );
 });

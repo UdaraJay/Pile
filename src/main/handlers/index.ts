@@ -11,6 +11,11 @@ ipcMain.handle('index-get', (event) => {
   return index;
 });
 
+ipcMain.handle('index-regenerate-embeddings', (event) => {
+  const index = pileIndex.regenerateEmbeddings();
+  return index;
+});
+
 ipcMain.handle('index-add', (event, filePath) => {
   const index = pileIndex.add(filePath);
   return index;

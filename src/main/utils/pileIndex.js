@@ -175,6 +175,12 @@ class PileIndex {
     }
   }
 
+  regenerateEmbeddings() {
+    pileEmbeddings.regenerateEmbeddings(this.index);
+    this.save();
+    return;
+  }
+
   update(relativeFilePath, data) {
     this.index.set(relativeFilePath, data);
     pileSearchIndex.initialize(this.pilePath, this.index);

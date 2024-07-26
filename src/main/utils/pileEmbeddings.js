@@ -4,12 +4,13 @@ const path = require('path');
 const keytar = require('keytar');
 const { walk } = require('../util');
 const matter = require('gray-matter');
+const settings = require('electron-settings');
 
 // Todo: Cache the norms alongside embeddings at some point
 // to avoid recomputing them for every query
 function cosineSimilarity(embedding, queryEmbedding) {
-  if (embedding.length !== queryEmbedding.length) {
-    throw new Error('Vectors have different dimensions');
+  if (embedding?.length !== queryEmbedding?.length) {
+    return 0;
   }
 
   let dotProduct = 0;
@@ -35,7 +36,7 @@ function cosineSimilarity(embedding, queryEmbedding) {
 class PileEmbeddings {
   constructor() {
     this.pilePath = null;
-    this.fileName = 'embeddings.json';
+    this.fileName = `embeddings.json`;
     this.apiKey = null;
     this.embeddings = new Map();
   }
@@ -96,13 +97,13 @@ class PileEmbeddings {
 
   async addDocument(entryPath, metadata) {
     try {
-      //  we only index parent documents
+      // we only index parent documents
       // the replies are concatenated to the contents
       if (metadata.isReply) return;
+
       let fullPath = path.join(this.pilePath, entryPath);
       let fileContent = fs.readFileSync(fullPath, 'utf8');
       let { content } = matter(fileContent);
-
       content =
         'Entry on ' + metadata.createdAt + '\n\n' + content + '\n\nReplies:\n';
 
@@ -114,34 +115,75 @@ class PileEmbeddings {
         content += '\n' + replyContent;
       }
 
-      const embedding = await this.generateEmbedding(content);
-      this.embeddings.set(entryPath, embedding);
+      try {
+        const embedding = await this.generateEmbedding(content);
+        this.embeddings.set(entryPath, embedding);
+        console.log('🧮 Embeddings created for thread: ', entryPath);
+      } catch (embeddingError) {
+        console.warn(
+          `Failed to generate embedding for thread: ${entryPath}`,
+          embeddingError
+        );
+        // Skip this document and continue with the next one
+        return;
+      }
+
       this.saveEmbeddings();
-      console.log('🧮 Embeddings created for threads: ', entryPath);
     } catch (error) {
       console.error('Failed to process thread for vector index.', error);
-      return;
     }
   }
 
+  // todo: based on which ai is configured this should either
+  // use ollama or openai
   async generateEmbedding(document) {
-    const url = 'https://api.openai.com/v1/embeddings';
-    const headers = {
-      Authorization: `Bearer ${this.apiKey}`,
-      'Content-Type': 'application/json',
-    };
-    const data = {
-      model: 'text-embedding-3-small',
-      input: document,
-    };
+    const pileAIProvider = await settings.get('pileAIProvider');
+    const embeddingModel = await settings.get('embeddingModel');
+    const isOllama = pileAIProvider === 'ollama';
 
-    try {
-      const response = await axios.post(url, data, { headers });
-      return response.data.data[0].embedding;
-    } catch (error) {
-      console.error('Error generating embedding:', error);
-      return null;
+    if (isOllama) {
+      const url = 'http://127.0.0.1:11434/api/embed';
+      const data = {
+        model: 'mxbai-embed-large',
+        input: document,
+      };
+      try {
+        const response = await axios.post(url, data);
+        const embeddings = response.data.embeddings;
+        return response.data.embeddings[0];
+      } catch (error) {
+        console.error('Error generating embedding with Ollama:', error);
+        return null;
+      }
+    } else {
+      const url = 'https://api.openai.com/v1/embeddings';
+      const headers = {
+        Authorization: `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
+      };
+      const data = {
+        model: 'text-embedding-3-small',
+        input: document,
+      };
+
+      try {
+        const response = await axios.post(url, data, { headers });
+        return response.data.data[0].embedding;
+      } catch (error) {
+        console.error('Error generating embedding with OpenAI:', error);
+        return null;
+      }
     }
+  }
+
+  async regenerateEmbeddings(index) {
+    console.log('🧮 Regenerating embeddings for index:', index.size);
+    this.embeddings.clear();
+    for (let [entryPath, metadata] of index) {
+      await this.addDocument(entryPath, metadata);
+    }
+    this.saveEmbeddings();
+    console.log('✅ Embeddings regeneration complete');
   }
 
   async search(query, topN = 50) {

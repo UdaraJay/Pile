@@ -9,7 +9,7 @@ import {
 import { CardIcon, OllamaIcon, BoxOpenIcon } from 'renderer/icons';
 import { useIndexContext } from 'renderer/context/IndexContext';
 
-export default function AISettingTabs() {
+export default function AISettingTabs({ APIkey, setCurrentKey }) {
   const {
     prompt,
     setPrompt,
@@ -29,35 +29,12 @@ export default function AISettingTabs() {
   } = useAIContext();
 
   const { currentTheme, setTheme } = usePilesContext();
-  const [key, setCurrentKey] = useState('');
-
-  useEffect(() => {
-    retrieveKey();
-
-    if (ollama) {
-      setPileAIProvider('ollama');
-    }
-  }, [ollama]);
-
-  const retrieveKey = async () => {
-    const k = await getKey();
-    setCurrentKey(k);
-  };
 
   const handleTabChange = (newValue) => {
     setPileAIProvider(newValue);
   };
 
   const handleInputChange = (setter) => (e) => setter(e.target.value);
-
-  const handleSaveChanges = () => {
-    if (!key || key == '') {
-      deleteKey();
-    } else {
-      setKey(key);
-    }
-    updateSettings(prompt);
-  };
 
   const renderThemes = () => {
     return Object.entries(availableThemes).map(([theme, colors]) => (
@@ -230,7 +207,7 @@ export default function AISettingTabs() {
               id="openai-api-key"
               className={styles.input}
               onChange={handleInputChange(setCurrentKey)}
-              value={key}
+              value={APIkey}
               placeholder="Paste an OpenAI API key to enable AI reflections"
             />
           </fieldset>

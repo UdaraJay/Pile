@@ -26,7 +26,7 @@ export default function Settings() {
     ollama,
     baseUrl,
   } = useAIContext();
-  const [key, setCurrentKey] = useState('');
+  const [APIkey, setCurrentKey] = useState('');
   const { currentTheme, setTheme } = usePilesContext();
 
   const retrieveKey = async () => {
@@ -56,14 +56,15 @@ export default function Settings() {
   };
 
   const handleSaveChanges = () => {
-    if (!key || key == '') {
+    if (!APIkey || APIkey == '') {
       deleteKey();
     } else {
-      setKey(key);
+      console.log('save key', APIkey);
+      setKey(APIkey);
     }
 
     updateSettings(prompt);
-    regenerateEmbeddings();
+    // regenerateEmbeddings();
   };
 
   const renderThemes = () => {
@@ -109,7 +110,7 @@ export default function Settings() {
             <label className={styles.Label} htmlFor="name">
               Select your AI provider
             </label>
-            <AISettingTabs />
+            <AISettingTabs APIkey={APIkey} setCurrentKey={setCurrentKey} />
           </fieldset>
 
           <fieldset className={styles.Fieldset}>

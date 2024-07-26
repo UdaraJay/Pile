@@ -122,13 +122,16 @@ export default function AISettingTabs() {
                 <div className={styles.price}>$9/month</div>
               </div>
               <div className={styles.right}>
-                <div className={styles.subscribe}>Subscribe</div>
+                <div className={styles.subscribe}>Coming soon!</div>
               </div>
             </div>
             <div className={styles.disclaimer}>
               AI subscription for Pile is provided separately by{' '}
-              <a href="https://un.ms">UNMS</a>. Subject to availability and
-              capacity limits. Fair-use policy applies.
+              <a href="https://un.ms" target="_blank">
+                UNMS
+              </a>
+              . Subject to availability and capacity limits. Fair-use policy
+              applies.
             </div>
           </div>
         </div>
@@ -175,7 +178,10 @@ export default function AISettingTabs() {
             Ollama is the easiest way to run AI models on your own computer.
             Remember to pull your models in Ollama before using them in Pile.
             Learn more and download Ollama from{' '}
-            <a href="https://ollama.com">ollama.com</a>.
+            <a href="https://ollama.com" target="_blank">
+              ollama.com
+            </a>
+            .
           </div>
         </div>
       </Tabs.Content>

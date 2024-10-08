@@ -10,7 +10,7 @@ Pile is a desktop app for reflective journaling. It's about simplicity, keeping 
 2. On macOS Open the `.zip` or `.dmg` file and drag the application to the destination of your choice (_optional_), such as your `Applications/` folder. On Windows, use the `.exe` to install.
 3. Finally open the application, create a `New Pile`, and start your reflective journey.
 
-### AI reflections (requires GPT-4)
+### AI reflections (requires OpenAI API access, or Ollama for local AI)
 
 Enhance your journaling experience by integrating OpenAI's GPT AI reflections into Pile. If you have access to OpenAI's GPT-4 API, you can use your API key to:
 
@@ -28,8 +28,10 @@ If you'd like to contribute to Pile, feel free to fork the repository, make your
 For a detailed guide on contributing, read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## License
+The software code is licensed under the MIT License. 
+The brand name, and other brand assets are proprietary and not included in the MIT license. 
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+See the [LICENSE.md](LICENSE.md) file for details.
 
 ## Special thanks
 

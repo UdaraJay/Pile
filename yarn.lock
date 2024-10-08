@@ -1543,15 +1543,16 @@ __metadata:
   linkType: hard
 
 "@electron/asar@npm:^3.2.1":
-  version: 3.2.10
-  resolution: "@electron/asar@npm:3.2.10"
+  version: 3.2.13
+  resolution: "@electron/asar@npm:3.2.13"
   dependencies:
+    "@types/glob": "npm:^7.1.0"
     commander: "npm:^5.0.0"
     glob: "npm:^7.1.6"
     minimatch: "npm:^3.0.4"
   bin:
     asar: bin/asar.js
-  checksum: 10c0/5b334162ce40fbc2ad5c5f7649452f53c5dab3600bf5029ab4643e13dd288b1247378e9b4062a0fa9970609b1a2036fee9e9b59dbca781ee49e0e5dba7b1b402
+  checksum: 10c0/b25b978b6f378713a6caf1f038d8ee6c83a255a26f5a1d7fc404eaddc6561c6f6204ec13b21c8e81072d8e9bc627f11b914cf98b793949fca45565d03ac6a73a
   languageName: node
   linkType: hard
 
@@ -3922,6 +3923,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/glob@npm:^7.1.0":
+  version: 7.2.0
+  resolution: "@types/glob@npm:7.2.0"
+  dependencies:
+    "@types/minimatch": "npm:*"
+    "@types/node": "npm:*"
+  checksum: 10c0/a8eb5d5cb5c48fc58c7ca3ff1e1ddf771ee07ca5043da6e4871e6757b4472e2e73b4cfef2644c38983174a4bc728c73f8da02845c28a1212f98cabd293ecae98
+  languageName: node
+  linkType: hard
+
 "@types/graceful-fs@npm:^4.1.3":
   version: 4.1.9
   resolution: "@types/graceful-fs@npm:4.1.9"
@@ -4052,6 +4063,13 @@ __metadata:
   version: 1.3.5
   resolution: "@types/mime@npm:1.3.5"
   checksum: 10c0/c2ee31cd9b993804df33a694d5aa3fa536511a49f2e06eeab0b484fef59b4483777dbb9e42a4198a0809ffbf698081fdbca1e5c2218b82b91603dfab10a10fbc
+  languageName: node
+  linkType: hard
+
+"@types/minimatch@npm:*":
+  version: 5.1.2
+  resolution: "@types/minimatch@npm:5.1.2"
+  checksum: 10c0/83cf1c11748891b714e129de0585af4c55dd4c2cafb1f1d5233d79246e5e1e19d1b5ad9e8db449667b3ffa2b6c80125c429dbee1054e9efb45758dbc4e118562
   languageName: node
   linkType: hard
 
@@ -13870,14 +13888,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:19.0.0-rc-ed966dac-20241007":
-  version: 19.0.0-rc-ed966dac-20241007
-  resolution: "react-dom@npm:19.0.0-rc-ed966dac-20241007"
+"react-dom@npm:19.0.0-rc-14a4699f-20240725":
+  version: 19.0.0-rc-14a4699f-20240725
+  resolution: "react-dom@npm:19.0.0-rc-14a4699f-20240725"
   dependencies:
-    scheduler: "npm:0.25.0-rc-ed966dac-20241007"
+    scheduler: "npm:0.25.0-rc-14a4699f-20240725"
   peerDependencies:
-    react: 19.0.0-rc-ed966dac-20241007
-  checksum: 10c0/3e69a589d42ee0713a37291b8d90b6fcdfeb79d3e2e1330ecddcaf91a3c0c5da2c28afe5396de1d295c0e9163dfec2dce0312930c03602944cfa32360cdb4c87
+    react: 19.0.0-rc-14a4699f-20240725
+  checksum: 10c0/4026c21a62f36016422411cdc4ae0b2592443d43cb1cf9ef43f151dd4350035032339f443bf79412324ae25c23b60dd1bb1da231d33e4801e05698a272c4504f
   languageName: node
   linkType: hard
 
@@ -14054,10 +14072,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:19.0.0-rc-ed966dac-20241007":
-  version: 19.0.0-rc-ed966dac-20241007
-  resolution: "react@npm:19.0.0-rc-ed966dac-20241007"
-  checksum: 10c0/c212c7cd2e6e64ff3975574cf3c51fa5349c73d1fa7d3ce980cbfd4962c8dc18595d112cc4be56bc149b01c968c955c0ebf9d84e4757c98f46cda2a4d1ae0f47
+"react@npm:19.0.0-rc-14a4699f-20240725":
+  version: 19.0.0-rc-14a4699f-20240725
+  resolution: "react@npm:19.0.0-rc-14a4699f-20240725"
+  checksum: 10c0/f7774471f8c17190e3042666a613babd0245207017c6561ac247392d3a45d437eaec4b7be8ae48cd8f2c3b3cf283c41ba56ee5c2b6f905fc90d4dcdfbb6dd40b
   languageName: node
   linkType: hard
 
@@ -14561,8 +14579,8 @@ __metadata:
     postcss: "npm:^8.4.31"
     postinstall-postinstall: "npm:^2.1.0"
     prettier: "npm:^2.8.8"
-    react: "npm:19.0.0-rc-ed966dac-20241007"
-    react-dom: "npm:19.0.0-rc-ed966dac-20241007"
+    react: "npm:19.0.0-rc-14a4699f-20240725"
+    react-dom: "npm:19.0.0-rc-14a4699f-20240725"
     react-markdown: "npm:^9.0.1"
     react-refresh: "npm:^0.14.0"
     react-router: "npm:^6.23.1"
@@ -14578,7 +14596,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.9"
     ts-jest: "npm:^29.1.0"
     ts-loader: "npm:^9.4.3"
-    ts-node: "npm:^10.9.1"
+    ts-node: "npm:^10.9.2"
     tsconfig-paths-webpack-plugin: "npm:^4.0.1"
     typescript: "npm:^5.1.3"
     url-loader: "npm:^4.1.1"
@@ -14735,10 +14753,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:0.25.0-rc-ed966dac-20241007":
-  version: 0.25.0-rc-ed966dac-20241007
-  resolution: "scheduler@npm:0.25.0-rc-ed966dac-20241007"
-  checksum: 10c0/0e102473a30d5581eaa9f76a6ff5813a4d7a8b2c3007e5e57b30f54359f6a2b77c9dc959d5c54ef2d2e72db33a61979aa66705f2d525cafd6307cb2d1d0e30c4
+"scheduler@npm:0.25.0-rc-14a4699f-20240725":
+  version: 0.25.0-rc-14a4699f-20240725
+  resolution: "scheduler@npm:0.25.0-rc-14a4699f-20240725"
+  checksum: 10c0/33b421691002a5e1539926b1436accf3462039dd08a68f405a3cfb16f2603341aec5c71149ec1cfa370d66f2f6680a96505cc3bae017c32c30bfcb1049b05102
   languageName: node
   linkType: hard
 
@@ -15903,7 +15921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.9.1":
+"ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
@@ -16120,7 +16138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.1.3, typescript@npm:^5.3.3":
+"typescript@npm:^5.1.3":
   version: 5.4.5
   resolution: "typescript@npm:5.4.5"
   bin:
@@ -16130,13 +16148,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.1.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
+"typescript@npm:^5.3.3":
+  version: 5.6.2
+  resolution: "typescript@npm:5.6.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/3ed8297a8c7c56b7fec282532503d1ac795239d06e7c4966b42d4330c6cf433a170b53bcf93a130a7f14ccc5235de5560df4f1045eb7f3550b46ebed16d3c5e5
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.1.3#optional!builtin<compat/typescript>":
   version: 5.4.5
   resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/db2ad2a16ca829f50427eeb1da155e7a45e598eec7b086d8b4e8ba44e5a235f758e606d681c66992230d3fc3b8995865e5fd0b22a2c95486d0b3200f83072ec9
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
+  version: 5.6.2
+  resolution: "typescript@patch:typescript@npm%3A5.6.2#optional!builtin<compat/typescript>::version=5.6.2&hash=8c6c40"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/94eb47e130d3edd964b76da85975601dcb3604b0c848a36f63ac448d0104e93819d94c8bdf6b07c00120f2ce9c05256b8b6092d23cf5cf1c6fa911159e4d572f
   languageName: node
   linkType: hard
 

@@ -29,3 +29,5 @@ npm-debug.log.*
 *.scss.d.ts
 
 .env
+.yarn
+.yarnrc.yml

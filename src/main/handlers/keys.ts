@@ -1,8 +1,14 @@
 import { ipcMain } from 'electron';
-import SecureStore from '../utils/store';
+import { getKey, setKey, deleteKey } from '../utils/store';
 
-const secureStore = new SecureStore();
+ipcMain.handle('get-ai-key', async () => {
+  return getKey();
+});
 
-ipcMain.handle('get-ai-key', () => secureStore.getKey());
-ipcMain.handle('set-ai-key', (_, secretKey: string) => secureStore.setKey(secretKey));
-ipcMain.handle('delete-ai-key', () => secureStore.deleteKey());
+ipcMain.handle('set-ai-key', async (_, secretKey) => {
+  return setKey(secretKey);
+});
+
+ipcMain.handle('delete-ai-key', async () => {
+  return deleteKey();
+});

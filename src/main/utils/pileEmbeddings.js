@@ -4,8 +4,7 @@ const path = require('path');
 const { walk } = require('../util');
 const matter = require('gray-matter');
 const settings = require('electron-settings');
-const SecureStore = require('./store');
-
+const {getKey} = require('../utils/store');
 
 // Todo: Cache the norms alongside embeddings at some point
 // to avoid recomputing them for every query
@@ -40,6 +39,8 @@ class PileEmbeddings {
     this.fileName = `embeddings.json`;
     this.apiKey = null;
     this.embeddings = new Map();
+
+
   }
 
   async initialize(pilePath, index) {
@@ -69,11 +70,11 @@ class PileEmbeddings {
   }
 
   async initializeAPIKey() {
-    const apiKey = SecureStore.getKey();
+    const apiKey = await getKey();
     if (!apikey) {
       throw new Error('API key not found. Please set it first.');
     }
-    this.apiKey = apikey;
+    this.apiKey = apiKey;
   }
 
   async walkAndGenerateEmbeddings(pilePath, index) {

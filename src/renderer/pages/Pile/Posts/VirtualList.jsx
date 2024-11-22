@@ -1,72 +1,56 @@
-import { useParams } from 'react-router-dom';
-import styles from './Posts.module.scss';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Placeholder from '@tiptap/extension-placeholder';
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  memo,
-  useLayoutEffect,
-} from 'react';
-import { useIndexContext } from 'renderer/context/IndexContext';
-import Post from './Post';
-import NewPost from '../NewPost';
-import { AnimatePresence, motion } from 'framer-motion';
-import debounce from 'renderer/utils/debounce';
-import { useVirtualizer, useWindowVirtualizer } from '@tanstack/react-virtual';
-import { useWindowResize } from 'renderer/hooks/useWindowResize';
+import { useCallback, useState, memo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
+import { motion } from 'framer-motion';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
+import NewPost from '../NewPost';
+import Post from './Post';
 import Scrollbar from './Scrollbar';
 
-const VirtualList = memo(({ data }) => {
+const PostItem = memo(({ postPath, post }) => {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      style={{ minHeight: 72, width: '100%' }}
+    >
+      <Post postPath={postPath} />
+    </motion.div>
+  );
+});
+
+const MemoizedNewPost = memo(() => <NewPost />);
+
+const VirtualTimeline = memo(({ data }) => {
   const { virtualListRef, setVisibleIndex } = useTimelineContext();
   const [isScrolling, setIsScrolling] = useState(false);
 
-  const handleRangeChanged = (range) => {
-    const middle = Math.floor((range.startIndex + range.endIndex) / 2);
+  const handleRangeChanged = useCallback((range) => {
     setVisibleIndex(range.startIndex);
-  };
+  }, [setVisibleIndex]);
 
   const renderItem = useCallback((index, entry) => {
-    const [postPath, post] = entry;
-    const updatedAt = post.updatedAt;
-    const repliesCount = post.replies?.length;
-    const key = postPath + updatedAt;
-    if (index == 0) return <NewPost />;
+    // Only render NewPost at the very top
+    if (index === 0) {
+      return <MemoizedNewPost />;
+    }
 
+    const [postPath, post] = entry;
     return (
-      <motion.div
-        key={key}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ delay: 0.1 }}
-        style={{ minHeight: 72 }}
-      >
-        <Post postPath={postPath} />
-      </motion.div>
+      <PostItem
+        postPath={postPath}
+        post={post}
+      />
     );
   }, []);
 
-  const getKey = useCallback(
-    (index) => {
-      const entry = data[index];
-      const updatedAt = entry[1].updatedAt;
-      const repliesCount = entry[1].replies?.length;
-      const key = entry[0];
-      return key;
-    },
-    [data]
-  );
-
-  const handleIsScrolling = (bool) => {
-    setIsScrolling(bool);
-  };
+  const getKey = useCallback((index, entry) => {
+    if (index === 0) return 'new-post';
+    const [postPath, post] = entry;
+    return `${postPath}-${post.updatedAt}`;
+  }, []);
 
   return (
     <Virtuoso
@@ -75,12 +59,24 @@ const VirtualList = memo(({ data }) => {
       rangeChanged={handleRangeChanged}
       itemContent={renderItem}
       computeItemKey={getKey}
-      atTopThreshold={100}
-      increaseViewportBy={2000}
-      components={{ Scroller: Scrollbar }}
-      incremental
+      components={{
+        Scroller: Scrollbar
+      }}
+      overscan={5}
+      defaultItemHeight={220}
+      style={{ height: '100%', width: '100%' }}
+      initialTopMostItemIndex={0}
+      followOutput={'smooth'}
+      alignToBottom={false}
+      components={{
+        Scroller: Scrollbar,
+        Footer: () => <div style={{ height: 20 }} />,
+        EmptyPlaceholder: () => <div></div>,
+      }}
     />
   );
 });
 
-export default VirtualList;
+VirtualTimeline.displayName = 'VirtualTimeline';
+
+export default VirtualTimeline;

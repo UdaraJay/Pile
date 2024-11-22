@@ -71,7 +71,7 @@ class PileEmbeddings {
 
   async initializeAPIKey() {
     const apiKey = await getKey();
-    if (!apikey) {
+    if (!apiKey) {
       throw new Error('API key not found. Please set it first.');
     }
     this.apiKey = apiKey;

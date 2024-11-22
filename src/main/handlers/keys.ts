@@ -1,14 +1,8 @@
 import { ipcMain } from 'electron';
-import keytar from 'keytar';
+import SecureStore from '../utils/store';
 
-ipcMain.handle('get-ai-key', async () => {
-  return await keytar.getPassword('pile', 'aikey');
-});
+const secureStore = new SecureStore();
 
-ipcMain.handle('set-ai-key', async (event, secretKey) => {
-  return await keytar.setPassword('pile', 'aikey', secretKey);
-});
-
-ipcMain.handle('delete-ai-key', async () => {
-  return await keytar.deletePassword('pile', 'aikey');
-});
+ipcMain.handle('get-ai-key', () => secureStore.getKey());
+ipcMain.handle('set-ai-key', (_, secretKey: string) => secureStore.setKey(secretKey));
+ipcMain.handle('delete-ai-key', () => secureStore.deleteKey());

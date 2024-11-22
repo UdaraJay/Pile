@@ -31,12 +31,7 @@ const configuration: webpack.Configuration = {
   module: require('./webpack.config.renderer.dev').default.module,
 
   entry: {
-    // webpack has some issue importing a path from @tiptap/pm
-    // so we're going to exclude it from the entry point bundle
-    // as we don't need it there anyways.
-    renderer: Object.keys(dependencies || {}).filter(
-      (it) => it !== '@tiptap/pm'
-    ),
+    renderer: Object.keys(dependencies || {}),
   },
 
   output: {

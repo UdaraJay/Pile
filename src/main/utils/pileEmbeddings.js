@@ -1,10 +1,11 @@
 const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
-const keytar = require('keytar');
 const { walk } = require('../util');
 const matter = require('gray-matter');
 const settings = require('electron-settings');
+const SecureStore = require('./store');
+
 
 // Todo: Cache the norms alongside embeddings at some point
 // to avoid recomputing them for every query
@@ -68,7 +69,7 @@ class PileEmbeddings {
   }
 
   async initializeAPIKey() {
-    const apikey = await keytar.getPassword('pile', 'aikey');
+    const apiKey = SecureStore.getKey();
     if (!apikey) {
       throw new Error('API key not found. Please set it first.');
     }

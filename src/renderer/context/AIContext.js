@@ -123,6 +123,17 @@ export const AIContextProvider = ({ children }) => {
     [prompt]
   );
 
+  const checkApiKeyValidity = async () => {
+    // TODO: Add regex for OpenAPI and Ollama API keys
+    const key = await window.electron.ipc.invoke('get-ai-key');
+    
+    if (key !== null) {
+      return true;
+    }
+
+    return false;
+  }
+
   const AIContextValue = {
     ai,
     baseUrl,
@@ -131,6 +142,7 @@ export const AIContextProvider = ({ children }) => {
     setPrompt,
     setKey: (secretKey) => window.electron.ipc.invoke('set-ai-key', secretKey),
     getKey: () => window.electron.ipc.invoke('get-ai-key'),
+    validKey: checkApiKeyValidity,
     deleteKey: () => window.electron.ipc.invoke('delete-ai-key'),
     updateSettings: (newPrompt) =>
       updateCurrentPile({ ...currentPile, AIPrompt: newPrompt }),

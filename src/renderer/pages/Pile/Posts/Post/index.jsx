@@ -22,16 +22,28 @@ import {
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import Ball from './Ball';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
+import { useAIContext } from 'renderer/context/AIContext';
 
 const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
   const { highlights } = useHighlightsContext();
+  const { getKey } = useAIContext();
   // const { setClosestDate } = useTimelineContext();
   const { post, cycleColor, refreshPost, setHighlight } = usePost(postPath);
   const [hovering, setHover] = useState(false);
   const [replying, setReplying] = useState(false);
   const [isAIResplying, setIsAiReplying] = useState(false);
   const [editable, setEditable] = useState(false);
+  const [aiApiKey, setAiApiKey] = useState(null);
+
+  // Load AI API key from getKey()
+  useEffect(() => {
+    const fetchAiApiKey = async () => {
+      const key = await getKey();
+      setAiApiKey(key);
+    };
+    fetchAiApiKey();
+  }, [getKey]);
 
   const closeReply = () => {
     setReplying(false);
@@ -157,6 +169,7 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
                 <div className={styles.sep}>/</div>
                 <button
                   className={styles.openReply}
+                  disabled={aiApiKey === null}
                   onClick={() => {
                     setIsAiReplying(true);
                     toggleReplying();

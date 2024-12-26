@@ -98,74 +98,81 @@ input {
 .header {
   padding: 0 85px;
   z-index: 1000;
-}
 
-.wrapper {
-  position: relative;
-  max-width: 610px;
-  margin: 0 auto;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  z-index: 5;
-  background: var(--bg-tertiary);
-  border-radius: 0 0 17px 17px;
+  background: linear-gradient(
+    180deg,
+    var(--bg-secondary) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 
-  .DialogTitle {
+  .wrapper {
+    position: relative;
+    max-width: 750px;
+    margin: 0 auto;
+    height: 44px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    color: var(--primary);
-    font-weight: 400;
-    font-size: 14px;
-    position: relative;
-    z-index: 10 !important;
-    user-select: none;
-    padding: 0 10px;
-    margin: 0 0 2px 5px;
-  }
+    z-index: 5;
+    // background: var(--bg-tertiary);
 
-  .buttons {
-    display: flex;
-    align-items: center;
-    position: relative;
-    z-index: 6;
-    gap: 4px;
-    padding: 4px;
-
-    .button {
-      text-wrap: nowrap;
-      background: var(--bg);
-      color: var(--secondary);
-      font-size: 13px;
-      padding: 5px 14px 5px 10px;
-      transition: all ease-in-out 150ms;
-      -webkit-app-region: none;
-      user-select: none;
-      font-weight: 400;
+    .DialogTitle {
       display: flex;
       align-items: center;
-      height: 36px;
-      border-radius: 7px;
+      justify-content: space-between;
+      width: 100%;
+      color: var(--primary);
+      font-weight: 400;
+      font-size: 14px;
+      position: relative;
+      z-index: 10 !important;
+      user-select: none;
+      padding: 0 10px;
+      margin: 0 0 2px 5px;
+    }
 
-      &:hover {
-        cursor: pointer;
-        background: var(--bg-secondary);
-      }
+    .buttons {
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 6;
+      gap: 4px;
+      padding: 4px;
 
-      &:active {
-        transform: scale(0.97);
-      }
+      .button {
+        text-wrap: nowrap;
+        background: var(--bg);
+        color: var(--secondary);
+        font-size: 13px;
+        padding: 4px 18px 4px 12px;
+        transition: all ease-in-out 150ms;
+        -webkit-app-region: none;
+        user-select: none;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        height: 36px;
+        border-radius: 90px;
 
-      .icon {
-        height: 20px;
-        width: 20px;
-        margin-right: 4px;
+        &:hover {
+          cursor: pointer;
+          background: var(--bg-secondary);
+        }
+
+        &:active {
+          transform: scale(0.97);
+        }
+
+        .icon {
+          height: 20px;
+          width: 20px;
+          margin-right: 4px;
+        }
       }
     }
   }
 }
+
+
 
 .close {
   text-wrap: nowrap;
@@ -221,8 +228,8 @@ input {
 
   .bar {
     position: relative;
-    width: 600px;
-    max-width: 600px;
+    width: 700px;
+    max-width: 700px;
     display: flex;
     border-radius: 13px;
     transition: all cubic-bezier(0.215, 0.61, 0.355, 1) 120ms;
@@ -310,7 +317,6 @@ input {
   width: calc(100vw - 4px);
   height: calc(100vh - 4px);
   color: var(--secondary);
-  padding-top: 100px;
 }
 
 .text_context {

@@ -248,6 +248,13 @@
       filter: contrast(0.85);
     }
 
+    &:disabled {
+      color: var(--secondary);
+      cursor: not-allowed; // Prevent pointer cursor
+      pointer-events: none; // Disable any interactions (e.g., clicks)
+      opacity: 0.5; // Reduce opacity to visually indicate it's disabled
+    }
+
     .icon {
       display: flex;
       justify-content: space-between;

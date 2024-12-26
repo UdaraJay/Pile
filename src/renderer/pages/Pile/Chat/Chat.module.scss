@@ -32,6 +32,11 @@
   &:active {
     background: var(--bg-tertiary);
   }
+
+  &.disabled {
+    pointer-events: none; // Prevent interaction
+    opacity: 0.5; // Make the whole container look disabled
+  }
 }
 
 button,

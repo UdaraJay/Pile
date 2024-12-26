@@ -28,6 +28,7 @@ import Blobs from './Blobs';
 import useChat from 'renderer/hooks/useChat';
 
 export default function Chat() {
+  const { validKey } = useAIContext();
   const { currentTheme, setTheme } = usePilesContext();
   const { getAIResponse, addMessage, resetMessages } = useChat();
   const [container, setContainer] = useState(null);
@@ -35,6 +36,16 @@ export default function Chat() {
   const [text, setText] = useState('');
   const [querying, setQuerying] = useState(false);
   const [history, setHistory] = useState([]);
+  const [aiApiKeyValid, setAiApiKeyValid] = useState(false);
+
+  // Check if the AI API key is valid
+  useEffect(() => {
+    const checkApiKeyValid = async () => {
+      const valid = await validKey();
+      setAiApiKeyValid(valid);
+    };
+    checkApiKeyValid();
+  }, [validKey]);
 
   const onChangeText = (e) => {
     setText(e.target.value);
@@ -92,7 +103,10 @@ export default function Chat() {
     <>
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <div className={styles.iconHolder}>
+          <div
+            className={`${styles.iconHolder} ${!aiApiKeyValid ? styles.disabled : ''}`}
+            onClick={!aiApiKeyValid ? (e) => e.preventDefault() : undefined} // Prevent click if no AI api key is set
+          >
             <ChatIcon className={styles.chatIcon} />
           </div>
         </Dialog.Trigger>

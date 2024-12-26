@@ -1,14 +1,14 @@
 import { ipcMain } from 'electron';
-import keytar from 'keytar';
+import { getKey, setKey, deleteKey } from '../utils/store';
 
 ipcMain.handle('get-ai-key', async () => {
-  return await keytar.getPassword('pile', 'aikey');
+  return getKey();
 });
 
-ipcMain.handle('set-ai-key', async (event, secretKey) => {
-  return await keytar.setPassword('pile', 'aikey', secretKey);
+ipcMain.handle('set-ai-key', async (_, secretKey) => {
+  return setKey(secretKey);
 });
 
 ipcMain.handle('delete-ai-key', async () => {
-  return await keytar.deletePassword('pile', 'aikey');
+  return deleteKey();
 });

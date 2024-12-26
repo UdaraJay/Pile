@@ -43,7 +43,7 @@ function usePost(
   } = {}
 ) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-  const { addIndex, removeIndex, refreshIndex, updateIndex } =
+  const { addIndex, removeIndex, refreshIndex, updateIndex, prependIndex } =
     useIndexContext();
   const [updates, setUpdates] = useState(0);
   const [path, setPath] = useState(); // absolute path
@@ -68,6 +68,8 @@ function usePost(
 
   const savePost = useCallback(
     async (dataOverrides) => {
+      console.time('post-time');
+
       const saveToPath = path
         ? path
         : fileOperations.getFilePathForNewPost(currentPile.path);
@@ -100,8 +102,10 @@ function usePost(
           getCurrentPilePath() + window.electron.pathSeparator,
           ''
         );
+        prependIndex(postRelativePath, data); // Add the file to the index
         addIndex(postRelativePath, parentPostPath); // Add the file to the index
         window.electron.ipc.invoke('tags-sync', saveToPath); // Sync tags
+        console.timeEnd('post-time');
       } catch (error) {
         console.error(`Error writing file: ${saveToPath}`);
         console.error(error);

@@ -15,7 +15,6 @@ import {
 import { DateTime } from 'luxon';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import { useIndexContext } from 'renderer/context/IndexContext';
-import { on } from 'events';
 
 function isToday(date) {
   const today = new Date();

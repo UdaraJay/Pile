@@ -19,3 +19,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Brand License
+
+The Pile name, associated logos, and branding elements are proprietary and may not be used without explicit permission.
+
+These elements include but are not limited to:
+- The name "Pile"
+- The logo and icon designs
+- Any associated taglines or slogans
+
+All rights reserved.

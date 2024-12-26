@@ -36,16 +36,26 @@ export const IndexContextProvider = ({ children }) => {
     setIndex(newMap);
   }, []);
 
+  const prependIndex = useCallback((key, value) => {
+    console.log('prepend index', key, value)
+    setIndex((prevIndex) => {
+      const newIndex = new Map([[key, value], ...prevIndex]);
+      return newIndex;
+    });
+  }, []);
+
   const addIndex = useCallback(
     async (newEntryPath, parentPath = null) => {
+      console.time('index-add-time');
       const pilePath = getCurrentPilePath();
 
       await window.electron.ipc
-        .invoke('index-add', newEntryPath)
-        .then((index) => {
-          setIndex(index);
-          loadLatestThreads();
-        });
+      .invoke('index-add', newEntryPath)
+      .then((index) => {
+        // setIndex(index);
+        loadLatestThreads();
+      });
+      console.timeEnd('index-add-time');
     },
     [currentPile]
   );
@@ -102,6 +112,7 @@ export const IndexContextProvider = ({ children }) => {
     getThreadsAsText,
     latestThreads,
     regenerateEmbeddings,
+    prependIndex
   };
 
   return (

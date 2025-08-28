@@ -1,0 +1,43 @@
+# Task ID: 17
+# Title: Implement Conflict Resolution Strategy
+# Status: pending
+# Dependencies: 15
+# Priority: medium
+# Description: Refine the conflict resolution mechanism for simultaneous edits or offline changes, providing user-friendly options.
+# Details:
+Enhance the 'last-write-wins' strategy with more sophisticated conflict detection. Design and implement a UI/UX for users to be notified of conflicts and potentially choose between conflicting versions or merge changes, especially for collaborative editing scenarios.
+
+# Test Strategy:
+Simulate simultaneous edits on the same post from different devices. Test offline edits followed by online edits. Verify the conflict resolution UI is clear and functional.
+
+# Subtasks:
+## 1. Define Conflict Detection Rules & Data Model [pending]
+### Dependencies: None
+### Description: Research and define specific rules for detecting conflicts beyond 'last-write-wins' (e.g., field-level changes, semantic conflicts). Determine necessary data model enhancements (e.g., versioning, change tracking metadata) to support these rules.
+### Details:
+Investigate strategies like operational transformation (OT) or conflict-free replicated data types (CRDTs) for inspiration, but focus on a practical approach for the current system. Specify how `posts` and `piles` data will be compared to identify conflicts and what metadata is needed to track versions.
+
+## 2. Implement Server-Side Conflict Detection Logic [pending]
+### Dependencies: 17.1
+### Description: Develop and integrate the backend logic to detect conflicts based on the defined rules during data synchronization. This involves comparing incoming changes with the current server state and identifying discrepancies.
+### Details:
+Modify Supabase Functions or database triggers/procedures to perform detailed conflict detection when `posts` or `piles` are updated. This logic should identify *what* fields are conflicting and *which* versions are involved, preparing the data for client-side resolution.
+
+## 3. Design Conflict Resolution User Interface (UI/UX) [pending]
+### Dependencies: 17.2
+### Description: Create wireframes, mockups, and user flows for how conflicts will be presented to users and how they can resolve them. This includes notification, version comparison, and selection options.
+### Details:
+Design the UI/UX for a conflict notification banner or modal. Define the layout for presenting conflicting versions (e.g., side-by-side, 'Your changes' vs. 'Other's changes'). Specify options like 'Keep My Version', 'Discard My Version', 'Take Other's Version', and a potential 'Merge' option.
+
+## 4. Implement Client-Side Conflict Notification & Version Selection UI [pending]
+### Dependencies: 17.2, 17.3
+### Description: Develop the front-end components to notify users of detected conflicts and allow them to choose between their local version and the server's conflicting version.
+### Details:
+Implement the UI elements designed in 17.3. This includes displaying conflict alerts, fetching and presenting the conflicting versions (e.g., current local vs. server's latest), and handling user input to select a preferred version. Integrate this with the client-side sync logic.
+
+## 5. Implement Advanced Conflict Merging Functionality [pending]
+### Dependencies: 17.2, 17.3, 17.4
+### Description: Develop the more sophisticated functionality for users to merge conflicting changes, potentially involving a diff viewer and granular selection of changes.
+### Details:
+Implement a UI component that can display a diff between conflicting versions of a post or pile. Provide controls for users to selectively accept or reject individual changes or lines of content. This will require client-side logic to apply the merged changes back to the local data and then synchronize.
+

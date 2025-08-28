@@ -1,12 +1,12 @@
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter as Router } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
 import App from './App';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
 
 const wrapperStyle = {
-  background: window.electron.isMac ? 'var(--bg-translucent)' : 'var(--bg)',
+  background: window.electron?.isMac ? 'var(--bg-translucent)' : 'var(--bg)',
 };
 
 root.render(

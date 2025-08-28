@@ -1,0 +1,41 @@
+# Task ID: 6
+# Title: Settings: Gemini API key input + validation
+# Status: done
+# Dependencies: 2
+# Priority: medium
+# Description: Add UI to store/validate GEMINI_API_KEY (main process storage) and block AI actions when missing/invalid.
+# Details:
+Reword settings from OpenAI to Gemini; add key test ping; never expose key to renderer logs; update README copy.
+
+# Test Strategy:
+Unit: validation logic; UI: disables actions without key; e2e: happy path store + use.
+
+# Subtasks:
+## 1. Settings UI updates and copy [done]
+### Dependencies: None
+### Description: Rename OpenAI references to Gemini; adjust help text and validation messages.
+### Details:
+
+
+## 2. Key storage and validation flow [done]
+### Dependencies: None
+### Description: Store key in main process; add a test request; block actions when invalid/missing.
+### Details:
+<info added on 2025-08-26T17:54:01.121Z>
+Completed key storage and validation flow implementation:
+
+Key Storage Enhancement:
+- Modified Gemini client to use stored API key from electron-settings instead of environment variables
+- Added initializeGemini() function to properly initialize client with stored key
+- Updated stream() and json() functions to ensure client is initialized before use
+- Added re-initialization when API key is updated via set-ai-key handler
+
+Validation Flow:
+- Existing checkApiKeyValidity() in AIContext already properly validates Gemini keys by making test API call
+- Key storage uses electron's safeStorage for encrypted storage in main process
+- Settings UI properly calls setKey() when saving changes
+- Delete key functionality properly removes stored credentials
+
+The system now properly stores, validates, and uses Gemini API keys with secure main process storage and automatic client re-initialization when keys change.
+</info added on 2025-08-26T17:54:01.121Z>
+

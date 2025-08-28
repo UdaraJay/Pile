@@ -1,0 +1,82 @@
+.callbackContainer {
+  position: fixed;
+  inset: 0;
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 1000;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+}
+
+.content {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid var(--border);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 1.5rem 0 1rem 0;
+}
+
+.status {
+  color: var(--secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spinner div {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--active);
+  animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.dot1 {
+  animation-delay: -0.32s;
+}
+
+.dot2 {
+  animation-delay: -0.16s;
+}
+
+.dot3 {
+  animation-delay: 0s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0.8);
+    opacity: 0.5;
+  } 
+  40% { 
+    transform: scale(1.0);
+    opacity: 1.0;
+  }
+}
+
+/* Theme handled by CSS variables */

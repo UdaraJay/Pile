@@ -1,0 +1,58 @@
+# Task ID: 5
+# Title: JSON mode: structured summaries and parsing
+# Status: done
+# Dependencies: 2
+# Priority: medium
+# Description: Add generationConfig.responseMimeType='application/json' for summary endpoints; robust JSON parse with fallback and user feedback.
+# Details:
+Create helper `generateJson(prompt)` with schema-in-prompt; surface parse errors with toasts; add typing to parsed objects.
+
+# Test Strategy:
+Unit: valid/invalid JSON responses; UI: shows error toast when invalid.
+
+# Subtasks:
+## 1. Define JSON prompt templates [done]
+### Dependencies: None
+### Description: Create strict, minimal JSON schemas and prompts for summaries and metadata.
+### Details:
+<info added on 2025-08-26T16:46:33.505Z>
+- Created `SummaryResponse` and `MetadataResponse` interfaces for parsed JSON output.
+- Added `JSONTemplateResponse` union type for type safety of parsed responses.
+</info added on 2025-08-26T16:46:33.505Z>
+
+## 2. Add parse utility with safe fallback [done]
+### Dependencies: None
+### Description: Gracefully handle invalid JSON; provide error messages and default values.
+### Details:
+<info added on 2025-08-26T16:49:36.086Z>
+Completed safe JSON parsing utility with comprehensive error handling:
+
+Main Parser Module (jsonParser.ts):
+- Created comprehensive JSONParseError enum with error types
+- Implemented ParseResult interface with success/error structure
+- Added validateSummaryResponse() and validateMetadataResponse() functions
+- Created cleanJsonString() to handle common JSON formatting issues (markdown blocks, boundaries)
+- Implemented parseSummaryResponse() and parseMetadataResponse() with length limits
+- Added safeParseJson() generic function with template-specific validation
+- Created DEFAULT_VALUES fallbacks for both template types
+
+Renderer Utilities (jsonHelper.js):
+- Added generateStructuredResponse() with error callback support
+- Created formatErrorMessage() for user-friendly error display
+- Implemented validateResponseCompleteness() for data quality checks
+- Added createErrorToast() for notification integration
+- Provided getDefaultResponse() fallback mechanism
+
+IPC Enhancement:
+- Enhanced GeminiResponse type with parseWarning field
+- Updated generate-json handler to detect fallback usage
+- Added warning detection for invalid responses
+
+Example Implementation:
+- Created JsonExample.jsx component demonstrating full error handling workflow
+- Shows toast notifications for errors and warnings
+- Provides complete reference implementation
+
+The system now gracefully handles invalid JSON, provides user feedback, and continues functioning with fallback values.
+</info added on 2025-08-26T16:49:36.086Z>
+

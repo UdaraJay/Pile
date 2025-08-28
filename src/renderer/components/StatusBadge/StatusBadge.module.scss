@@ -1,0 +1,22 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.todo {
+  background: var(--bg-tertiary);
+  color: var(--secondary);
+}
+
+.done {
+  background: var(--base-green);
+  color: var(--active-text);
+}
+

@@ -1,0 +1,43 @@
+# Task ID: 11
+# Title: Supabase Project Setup & Database Schema Implementation
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Initialize the Supabase project, configure the database, and implement all core tables as defined in the PRD.
+# Details:
+Create the Supabase project. Implement `users`, `user_profiles`, `piles`, `pile_members`, `posts`, `post_replies`, `post_tags`, `post_highlights`, and `attachments` tables. Ensure `id`, `created_at`, `updated_at` columns are present where applicable. Add initial indexes for common query patterns (e.g., `user_id` on `piles`, `pile_id` on `posts`).
+
+# Test Strategy:
+Verify all tables are created with correct schemas and column types. Insert sample data and confirm data integrity. Check that initial indexes are applied.
+
+# Subtasks:
+## 1. Initialize Supabase Project [done]
+### Dependencies: None
+### Description: Create a new Supabase project instance and obtain necessary API keys and configuration details.
+### Details:
+Log in to the Supabase dashboard, create a new project, and note down the project URL and `anon` public key. This establishes the foundational environment for the database and other services.
+
+## 2. Implement Core Tables with Base Columns [done]
+### Dependencies: 11.1
+### Description: Create the initial set of core database tables as defined, ensuring `id`, `created_at`, and `updated_at` columns are present where applicable.
+### Details:
+Create `users`, `user_profiles`, `piles`, `pile_members`, `posts`, `post_replies`, `post_tags`, `post_highlights`, and `attachments` tables. For each, include an `id` column (UUID primary key), `created_at` (timestamp with default now()), and `updated_at` (timestamp with update trigger) columns where appropriate.
+
+## 3. Define Table Relationships and Foreign Keys [done]
+### Dependencies: 11.2
+### Description: Establish the relationships between the core tables by adding foreign key constraints to ensure data integrity and referential consistency.
+### Details:
+Add foreign key constraints, for example: `user_profiles.user_id` to `users.id`, `piles.user_id` to `users.id`, `pile_members.user_id` to `users.id` and `pile_members.pile_id` to `piles.id`, `posts.user_id` to `users.id` and `posts.pile_id` to `piles.id`, `post_replies.user_id` to `users.id` and `post_replies.post_id` to `posts.id`, `post_tags.post_id` to `posts.id`, `post_highlights.post_id` to `posts.id`, and `attachments.post_id` to `posts.id`.
+
+## 4. Implement Database Row Level Security (RLS) Policies [done]
+### Dependencies: 11.3
+### Description: Configure Row Level Security policies for all core tables to control data access based on user roles and ownership, ensuring data privacy and security.
+### Details:
+Enable RLS for `users`, `user_profiles`, `piles`, `pile_members`, `posts`, `post_replies`, `post_tags`, `post_highlights`, and `attachments`. Define policies that allow users to read/write their own data, and access data within piles they are members of, as appropriate for each table's context.
+
+## 5. Add Initial Database Indexes [done]
+### Dependencies: 11.3
+### Description: Create initial indexes on frequently queried columns to optimize database performance for common access patterns.
+### Details:
+Add indexes for common query patterns as specified: `user_id` on `piles` and `pile_id` on `posts`. Additionally, consider adding indexes on other foreign key columns like `user_id` on `user_profiles`, `post_id` on `post_replies`, etc., to improve join performance.
+

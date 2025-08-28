@@ -1,0 +1,122 @@
+.cursorOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.cursor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 101;
+  transform: translate(-2px, -2px); // Offset to align cursor tip
+}
+
+.cursorPointer {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.cursorIcon {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  transition: all 0.1s ease;
+}
+
+.cursorLabel {
+  position: absolute;
+  top: 20px;
+  left: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+  // Arrow pointing to cursor
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 8px;
+    border: 4px solid transparent;
+    border-bottom-color: var(--user-color);
+  }
+}
+
+.selectionHighlight {
+  position: absolute;
+  border: 1px solid;
+  border-radius: 2px;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  
+  // Subtle animation
+  animation: selectionPulse 2s ease-in-out infinite;
+}
+
+@keyframes selectionPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Enhanced cursor styles for better visibility
+.cursor {
+  // Add a subtle glow effect
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, var(--user-color) 0%, transparent 70%);
+    opacity: 0.3;
+    border-radius: 50%;
+    z-index: -1;
+    animation: cursorGlow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes cursorGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.1;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .cursorLabel {
+    font-size: 9px;
+    padding: 1px 4px;
+    max-width: 60px;
+  }
+  
+  .cursor {
+    transform: translate(-1px, -1px);
+  }
+  
+  .cursorPointer {
+    width: 16px;
+    height: 16px;
+  }
+}

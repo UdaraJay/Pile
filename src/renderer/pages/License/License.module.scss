@@ -20,7 +20,7 @@
         padding: 4px 6px;
 
         &:hover {
-            color: Var(--primary);
+            color: var(--primary);
             background: var(--bg);
         }
 
@@ -30,7 +30,7 @@
     }
 
     .name {
-        font-family: "Porpora";
+        font-family: var(--font-heading);
         font-size: 1.4em;
         margin-top: 16px;
         color: var(--primary);

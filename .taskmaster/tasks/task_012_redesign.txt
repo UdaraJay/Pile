@@ -1,0 +1,43 @@
+# Task ID: 12
+# Title: Implement Supabase Authentication (Email/Password & Google OAuth)
+# Status: done
+# Dependencies: 11
+# Priority: high
+# Description: Integrate Supabase Auth for user sign-up, sign-in, and session management using email/password and Google OAuth.
+# Details:
+Configure Supabase Auth in the project. Enable Email/Password and Google OAuth providers. Implement client-side logic using `supabase-js` for user registration, login, logout, and session persistence. Securely store authentication tokens within the Electron application.
+
+# Test Strategy:
+Test user registration, login, and logout with both email/password and Google accounts. Verify session persistence across app restarts. Confirm secure token storage.
+
+# Subtasks:
+## 1. Configure Supabase Project & Client [done]
+### Dependencies: None
+### Description: Set up the Supabase project, enable Email/Password and Google OAuth providers in the Supabase dashboard, and initialize the `supabase-js` client in the Electron application.
+### Details:
+Obtain Supabase URL and Anon Key. Configure these in the Electron app's environment or configuration files. Enable Email/Password and Google OAuth in the Supabase Auth settings within the Supabase dashboard.
+
+## 2. Implement Email/Password Sign-up, Sign-in, and Logout [done]
+### Dependencies: 12.1
+### Description: Develop the client-side logic using `supabase-js` for user registration, login, and logout specifically for email/password authentication.
+### Details:
+Implement functions for `supabase.auth.signUp({ email, password })`, `supabase.auth.signInWithPassword({ email, password })`, and `supabase.auth.signOut()`. Design and integrate basic UI components (forms, buttons) for these authentication actions within the Electron application.
+
+## 3. Integrate Google OAuth Sign-in [done]
+### Dependencies: 12.1
+### Description: Implement the client-side logic to allow users to sign in using their Google accounts via Supabase OAuth.
+### Details:
+Implement `supabase.auth.signInWithOAuth({ provider: 'google' })`. Handle the OAuth redirect flow appropriate for an Electron application, which may involve using a custom protocol handler or an in-app browser window for the authentication process and capturing the callback.
+
+## 4. Implement Session Management and Persistence [done]
+### Dependencies: 12.2, 12.3
+### Description: Develop the logic to manage user sessions, including refreshing tokens and ensuring session persistence across application restarts.
+### Details:
+Utilize `supabase-js`'s built-in session management capabilities. Implement mechanisms to listen for authentication state changes (`supabase.auth.onAuthStateChange`). Ensure the user's session is re-established automatically when the Electron application restarts, relying on `supabase-js`'s internal storage or a custom secure storage solution.
+
+## 5. Securely Store Authentication Tokens [done]
+### Dependencies: 12.4
+### Description: Implement a secure method for storing authentication tokens within the Electron application to prevent unauthorized access.
+### Details:
+Research and implement a secure storage solution for Electron, such as `electron-store` with encryption, `keytar` (for OS-level keychain/credential manager integration), or a custom encrypted file storage mechanism. Ensure that access tokens, refresh tokens, and other sensitive session data are not stored in plain text.
+

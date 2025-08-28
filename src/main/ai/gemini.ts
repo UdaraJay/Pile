@@ -47,7 +47,9 @@ export async function* stream(prompt: string, selectedModel?: string) {
   try {
     // Ensure Gemini is initialized with the correct model
     if (!model || selectedModel) {
-      const initialized = await initializeGemini(selectedModel || 'gemini-2.5-flash');
+      const initialized = await initializeGemini(
+        selectedModel || 'gemini-2.5-flash',
+      );
       if (!initialized || !model) {
         throw new Error('Failed to initialize Gemini client');
       }
@@ -124,7 +126,9 @@ export async function json(
   try {
     // Ensure Gemini is initialized with the correct model
     if (!jsonModel || selectedModel) {
-      const initialized = await initializeGemini(selectedModel || 'gemini-2.5-flash');
+      const initialized = await initializeGemini(
+        selectedModel || 'gemini-2.5-flash',
+      );
       if (!initialized || !jsonModel) {
         throw new Error('Failed to initialize Gemini client');
       }
@@ -162,6 +166,35 @@ Return only valid JSON that strictly matches the schema above. No additional tex
   } catch (error) {
     console.error('Error in Gemini JSON generation:', error);
     throw error;
+  }
+}
+
+/**
+ * Test if the Gemini API key is valid by making a minimal API call
+ * @param apiKey - The API key to test (optional, will use stored key if not provided)
+ * @returns Promise<boolean> - true if key is valid, false otherwise
+ */
+export async function testApiKey(apiKey?: string): Promise<boolean> {
+  try {
+    // Use provided key or get stored key
+    const keyToTest = apiKey || (await getKey()) || process.env.GEMINI_API_KEY;
+    if (!keyToTest) {
+      return false;
+    }
+
+    // Create a temporary client for testing
+    const testClient = new GoogleGenerativeAI(keyToTest);
+    const testModel = testClient.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    // Make a minimal API call to test the key
+    const result = await testModel.generateContent('Hello');
+    const response = await result.response;
+    
+    // If we get a response without error, the key is valid
+    return response.text().length > 0;
+  } catch (error) {
+    console.error('API key test failed:', error);
+    return false;
   }
 }
 

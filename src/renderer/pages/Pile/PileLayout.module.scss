@@ -12,8 +12,9 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background: var(--bg-secondary);
-  opacity: 0.3;
+  background: transparent; /* allow global glow to be visible */
+  opacity: 1;
+  pointer-events: none;
 }
 
 .nav {
@@ -263,9 +264,8 @@
     flex: 1 0 calc(100vw - var(--sidebar-width));
     margin-left: var(--sidebar-width);
     font-size: 0.9em;
-    background: var(--bg);
-    box-shadow: -1px -1px 2px 0 rgba(0, 0, 0, 0.05);
-    background: var(--bg);
+    background: transparent; /* show emerald glow behind threads */
+    box-shadow: none;
     min-height: 100vh;
     height: 100vh;
     overflow-y: overlay;
@@ -311,5 +311,19 @@
 .win {
   .nav {
     padding-right: 130px;
+  }
+}
+
+// Sync Status Bar
+.syncStatusBar {
+  padding: 8px 16px;
+  margin: 0 -8px;
+  background: var(--surface-background, rgba(255, 255, 255, 0.03));
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  backdrop-filter: blur(10px);
+  
+  @media only screen and (max-width: 909px) {
+    margin: 0;
+    padding: 8px;
   }
 }

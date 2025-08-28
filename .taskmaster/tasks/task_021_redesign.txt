@@ -1,0 +1,43 @@
+# Task ID: 21
+# Title: Implement Full-Text Search on Post Content
+# Status: pending
+# Dependencies: 11, 15
+# Priority: medium
+# Description: Add efficient full-text search capabilities across all user's journal entries using PostgreSQL's built-in features.
+# Details:
+Configure a `tsvector` column on the `posts` table, automatically updating it on content changes using a trigger. Implement a search API endpoint that utilizes `to_tsquery` for fast and relevant full-text search across all posts accessible to the user. Optimize search queries for performance.
+
+# Test Strategy:
+Perform searches with various keywords, phrases, and special characters. Verify search results are accurate and returned within the performance requirements (<1 second). Test search across large datasets.
+
+# Subtasks:
+## 1. Configure tsvector Column and GIN Index [pending]
+### Dependencies: None
+### Description: Add a `tsvector` column to the `posts` table and create a GIN index on it to enable efficient full-text search.
+### Details:
+Modify the `posts` table schema to include a new `tsvector` column, e.g., `search_vector`. This column will store the processed text for full-text search. Create a GIN index on this `search_vector` column for optimal query performance.
+
+## 2. Implement tsvector Update Trigger [pending]
+### Dependencies: None
+### Description: Create a PostgreSQL trigger to automatically update the `tsvector` column whenever a post's content is inserted or updated.
+### Details:
+Develop a PostgreSQL function and an associated trigger that fires `BEFORE INSERT OR UPDATE` on the `posts` table. This trigger will populate the `search_vector` column using `to_tsvector` on the `content` column (and potentially other relevant text fields like `title`) with an appropriate text search configuration (e.g., 'english').
+
+## 3. Backfill Existing Post tsvector Data [pending]
+### Dependencies: None
+### Description: Populate the `tsvector` column for all existing journal entries in the `posts` table to make historical data searchable.
+### Details:
+Write and execute a one-time SQL script to iterate through all existing `posts` and populate their `search_vector` column using `to_tsvector(config, content)`. This ensures all historical data is immediately searchable upon feature deployment.
+
+## 4. Develop Full-Text Search API Endpoint [pending]
+### Dependencies: None
+### Description: Create a new API endpoint that accepts search queries and returns relevant posts using PostgreSQL's full-text search capabilities, respecting user access.
+### Details:
+Implement a server-side API endpoint (e.g., a Supabase Function or API route) that takes a search string. This endpoint will use `to_tsquery` to convert the search string and then query the `posts` table, joining on the `search_vector` column using the `@@` operator. Ensure the query respects Row Level Security (RLS) to only return posts accessible to the authenticated user.
+
+## 5. Optimize Search Performance and Relevance [pending]
+### Dependencies: None
+### Description: Refine search queries and database configuration to ensure full-text searches are fast and return highly relevant results, meeting performance requirements.
+### Details:
+Analyze query plans for the search endpoint. Implement optimizations such as using `ts_rank` for result ordering, considering different `ts_config` settings (e.g., `english`, `simple`), and potentially adding partial indexing or other PostgreSQL FTS features. Ensure search queries consistently return results within the specified performance target (<1 second) even with large datasets.
+

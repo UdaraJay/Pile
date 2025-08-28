@@ -229,7 +229,7 @@ const Editor = memo(
         isAIResponding,
         isAI,
         hasContent: editor?.state.doc.textContent.length > 0,
-        parentPostPath
+        parentPostPath,
       });
 
       if (
@@ -251,13 +251,22 @@ const Editor = memo(
       // Show debug notification
       showAIStatus('loading', `AI is thinking with ${model}...`);
 
+      // Flags accessible across try/catch/finally
+      let hadError = false;
+      let aiBuffer = '';
+
       try {
         console.log('📝 [Editor] Getting thread for:', parentPostPath);
         const thread = await getThread(parentPostPath);
         console.log('📝 [Editor] Thread retrieved:', thread?.length, 'posts');
-        
+
         const context = prepareCompletionContext(thread, isThinkDeeper);
-        console.log('📝 [Editor] Context prepared:', context?.length, 'messages', isThinkDeeper ? '(Think Deeper mode)' : '');
+        console.log(
+          '📝 [Editor] Context prepared:',
+          context?.length,
+          'messages',
+          isThinkDeeper ? '(Think Deeper mode)' : '',
+        );
 
         if (context.length === 0) {
           throw new Error('No context available for AI response');
@@ -265,12 +274,15 @@ const Editor = memo(
 
         let tokenCount = 0;
         let streamCompleted = false;
-        
+
         // Set up a hard timeout as failsafe
         const failsafeTimeout = setTimeout(() => {
           if (!streamCompleted) {
-            console.error('📝 [Editor] Failsafe timeout triggered - AI response taking too long');
-            const timeoutError = 'AI response timed out. The model might be overloaded. Try a different model.';
+            console.error(
+              '📝 [Editor] Failsafe timeout triggered - AI response taking too long',
+            );
+            const timeoutError =
+              'AI response timed out. The model might be overloaded. Try a different model.';
             setAiError(timeoutError);
             setIsAiResponding(false);
             setCanCancelAI(false);
@@ -280,13 +292,19 @@ const Editor = memo(
         }, 60000); // 60 second hard timeout
 
         try {
+          // Buffer AI output instead of typing into the editor
           await generateCompletion(
-            context, 
+            context,
             (token) => {
               if (streamCompleted) return; // Ignore tokens after completion
               tokenCount++;
-              console.log('📝 [Editor] Received token', tokenCount, ':', token.substring(0, 50));
-              editor.commands.insertContent(token);
+              aiBuffer += token;
+              console.log(
+                '📝 [Editor] Received token',
+                tokenCount,
+                ':',
+                token.substring(0, 50),
+              );
             },
             {
               timeout: 45000, // 45 second timeout
@@ -297,41 +315,130 @@ const Editor = memo(
                 if (streamCompleted) return;
                 streamCompleted = true;
                 clearTimeout(failsafeTimeout);
-                
+
                 console.error('📝 [Editor] AI error callback:', error.message);
                 const errorMessage = error.message || 'AI request failed';
                 setAiError(errorMessage);
+                hadError = true;
                 setIsAiResponding(false);
                 setCanCancelAI(false);
                 // Show error in debug notification
                 showAIStatus('error', errorMessage);
-              }
-            }
+                // Close the AI reply editor and do not open user reply
+                try {
+                  closeReply?.();
+                } catch (_) {}
+              },
+            },
           );
-          
+
           // Clear the failsafe timeout since we completed successfully
           streamCompleted = true;
           clearTimeout(failsafeTimeout);
         } catch (error) {
           streamCompleted = true;
           clearTimeout(failsafeTimeout);
+          hadError = true;
           throw error; // Re-throw to be caught by outer catch
         }
-        
-        console.log('📝 [Editor] AI completion finished, total tokens:', tokenCount);
+
+        console.log(
+          '📝 [Editor] AI completion finished, total tokens:',
+          tokenCount,
+        );
+        // If no content was generated, treat as failure and close the reply
+        if (!aiBuffer || aiBuffer.trim().length === 0) {
+          const msg = 'No AI response received. Please try again.';
+          console.warn('📝 [Editor] Empty AI response');
+          showAIStatus('error', msg);
+          try {
+            addNotification({ type: 'error', message: msg, dismissTime: 4000 });
+          } catch (_) {}
+          setIsAiResponding(false);
+          setCanCancelAI(false);
+          try {
+            closeReply?.();
+          } catch (_) {}
+          return; // abort success flow
+        }
+
+        // Build final HTML for AI response (plaintext wrapped in <p>)
+        const escapeHtml = (s) =>
+          s
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        const aiHtml = `<p>${escapeHtml(aiBuffer)}</p>`;
+        try { setContent?.(aiHtml); } catch (_) {}
+
         // Show success and hide after a moment
         showAIStatus('success', `AI response completed (${tokenCount} tokens)`);
         setTimeout(() => hideAIStatus(), 2000);
+
+        // Autosave AI response for conversational threads (Think Deeper)
+        try {
+          // Save with explicit content to avoid state race
+          await savePost({}, aiHtml);
+          try {
+            // Ensure parent thread refresh after saving AI entry
+            const maybePromise = reloadParentPost?.(parentPostPath);
+            if (maybePromise && typeof maybePromise.then === 'function') {
+              await maybePromise;
+            }
+            // tiny delay to allow index to update
+            await new Promise((r) => setTimeout(r, 50));
+          } catch (_) {}
+          // After saving, if this is a Think Deeper AI reply, prompt user to answer
+          if (isThinkDeeper && parentPostPath) {
+            // Close AI reply editor and request a new user reply editor to open
+            try {
+              closeReply?.();
+            } catch (_) {}
+            
+            // Prevent duplicate events by checking if one was recently dispatched
+            const eventKey = `open-user-reply-${parentPostPath}`;
+            const lastDispatchTime = window[`${eventKey}_lastDispatch`] || 0;
+            const now = Date.now();
+            
+            if (now - lastDispatchTime > 1000) { // Only allow one event per second per post
+              window[`${eventKey}_lastDispatch`] = now;
+              console.log('Dispatching open-user-reply event for:', parentPostPath);
+              const evt = new CustomEvent('open-user-reply', {
+                detail: { parentPostPath },
+              });
+              document.dispatchEvent(evt);
+            } else {
+              console.log('Skipping duplicate open-user-reply event for:', parentPostPath);
+            }
+            try {
+              addNotification({
+                type: 'info',
+                message: 'AI asked a question — type your answer below.',
+                dismissTime: 4000,
+                immediate: true,
+              });
+            } catch (_) {}
+          }
+        } catch (saveErr) {
+          console.error('📝 [Editor] Failed to autosave AI response:', saveErr);
+        }
       } catch (error) {
         console.error('📝 [Editor] AI generation failed:', error);
         const errorMessage = error.message || 'Unknown error occurred';
         setAiError(errorMessage);
+        hadError = true;
         // Show error in debug notification
         showAIStatus('error', errorMessage);
+        // Close the AI reply editor and do not open user reply
+        try {
+          closeReply?.();
+        } catch (_) {}
       } finally {
-        console.log('📝 [Editor] Finally block - aiError:', aiError);
+        console.log('📝 [Editor] Finally block - hadError:', hadError);
         // Only clean up local state if no error occurred
-        if (!aiError) {
+        if (!hadError) {
           console.log('📝 [Editor] Cleaning up - no error');
           setIsAiResponding(false);
           setCanCancelAI(false);
@@ -346,6 +453,9 @@ const Editor = memo(
       parentPostPath,
       isAIResponding,
       aiError,
+      isThinkDeeper,
+      savePost,
+      closeReply,
     ]);
 
     const cancelAiResponse = useCallback(() => {
@@ -361,7 +471,7 @@ const Editor = memo(
 
     const retryAiResponse = useCallback(() => {
       console.log('📝 [Editor] Retrying AI response');
-      setRetryCount(prev => prev + 1);
+      setRetryCount((prev) => prev + 1);
       setAiError(null);
       hideAIStatus(); // Hide current error state
       generateAiResponse();
@@ -414,7 +524,10 @@ const Editor = memo(
     }
 
     return (
-      <div className={`${styles.frame} ${isNew && styles.isNew}`} style={{ position: 'relative' }}>
+      <div
+        className={`${styles.frame} ${isNew && styles.isNew}`}
+        style={{ position: 'relative' }}
+      >
         {editable ? (
           <EditorContent
             key="new"
@@ -432,7 +545,6 @@ const Editor = memo(
             />
           </div>
         )}
-
 
         <LinkPreviews post={post} />
 

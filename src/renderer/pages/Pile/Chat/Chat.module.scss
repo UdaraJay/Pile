@@ -252,7 +252,7 @@ input {
     width: 100%;
     outline: none;
     padding: 11px 14px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-serif);
     overflow: hidden;
     min-height: 40px;
     border-radius: 13px 7px 7px 7px;

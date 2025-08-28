@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion';
 import styles from './AISpinner.module.scss';
 
-const AISpinner = ({ 
-  isVisible = false, 
-  message = 'AI is thinking...', 
-  canCancel = false, 
+function AISpinner({
+  isVisible = false,
+  message = 'AI is thinking...',
+  canCancel = false,
   onCancel = () => {},
   hasError = false,
-  onRetry = () => {}
-}) => {
+  onRetry = () => {},
+}) {
   if (!isVisible) return null;
 
   return (
@@ -35,10 +35,10 @@ const AISpinner = ({
             <span className={styles.errorMessage}>{message}</span>
           </>
         )}
-        
+
         <div className={styles.actions}>
           {hasError && (
-            <button 
+            <button
               className={styles.retryButton}
               onClick={onRetry}
               title="Retry AI request"
@@ -47,7 +47,7 @@ const AISpinner = ({
             </button>
           )}
           {canCancel && (
-            <button 
+            <button
               className={styles.cancelButton}
               onClick={onCancel}
               title="Cancel AI request"
@@ -59,6 +59,6 @@ const AISpinner = ({
       </div>
     </motion.div>
   );
-};
+}
 
 export default AISpinner;

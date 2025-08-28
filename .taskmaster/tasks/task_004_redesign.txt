@@ -1,0 +1,60 @@
+# Task ID: 4
+# Title: Renderer: integrate streaming UI and buffering
+# Status: done
+# Dependencies: 3
+# Priority: high
+# Description: Adapt chat/editor to consume stream chunks, buffer safely, finalize completion, and handle errors/cancellations.
+# Details:
+Add a React hook/useGeminiStream for subscription; ensure UI state transitions match existing behavior; debounce renders.
+
+# Test Strategy:
+Integration: mount component and simulate chunked updates; ensure final text matches.
+
+# Subtasks:
+## 1. Create useGeminiStream hook [done]
+### Dependencies: None
+### Description: Hook subscribes to `onGeminiResponse`, buffers chunks, exposes status and cancel.
+### Details:
+
+
+## 2. Integrate hook into chat/editor [done]
+### Dependencies: None
+### Description: Replace OpenAI streaming usage with Gemini; preserve UX and keyboard shortcuts.
+### Details:
+<info added on 2025-08-26T16:37:46.906Z>
+Completed AIContext.js integration:
+- Updated default pileAIProvider from 'openai' to 'gemini'
+- Updated default model to 'gemini-2.5-pro' 
+- Modified setupAi() function to handle Gemini initialization (sets ai type to 'gemini')
+- Updated generateCompletion() to support Gemini streaming with proper event handling
+- Enhanced checkApiKeyValidity() for Gemini validation using invokeGemini test call
+- Preserved existing OpenAI and Ollama compatibility
+- All context values properly exposed to consumers
+</info added on 2025-08-26T16:37:46.906Z>
+
+## 3. Handle errors, cancel, and finalize state [done]
+### Dependencies: None
+### Description: Ensure UI shows errors, allows cancellation, and finalizes on stream end.
+### Details:
+<info added on 2025-08-26T16:41:49.285Z>
+Completed error handling, cancellation, and finalized state UI:
+
+Chat Component Enhancements:
+- Added error state management with setError/error state
+- Added canCancel state for showing/hiding cancel button
+- Enhanced onSubmit with try/catch error handling and proper cleanup
+- Added onCancelAI function for cancelling AI requests
+- Added error message UI display with dismissible error banner
+- Enhanced onResetConversation to clear error state
+- Added conditional Cancel AI button in header (replaces Clear chat when streaming)
+
+Editor Component Enhancements:
+- Added canCancelAI state for tracking cancellation availability
+- Enhanced generateAiResponse with better error messages showing actual error details
+- Added cancelAiResponse function with proper cleanup and user feedback
+- Improved error notifications to show specific error messages instead of generic "AI request failed"
+- Added proper state management for cancellation throughout AI response lifecycle
+
+Both components now properly handle Gemini streaming errors, provide cancellation capabilities, and show appropriate UI feedback for all states (streaming, error, completion, cancellation).
+</info added on 2025-08-26T16:41:49.285Z>
+

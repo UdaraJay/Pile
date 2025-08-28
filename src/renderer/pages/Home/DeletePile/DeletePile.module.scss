@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 4px;
+  margin-right: 0; /* spacing handled by parent gap */
   color: var(--secondary);
   height: 28px;
   width: 28px;

@@ -1,0 +1,11 @@
+# Task ID: 23
+# Title: Implement Data Export Functionality
+# Status: pending
+# Dependencies: 15, 20
+# Priority: low
+# Description: Allow users to export their complete journal data from Supabase in a common, accessible format.
+# Details:
+Develop a feature that enables users to export their entire journal data (posts, attachments metadata, pile structure) in a user-friendly format such as JSON or a collection of Markdown files. Consider using Supabase Functions to generate the export file server-side and store it temporarily in an `exports` storage bucket for download.
+
+# Test Strategy:
+Export data for users with varying amounts of content and attachments. Verify the exported data is complete, correctly formatted, and easily importable/readable. Test the download process.

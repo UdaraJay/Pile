@@ -7,11 +7,14 @@ import {
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePilesContext } from './PilesContext';
+import { useCloudPostsContext } from './CloudPostsContext';
 
 export const IndexContext = createContext();
 
 export function IndexContextProvider({ children }) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
+  const { cloudPosts, getCloudPostsAsIndex, isCloudPile } =
+    useCloudPostsContext();
   const [filters, setFilters] = useState();
   const [searchOpen, setSearchOpen] = useState(false);
   const [index, setIndex] = useState(new Map());
@@ -19,10 +22,21 @@ export function IndexContextProvider({ children }) {
 
   useEffect(() => {
     if (currentPile) {
-      loadIndex(getCurrentPilePath());
+      if (currentPile.isCloudPile) {
+        loadCloudIndex();
+      } else {
+        loadIndex(getCurrentPilePath());
+      }
       loadLatestThreads();
     }
   }, [currentPile]);
+
+  // Load cloud posts into index format
+  useEffect(() => {
+    if (isCloudPile && cloudPosts.length > 0) {
+      loadCloudIndex();
+    }
+  }, [cloudPosts, isCloudPile]);
 
   const loadIndex = useCallback(async (pilePath) => {
     const newIndex = await window.electron.ipc.invoke('index-load', pilePath);
@@ -30,11 +44,23 @@ export function IndexContextProvider({ children }) {
     setIndex(newMap);
   }, []);
 
-  const refreshIndex = useCallback(async () => {
-    const newIndex = await window.electron.ipc.invoke('index-get');
-    const newMap = new Map(newIndex);
+  const loadCloudIndex = useCallback(() => {
+    if (!isCloudPile || !getCloudPostsAsIndex) return;
+
+    const cloudIndex = getCloudPostsAsIndex();
+    const newMap = new Map(cloudIndex);
     setIndex(newMap);
-  }, []);
+  }, [isCloudPile, getCloudPostsAsIndex]);
+
+  const refreshIndex = useCallback(async () => {
+    if (isCloudPile) {
+      loadCloudIndex();
+    } else {
+      const newIndex = await window.electron.ipc.invoke('index-get');
+      const newMap = new Map(newIndex);
+      setIndex(newMap);
+    }
+  }, [isCloudPile, loadCloudIndex]);
 
   const prependIndex = useCallback((key, value) => {
     console.log('prepend index', key, value);

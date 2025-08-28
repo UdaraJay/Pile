@@ -1,0 +1,25 @@
+# Task ID: 7
+# Title: Repo-wide replacement: remove OpenAI, wire Gemini services
+# Status: done
+# Dependencies: 2, 3, 4, 5, 6
+# Priority: high
+# Description: Remove `openai` package and usages; replace with Gemini service calls in contexts and handlers; update typings.
+# Details:
+Search and replace: chat/completions → generateContent/stream; update prompt builders; revisit rate-limit/backoff handlers.
+
+# Test Strategy:
+Run full test suite; smoke run on all AI features; ensure no OpenAI imports remain.
+
+# Subtasks:
+## 1. Remove OpenAI deps and imports [done]
+### Dependencies: None
+### Description: Uninstall openai, update package.json/locks; remove imports across codebase.
+### Details:
+
+
+## 2. Replace service/context calls with Gemini [done]
+### Dependencies: None
+### Description: Refactor usage to gemini service; adjust error and backoff logic.
+### Details:
+
+

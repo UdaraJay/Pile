@@ -1,8 +1,14 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
 
 const DebugContext = createContext();
 
-export const DebugProvider = ({ children }) => {
+export function DebugProvider({ children }) {
   const [aiStatus, setAiStatus] = useState(null);
   const [logs, setLogs] = useState([]);
 
@@ -11,7 +17,7 @@ export const DebugProvider = ({ children }) => {
     setAiStatus({
       type, // 'loading' | 'error' | 'success'
       message,
-      ...options
+      ...options,
     });
   }, []);
 
@@ -25,10 +31,10 @@ export const DebugProvider = ({ children }) => {
       id: Date.now() + Math.random(),
       type, // 'info' | 'error' | 'success'
       message,
-      timestamp: new Date().toLocaleTimeString()
+      timestamp: new Date().toLocaleTimeString(),
     };
 
-    setLogs(prev => [newLog, ...prev].slice(0, 100)); // Keep last 100 logs
+    setLogs((prev) => [newLog, ...prev].slice(0, 100)); // Keep last 100 logs
   }, []);
 
   const clearLogs = useCallback(() => {
@@ -42,7 +48,11 @@ export const DebugProvider = ({ children }) => {
 
     console.log = (...args) => {
       const message = args.join(' ');
-      if (message.includes('🤖 [AI]') || message.includes('📝 [Editor]') || message.includes('🌐 [GlobalAI]')) {
+      if (
+        message.includes('🤖 [AI]') ||
+        message.includes('📝 [Editor]') ||
+        message.includes('🌐 [GlobalAI]')
+      ) {
         addDebugLog('info', message);
       }
       originalConsoleLog.apply(console, args);
@@ -50,7 +60,11 @@ export const DebugProvider = ({ children }) => {
 
     console.error = (...args) => {
       const message = args.join(' ');
-      if (message.includes('🤖 [AI]') || message.includes('📝 [Editor]') || message.includes('🌐 [GlobalAI]')) {
+      if (
+        message.includes('🤖 [AI]') ||
+        message.includes('📝 [Editor]') ||
+        message.includes('🌐 [GlobalAI]')
+      ) {
         addDebugLog('error', message);
       }
       originalConsoleError.apply(console, args);
@@ -63,18 +77,20 @@ export const DebugProvider = ({ children }) => {
   }, [addDebugLog]);
 
   return (
-    <DebugContext.Provider value={{
-      aiStatus,
-      logs,
-      showAIStatus,
-      hideAIStatus,
-      addDebugLog,
-      clearLogs
-    }}>
+    <DebugContext.Provider
+      value={{
+        aiStatus,
+        logs,
+        showAIStatus,
+        hideAIStatus,
+        addDebugLog,
+        clearLogs,
+      }}
+    >
       {children}
     </DebugContext.Provider>
   );
-};
+}
 
 export const useDebug = () => {
   const context = useContext(DebugContext);

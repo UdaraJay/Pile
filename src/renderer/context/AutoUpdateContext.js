@@ -57,7 +57,7 @@ export function AutoUpdateContextProvider({ children }) {
   };
 
   useEffect(() => {
-    if (!window) return;
+    if (!window || !window.electron?.ipc) return;
 
     window.electron.ipc.on('update_available', handleUpdateAvailable);
     window.electron.ipc.on('update_downloaded', handleUpdateDownloaded);
@@ -65,6 +65,8 @@ export function AutoUpdateContextProvider({ children }) {
     window.electron.ipc.on('update_not_available', handleUpdateNotAvailable);
 
     return () => {
+      if (!window.electron?.ipc) return;
+      
       window.electron.ipc.removeListener(
         'update_available',
         handleUpdateAvailable,
@@ -82,7 +84,7 @@ export function AutoUpdateContextProvider({ children }) {
   }, []);
 
   const restartAndUpdate = () => {
-    if (!window) return;
+    if (!window || !window.electron?.ipc) return;
     window.electron.ipc.sendMessage('restart_app');
   };
 

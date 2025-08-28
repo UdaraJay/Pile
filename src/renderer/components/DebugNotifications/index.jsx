@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useDebug } from 'renderer/context/DebugContext';
 import styles from './DebugNotifications.module.scss';
 
-const DebugNotifications = () => {
+function DebugNotifications() {
   const { aiStatus, logs, hideAIStatus, clearLogs } = useDebug();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -18,19 +18,25 @@ const DebugNotifications = () => {
 
   const getLogIcon = (type) => {
     switch (type) {
-      case 'error': return '❌';
-      case 'success': return '✅';
+      case 'error':
+        return '❌';
+      case 'success':
+        return '✅';
       case 'info':
-      default: return '📝';
+      default:
+        return '📝';
     }
   };
 
   const getLogColor = (type) => {
     switch (type) {
-      case 'error': return '#ff3b30';
-      case 'success': return '#34c759';
+      case 'error':
+        return '#ff3b30';
+      case 'success':
+        return '#34c759';
       case 'info':
-      default: return '#007aff';
+      default:
+        return '#007aff';
     }
   };
 
@@ -54,14 +60,15 @@ const DebugNotifications = () => {
                   <div className={styles.dot} />
                 </div>
               )}
-              {aiStatus.type === 'error' && <span className={styles.icon}>⚠️</span>}
-              {aiStatus.type === 'success' && <span className={styles.icon}>✅</span>}
+              {aiStatus.type === 'error' && (
+                <span className={styles.icon}>⚠️</span>
+              )}
+              {aiStatus.type === 'success' && (
+                <span className={styles.icon}>✅</span>
+              )}
               <span className={styles.message}>{aiStatus.message}</span>
               {aiStatus.type === 'error' && (
-                <button 
-                  className={styles.retryButton}
-                  onClick={hideAIStatus}
-                >
+                <button className={styles.retryButton} onClick={hideAIStatus}>
                   Dismiss
                 </button>
               )}
@@ -71,8 +78,13 @@ const DebugNotifications = () => {
       </AnimatePresence>
 
       {/* Debug Log Panel */}
-      <div className={`${styles.logPanel} ${isExpanded ? styles.expanded : ''}`}>
-        <div className={styles.header} onClick={() => setIsExpanded(!isExpanded)}>
+      <div
+        className={`${styles.logPanel} ${isExpanded ? styles.expanded : ''}`}
+      >
+        <div
+          className={styles.header}
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
           <span className={styles.title}>Debug Logs</span>
           <span className={styles.count}>{logs.length}</span>
           <span className={styles.toggle}>{isExpanded ? '−' : '+'}</span>
@@ -89,18 +101,25 @@ const DebugNotifications = () => {
             >
               <div className={styles.logList}>
                 {logs.map((log) => (
-                  <div key={log.id} className={`${styles.logEntry} ${styles[log.type]}`}>
-                    <span className={styles.logIcon}>{getLogIcon(log.type)}</span>
+                  <div
+                    key={log.id}
+                    className={`${styles.logEntry} ${styles[log.type]}`}
+                  >
+                    <span className={styles.logIcon}>
+                      {getLogIcon(log.type)}
+                    </span>
                     <span className={styles.logTime}>{log.timestamp}</span>
                     <span className={styles.logMessage}>{log.message}</span>
                   </div>
                 ))}
                 {logs.length === 0 && (
-                  <div className={styles.emptyState}>No AI debug logs yet...</div>
+                  <div className={styles.emptyState}>
+                    No AI debug logs yet...
+                  </div>
                 )}
               </div>
               <div className={styles.actions}>
-                <button 
+                <button
                   className={styles.clearButton}
                   onClick={clearLogs}
                   disabled={logs.length === 0}
@@ -114,7 +133,6 @@ const DebugNotifications = () => {
       </div>
     </div>
   );
-};
-
+}
 
 export default DebugNotifications;

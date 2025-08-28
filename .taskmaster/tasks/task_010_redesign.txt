@@ -1,0 +1,11 @@
+# Task ID: 10
+# Title: Docs & release notes
+# Status: done
+# Dependencies: 7, 8, 9
+# Priority: low
+# Description: Update README, AGENTS.md, and in-app copy to reference Gemini; add migration notes and release highlights.
+# Details:
+Document settings changes, model defaults, and limitations; include references to Google docs.
+
+# Test Strategy:
+Docs review checklist; ensure commands and paths resolve.

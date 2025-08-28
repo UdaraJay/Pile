@@ -102,6 +102,7 @@
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tabs": "^1.1.0",
+    "@supabase/supabase-js": "^2.56.0",
     "@tanstack/react-virtual": "^3.0.1",
     "@tiptap/core": "^2.10.2",
     "@tiptap/extension-character-count": "^2.10.2",
@@ -208,6 +209,12 @@
     "appId": "pile.un.ms",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
+    "protocols": [
+      {
+        "name": "Pile OAuth",
+        "schemes": ["pile-auth"]
+      }
+    ],
     "files": [
       "dist",
       "node_modules",

@@ -1,0 +1,79 @@
+# Task ID: 2
+# Title: Spike: Set up @google/genai client and streaming in Electron main
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Install @google/genai, initialize GoogleGenAI with GEMINI_API_KEY, implement generateContentStream wrapper and log chunks.
+# Details:
+Create a main-process module `src/main/ai/gemini.ts` exporting `stream(prompt)` and `json(prompt)` using model `gemini-2.5-pro`. Wire minimal error handling.
+
+# Test Strategy:
+Unit: mock SDK; assert streaming iteration and error handling.
+
+# Subtasks:
+## 1. Install @google/genai and scaffold main client [done]
+### Dependencies: None
+### Description: Add dependency, create `src/main/ai/gemini.ts` with model init (`gemini-2.5-pro`).
+### Details:
+
+
+## 2. Implement generateContentStream wrapper [done]
+### Dependencies: None
+### Description: Expose `stream(prompt)` that yields text chunks; add error handling and abort support.
+### Details:
+
+
+## 3. Implement JSON generation helper [done]
+### Dependencies: None
+### Description: Expose `json(prompt)` using `responseMimeType: 'application/json'` and safe parsing.
+### Details:
+
+
+## 4. Add basic unit tests with SDK mocks [done]
+### Dependencies: None
+### Description: Mock @google/genai and test stream/json helpers for happy/error paths.
+### Details:
+
+
+## 5. Install @google/genai dependency [done]
+### Dependencies: None
+### Description: Add the @google/genai package to the project's dependencies using the project's package manager (npm or yarn).
+### Details:
+Run `npm install @google/genai` or `yarn add @google/genai` and confirm its addition to the `package.json` file. Verify that the project's dependencies can be installed successfully afterward.
+
+## 6. Create gemini.ts module and initialize client [done]
+### Dependencies: None
+### Description: Create the file `src/main/ai/gemini.ts` and implement the initialization logic for the GoogleGenAI client.
+### Details:
+In the new module, import `GoogleGenerativeAI`. Instantiate the client using `new GoogleGenerativeAI(process.env.GEMINI_API_KEY)`. For the spike, the key can be loaded directly from environment variables.
+<info added on 2025-08-26T16:23:21.739Z>
+The client is initialized with `gemini-2.5-pro` model. Basic structure for `stream` and `json` functions is in place.
+</info added on 2025-08-26T16:23:21.739Z>
+
+## 7. Implement `stream(prompt)` function [done]
+### Dependencies: None
+### Description: Implement and export an async generator function `stream(prompt)` that calls the Gemini API for streaming responses and logs the chunks.
+### Details:
+Within `gemini.ts`, create the `stream` function. It should get the `gemini-2.5-pro` model from the initialized client, call `generateContentStream({ prompt })`, and iterate through the resulting stream. Log the text from each chunk to the main process console.
+<info added on 2025-08-26T16:24:17.364Z>
+Additionally, ensure it is an async generator function that yields the text content from each chunk and includes proper error handling with try/catch.
+</info added on 2025-08-26T16:24:17.364Z>
+
+## 8. Implement `json(prompt)` function [done]
+### Dependencies: None
+### Description: Implement and export an async function `json(prompt)` that calls the Gemini API to get a structured JSON response.
+### Details:
+Within `gemini.ts`, create the `json` function. It should use the `gemini-2.5-pro` model and the `generateContent` method. The implementation should request a JSON response and parse the text output into a JavaScript object before returning it.
+<info added on 2025-08-26T16:25:19.669Z>
+, automatically adds JSON format instruction to prompts if not present, logs the response, and includes proper error handling with try/catch.
+</info added on 2025-08-26T16:25:19.669Z>
+
+## 9. Add minimal error handling and finalize exports [done]
+### Dependencies: None
+### Description: Wrap the API calls in both the `stream` and `json` functions with try/catch blocks to handle and log potential API or network errors.
+### Details:
+In `gemini.ts`, add `try...catch` blocks around the `generateContentStream` and `generateContent` calls. In the catch block, log a descriptive error message to the console. Ensure both `stream` and `json` functions are properly exported from the module's public interface.
+<info added on 2025-08-26T16:26:09.023Z>
+Errors are re-thrown appropriately from the catch blocks. In addition to `stream` and `json`, `genAI` and `model` functions are also exported from the module's public interface.
+</info added on 2025-08-26T16:26:09.023Z>
+

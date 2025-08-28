@@ -74,7 +74,7 @@ input {
   margin: 0;
   padding: 0;
   line-height: 1;
-  font-family: 'Porpora';
+  font-family: var(--font-heading);
   font-size: 1.4em;
   color: var(--primary);
 }
@@ -283,7 +283,7 @@ input {
   background: var(--bg-tertiary);
   border: none;
   outline: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-serif);
 
   &:focus {
     box-shadow: 0 0 0 2px var(--base);
@@ -306,7 +306,7 @@ input {
   background: var(--bg-tertiary);
   border: none;
   outline: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-serif);
 
   &:focus {
     box-shadow: 0 0 0 2px var(--base);

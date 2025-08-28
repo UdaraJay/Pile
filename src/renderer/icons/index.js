@@ -50,6 +50,9 @@ export * from './img/RelevantIcon';
 export * from './img/CardIcon';
 export * from './img/CoinIcon';
 export * from './img/BoxOpenIcon';
+export * from './img/CloudIcon';
+export * from './img/CheckIcon';
+export * from './img/AlertTriangleIcon';
 
 // logos
 export * from './logos/OllamaIcon';

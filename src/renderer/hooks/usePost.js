@@ -67,14 +67,14 @@ function usePost(
   }, [path]);
 
   const savePost = useCallback(
-    async (dataOverrides) => {
+    async (dataOverrides = {}, contentOverride = undefined) => {
       console.time('post-time');
 
       const saveToPath =
         path || fileOperations.getFilePathForNewPost(currentPile.path);
       const directoryPath = fileOperations.getDirectoryPath(saveToPath);
       const now = new Date().toISOString();
-      const { content } = post;
+      const content = contentOverride !== undefined ? contentOverride : post.content;
       const data = {
         ...post.data,
         isAI: post.data.isAI === true ? post.data.isAI : isAI,
@@ -85,16 +85,18 @@ function usePost(
       };
 
       try {
-        const fileContents = await fileOperations.generateMarkdown(
-          content,
-          data,
-        );
+        const fileContents = await fileOperations.generateMarkdown(content, data);
 
         await fileOperations.createDirectory(directoryPath);
         await fileOperations.saveFile(saveToPath, fileContents);
 
         if (isReply) {
-          await addReplyToParent(parentPostPath, saveToPath);
+          // Compute a reliable relative path for the new reply
+          const postRelativePath = saveToPath.replace(
+            getCurrentPilePath() + window.electron.pathSeparator,
+            '',
+          );
+          await addReplyToParent(parentPostPath, postRelativePath);
         }
 
         const postRelativePath = saveToPath.replace(
@@ -114,15 +116,34 @@ function usePost(
   );
 
   const addReplyToParent = async (parentPostPath, replyPostPath) => {
-    const relativeReplyPath = window.electron.joinPath(
-      ...replyPostPath.split(/[/\\]/).slice(-3),
-    );
+    // Ensure we always store a relative path in parent.replies
+    let relativeReplyPath = replyPostPath;
+    const rootPath = getCurrentPilePath();
+    if (replyPostPath.startsWith(rootPath)) {
+      relativeReplyPath = replyPostPath.replace(
+        rootPath + window.electron.pathSeparator,
+        '',
+      );
+    }
     const fullParentPostPath = getCurrentPilePath(parentPostPath);
     const parentPost = await getPost(fullParentPostPath);
     const { content } = parentPost;
+    // Prevent duplicate replies
+    const existingReplies = parentPost.data.replies || [];
+    const newReplies = existingReplies.includes(relativeReplyPath) 
+      ? existingReplies 
+      : [...existingReplies, relativeReplyPath];
+      
+    console.log('Adding reply to parent:', {
+      parentPostPath,
+      relativeReplyPath,
+      existingReplies,
+      isDuplicate: existingReplies.includes(relativeReplyPath)
+    });
+    
     const data = {
       ...parentPost.data,
-      replies: [...parentPost.data.replies, relativeReplyPath],
+      replies: newReplies,
     };
     const fileContents = await fileOperations.generateMarkdown(content, data);
     await fileOperations.saveFile(fullParentPostPath, fileContents);

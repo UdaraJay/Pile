@@ -1,0 +1,43 @@
+# Task ID: 15
+# Title: Implement Post & Pile Data Synchronization
+# Status: done
+# Dependencies: 13, 14
+# Priority: high
+# Description: Develop the core logic for synchronizing `posts` and `piles` data between the local cache and Supabase, including initial fetch and incremental updates.
+# Details:
+Implement CRUD operations for `posts` and `piles` that interact with both the local cache and Supabase. Handle the initial data fetch from Supabase to populate the local cache. Implement incremental updates for new, modified, or deleted entries. Initially, use a 'last-write-wins' strategy for conflict resolution.
+
+# Test Strategy:
+Create, update, and delete posts/piles on one device and verify immediate sync to another. Test with large number of entries. Verify data consistency across devices after sync.
+
+# Subtasks:
+## 1. Implement Initial Supabase Data Fetch & Local Cache Population [done]
+### Dependencies: None
+### Description: Develop the logic to perform a one-time, comprehensive fetch of all user-accessible `posts` and `piles` from Supabase. This data will then be used to fully populate and initialize the local cache, establishing the baseline for synchronization.
+### Details:
+Query Supabase for all `posts` and `piles` relevant to the current user, respecting RLS policies. Store the fetched data efficiently in the local cache, ensuring the cache accurately reflects the remote state at the time of initialization.
+
+## 2. Develop Local Cache CRUD Operations for Posts & Piles [done]
+### Dependencies: None
+### Description: Create the core Create, Read, Update, and Delete (CRUD) functionalities for `posts` and `piles` within the local cache. These operations will serve as the primary interface for the application to interact with cached data, independent of Supabase.
+### Details:
+Implement functions such as `createPostLocal(postData)`, `getPostLocal(id)`, `updatePostLocal(id, newData)`, `deletePostLocal(id)` for both `posts` and `piles`. Ensure these operations maintain the integrity and structure of the local cache.
+
+## 3. Implement Local-to-Supabase Write-Through & Basic Conflict Handling [done]
+### Dependencies: 15.2
+### Description: Develop the mechanism to automatically push local `posts` and `piles` CRUD operations to Supabase. This subtask includes implementing the initial 'last-write-wins' strategy for local changes being written to Supabase, ensuring local modifications are persisted remotely.
+### Details:
+When a `create`, `update`, or `delete` operation occurs in the local cache (via 15.2), trigger a corresponding operation on Supabase. For updates, if a conflict is detected (e.g., remote version is older), the local change will overwrite the remote (last-write-wins from local perspective).
+
+## 4. Implement Supabase-to-Local Cache Incremental Sync (Pull Mechanism) [done]
+### Dependencies: 15.1, 15.2, 15.3
+### Description: Develop the logic to periodically or reactively pull incremental updates (new, modified, or deleted `posts` and `piles`) from Supabase and stage them for application to the local cache. This ensures the local cache stays aware of changes originating from other clients or direct Supabase interactions.
+### Details:
+Implement a mechanism (e.g., a background process, a listener for Supabase Realtime events, or a polling strategy) to detect and fetch changes in `posts` and `piles` tables on Supabase. Store these incoming changes temporarily before applying them to the local cache.
+
+## 5. Implement Last-Write-Wins Conflict Resolution & Local Cache Reconciliation [done]
+### Dependencies: 15.4
+### Description: Implement the core 'last-write-wins' conflict resolution strategy for merging the incremental updates pulled from Supabase (from 15.4) into the local cache. This ensures that the local cache is consistently updated, with remote changes taking precedence in case of conflicts.
+### Details:
+Process the staged incoming changes from Supabase. For each change, compare it with the current local cache state. If a conflict is detected (e.g., the same item was modified both locally and remotely), the remote version (the 'last write') will overwrite the local version. Reconcile the local cache to reflect these merged changes.
+

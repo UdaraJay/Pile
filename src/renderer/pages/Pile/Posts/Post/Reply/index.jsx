@@ -24,17 +24,17 @@ export default function Reply({
   searchTerm = { searchTerm },
 }) {
   const { currentPile } = usePilesContext();
-  const { post, cycleColor, deletePost } = usePost(postPath, { 
-    isReply: true, 
+  const { post, cycleColor, deletePost } = usePost(postPath, {
+    isReply: true,
     parentPostPath,
-    reloadParentPost 
+    reloadParentPost,
   });
   const [editable, setEditable] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const toggleEditable = () => setEditable(!editable);
-  
+
   const handleMouseEnter = () => setHovering(true);
   const handleMouseLeave = () => setHovering(false);
 
@@ -45,7 +45,7 @@ export default function Reply({
       setTimeout(() => setDeleteConfirm(false), 3000);
       return;
     }
-    
+
     try {
       await deletePost();
       setDeleteConfirm(false);
@@ -106,7 +106,11 @@ export default function Reply({
                     transition={{ duration: 0.15 }}
                     className={`${styles.deleteReply} ${deleteConfirm ? styles.confirmDelete : ''}`}
                     onClick={handleDeleteReply}
-                    title={deleteConfirm ? "Click again to confirm deletion" : "Delete this reply"}
+                    title={
+                      deleteConfirm
+                        ? 'Click again to confirm deletion'
+                        : 'Delete this reply'
+                    }
                   >
                     <TrashIcon className={styles.deleteIcon} />
                   </motion.button>

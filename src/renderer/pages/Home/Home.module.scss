@@ -13,6 +13,9 @@
   position: relative;
   max-width: 700px;
   margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .bg {
@@ -26,9 +29,26 @@
   opacity: 0.3;
 }
 
+/* Main centered content */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 2rem;
+  position: relative;
+}
+
+/* SyncStatus removed from Home */
+
 .header {
   -webkit-app-region: none;
   user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
 
   @keyframes grow {
     0% {
@@ -48,12 +68,11 @@
     border-radius: 22px;
     height: 72px;
     width: 72px;
-    margin: 0 auto;
     margin-bottom: 64px;
     gap: 12px;
 
     .name {
-      font-family: 'Porpora';
+      font-family: var(--font-heading);
       font-size: 1.6em;
       text-align: center;
       color: var(--primary);
@@ -115,30 +134,81 @@
   }
 }
 
-.create {
+.createSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+.authButtonsRight {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Unified button styles */
+.button {
   -webkit-app-region: none;
-  display: block;
+  display: inline-block;
   text-align: center;
   font-size: 0.8em;
   padding: 10px 18px;
   font-weight: 500;
-  background: Var(--active);
+  background: var(--active);
   color: var(--active-text);
+  border: none;
   border-radius: 90px;
-  margin: 32px auto;
+  text-decoration: none;
   user-select: none;
+  cursor: pointer;
   transition: all ease-in-out 120ms;
+  white-space: nowrap;
+  box-sizing: border-box; /* keep outer width consistent */
 
   &:hover {
-    cursor: pointer;
     background: var(--active-hover);
   }
 
   &:active {
     color: var(--secondary);
     background: var(--active);
+    transform: scale(0.97);
   }
 }
+
+/* Cloud pile specific styles */
+.cloudPile {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+  
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.cloudBadge {
+  width: 16px;
+  height: 16px;
+  color: #667eea;
+  opacity: 0.8;
+}
+
+.description {
+  margin-top: 2px;
+  font-size: 0.85em;
+  color: var(--secondary);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* old .deleteButton style removed in favor of .iconButton */
 
 .or {
   font-size: 0.75em;
@@ -166,12 +236,15 @@
   font-size: 0.8em;
   border-radius: 12px;
   gap: 2px;
+  margin: 0 auto;
+  max-width: 270px;
 
   .pile {
     width: 270px;
     -webkit-app-region: none;
     display: flex;
     justify-content: space-between;
+    align-items: center; /* keep controls aligned per row */
     background: var(--bg);
     padding: 7px 7px 7px 14px;
     color: var(--primary);
@@ -189,24 +262,25 @@
 
     .left {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       flex: 1 1 auto;
 
       .name {
-        flex: 1 1 auto;
+        flex: 0 0 auto;
         font-weight: 500;
-        max-width: 95px;
+        max-width: 180px; /* allow more name width in narrow list */
         user-select: none;
         font-size: 16px;
-        font-family: 'Porpora';
+        font-family: var(--font-heading);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       .src {
-        margin-top: 1px;
-        font-size: 0.9em;
+        margin-top: 2px;
+        font-size: 0.85em;
         color: var(--secondary);
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -217,34 +291,68 @@
 
     .right {
       display: flex;
+      align-items: center;
+      gap: 6px; /* consistent spacing between icon buttons and Open */
       flex: 0 0 auto;
-      margin-left: 32px;
+      margin-left: 12px;
       user-select: none;
     }
   }
 
   .button {
-    background: var(--base);
-    color: var(--base-text);
-    font-size: 0.95em;
+    /* Align pile row button with unified pill style and icon height */
+    background: var(--active);
+    color: var(--active-text);
+    font-size: 0.9em;
     padding: 0 14px;
     height: 28px;
-    line-height: 27px;
-    border-radius: 7px;
+    line-height: 28px;
+    border-radius: 90px;
     user-select: none;
     transition: all ease-in-out 120ms;
     font-weight: 500;
+    box-sizing: border-box;
 
     &:hover {
       cursor: pointer;
-      background: var(--base-hover);
+      background: var(--active-hover);
     }
 
     &:active {
       cursor: pointer;
-      background: var(--bg-tertiary);
+      color: var(--secondary);
+      background: var(--active);
       transform: scale(0.97);
     }
+  }
+
+  /* Shared small icon button style for row actions (e.g., cloud delete) */
+  .iconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
+    height: 28px;
+    width: 28px;
+    border-radius: 90px;
+    transition: all ease-in-out 120ms;
+
+    &:hover {
+      cursor: pointer;
+      color: var(--primary);
+      background: var(--bg-tertiary);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  .icon {
+    height: 20px;
+    width: 20px;
+    margin: 0;
+    padding: 0;
   }
 }
 
@@ -285,13 +393,140 @@
   .nav {
     margin-top: 22px;
 
-    .link {
-      color: Var(--secondary);
+      .link {
+      color: var(--secondary);
       margin: 0 1em;
       transition: all ease-in-out 120ms;
 
       &:hover {
         color: var(--primary);
+      }
+    }
+  }
+}
+
+/* Authentication Section Styles */
+.authSection {
+  -webkit-app-region: none;
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  display: flex;
+  align-items: center;
+}
+
+.authStatus {
+  color: var(--secondary);
+  font-size: 0.9rem;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.welcomeText {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Auth button styles removed - using unified .button class */
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  -webkit-app-region: none;
+}
+
+.modal {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 2rem;
+  min-width: 400px;
+  max-width: 90vw;
+  border: 1px solid var(--border);
+  
+  h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  label {
+    color: var(--primary);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  
+  input {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--primary);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 2px rgba(var(--brand-rgb), 0.1);
+    }
+    
+    &::placeholder {
+      color: var(--secondary);
+    }
+  }
+}
+
+.modalButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  
+  .button {
+    /* Reuse existing button styles but override some properties */
+    min-width: 80px;
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      
+      &:hover {
+        background: var(--active);
+        transform: none;
       }
     }
   }

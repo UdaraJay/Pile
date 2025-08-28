@@ -1,0 +1,11 @@
+# Task ID: 1
+# Title: Epic: Migrate AI integration to Gemini 2.5 Pro
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Replace OpenAI with @google/genai, use model `gemini-2.5-pro`, add streaming + JSON mode, secure key handling in Electron main via IPC, update tests/docs.
+# Details:
+Scope: main-process client, streaming to renderer, JSON mode for summaries, settings UI for key, repo-wide replacement, security posture per Electron docs.
+
+# Test Strategy:
+Unit tests for client wrapper, IPC handlers, and JSON parsing; integration smoke for streaming UI.

@@ -7,6 +7,8 @@ import {
   useCallback,
 } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { supabase } from '../lib/supabase';
 
 export const availableThemes = {
   light: { primary: '#ddd', secondary: '#fff' },
@@ -20,13 +22,27 @@ export const PilesContext = createContext();
 
 export function PilesContextProvider({ children }) {
   const location = useLocation();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [currentPile, setCurrentPile] = useState(null);
   const [piles, setPiles] = useState([]);
+  const [cloudPiles, setCloudPiles] = useState([]);
+  const [syncEnabled, setSyncEnabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Initialize config file
   useEffect(() => {
     getConfig();
   }, [location]);
+
+  // Load cloud piles when authenticated
+  useEffect(() => {
+    if (isAuthenticated && user && !authLoading) {
+      loadCloudPiles();
+    } else {
+      setCloudPiles([]);
+      setSyncEnabled(false);
+    }
+  }, [isAuthenticated, user, authLoading]);
 
   // Set the current pile based on the url
   useEffect(() => {
@@ -39,6 +55,8 @@ export function PilesContextProvider({ children }) {
   }, [location.pathname]);
 
   const getConfig = async () => {
+    if (!window.electron?.getConfigPath) return;
+    
     const configFilePath = window.electron.getConfigPath();
 
     // Setup new piles.json if doesn't exist,
@@ -65,13 +83,124 @@ export function PilesContextProvider({ children }) {
   };
 
   const writeConfig = async (piles) => {
-    if (!piles) return;
+    if (!piles || !window.electron?.getConfigPath) return;
+    
     const configFilePath = window.electron.getConfigPath();
     window.electron.writeFile(configFilePath, JSON.stringify(piles), (err) => {
       if (err) {
         console.error('Error writing to config');
       }
     });
+  };
+
+  // Cloud pile management functions
+  const loadCloudPiles = async () => {
+    if (!isAuthenticated || !user) return;
+
+    setLoading(true);
+    try {
+      // Use IPC to load piles from main process (where session is authenticated)
+      const result = await window.electron?.auth?.getPiles();
+
+      if (result?.error) {
+        console.error('Error loading cloud piles:', result.error);
+        return;
+      }
+
+      console.log('Loaded', result?.data?.length || 0, 'cloud piles via IPC');
+      setCloudPiles(result?.data || []);
+      setSyncEnabled(true);
+    } catch (error) {
+      console.error('Error loading cloud piles:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createCloudPile = async (name, description = '', isPrivate = true) => {
+    if (!isAuthenticated || !user) return null;
+
+    try {
+      const { data, error } = await supabase
+        .from('piles')
+        .insert({
+          user_id: user.id,
+          name: name.trim(),
+          description: description.trim(),
+          is_private: isPrivate,
+          settings: {
+            theme: 'light',
+            sync_enabled: true,
+          },
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating cloud pile:', error);
+        return null;
+      }
+
+      // Refresh cloud piles
+      await loadCloudPiles();
+      return data;
+    } catch (error) {
+      console.error('Error creating cloud pile:', error);
+      return null;
+    }
+  };
+
+  const deleteCloudPile = async (pileId) => {
+    if (!isAuthenticated || !user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('piles')
+        .delete()
+        .eq('id', pileId)
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error deleting cloud pile:', error);
+        return false;
+      }
+
+      // Refresh cloud piles
+      await loadCloudPiles();
+      return true;
+    } catch (error) {
+      console.error('Error deleting cloud pile:', error);
+      return false;
+    }
+  };
+
+  const updateCloudPile = async (pileId, updates) => {
+    if (!isAuthenticated || !user) return false;
+
+    try {
+      const { data, error } = await supabase
+        .from('piles')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', pileId)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating cloud pile:', error);
+        return false;
+      }
+
+      // Refresh cloud piles
+      await loadCloudPiles();
+      return data;
+    } catch (error) {
+      console.error('Error updating cloud pile:', error);
+      return false;
+    }
   };
 
   const createPile = (name = '', selectedPath = null) => {
@@ -138,7 +267,24 @@ export function PilesContextProvider({ children }) {
     [currentPile],
   );
 
+  // Combined piles for display (local + cloud)
+  const allPiles = useMemo(() => {
+    const combined = [...piles];
+    if (isAuthenticated && syncEnabled) {
+      cloudPiles.forEach((cloudPile) => {
+        // Add cloud pile with identifier
+        combined.push({
+          ...cloudPile,
+          isCloudPile: true,
+          type: 'cloud',
+        });
+      });
+    }
+    return combined;
+  }, [piles, cloudPiles, isAuthenticated, syncEnabled]);
+
   const pilesContextValue = {
+    // Local piles
     piles,
     getCurrentPilePath,
     createPile,
@@ -147,6 +293,22 @@ export function PilesContextProvider({ children }) {
     currentTheme,
     setTheme,
     updateCurrentPile,
+
+    // Cloud piles
+    cloudPiles,
+    syncEnabled,
+    loading,
+    loadCloudPiles,
+    createCloudPile,
+    deleteCloudPile,
+    updateCloudPile,
+
+    // Combined
+    allPiles,
+
+    // Auth integration
+    isAuthenticated,
+    user,
   };
 
   return (

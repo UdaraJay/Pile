@@ -1,0 +1,93 @@
+{
+	"meta": {
+		"generatedAt": "2025-08-27T08:58:39.704Z",
+		"tasksAnalyzed": 10,
+		"totalTasks": 10,
+		"analysisCount": 10,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "Define Embedding Provider Interface and Implement Gemini Provider (Initial)",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down the implementation of the `GeminiEmbeddingProvider` into setting up the Google GenAI client, implementing the `embed` and `embedBatch` methods with appropriate error handling, ensuring network calls are confined to the main Electron process, and writing comprehensive unit tests with mocked network requests.",
+			"reasoning": "This task is foundational, involving external API integration and adherence to Electron's main process for network calls. It requires careful implementation of the core embedding logic and robust unit testing."
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Adapt Ollama to New Provider Interface",
+			"complexityScore": 4,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Detail the steps for refactoring the existing Ollama embedding generation logic into a new `OllamaEmbeddingProvider` class, ensuring full compliance with the `IEmbeddingProvider` interface for both single and batch embedding functionalities, and migrating any existing configuration or client setup.",
+			"reasoning": "This is primarily a refactoring task, leveraging existing Ollama logic. The main complexity lies in correctly adapting to the new interface and ensuring all existing functionality is migrated."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "Implement Provider Factory and Integrate with Main Process Settings",
+			"complexityScore": 5,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Outline the creation of the `EmbeddingProviderFactory`, including its method signatures, the logic for dynamically selecting and instantiating providers based on the `pileAIProvider` setting, and the specific integration points within the main process's `pileEmbeddings` module or similar service.",
+			"reasoning": "Involves implementing a standard factory pattern and integrating it with existing application settings. The complexity comes from identifying the correct integration points within the main process."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "Develop Settings UI for Provider Selection and Gemini API Key Management",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Elaborate on the UI design for provider selection and API key input, the IPC communication for securely saving and retrieving the `GEMINI_API_KEY`, the main process logic for a lightweight API key validation call to Gemini, and surfacing validation errors back to the renderer UI.",
+			"reasoning": "This task spans both renderer (UI) and main (backend, secure storage, API validation) processes, requiring robust IPC communication and careful handling of sensitive data and external API calls."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Refactor Pile Embeddings Module to Use Provider Abstraction and Batching",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Detail the modifications required in `pileEmbeddings.generateEmbedding` to use the `embed` method and `walkAndGenerateEmbeddings` to utilize the `embedBatch` method, focusing on implementing efficient batch processing logic with a configurable batch size to optimize performance and respect API limits.",
+			"reasoning": "This is a core refactoring task that introduces significant changes to the embedding generation workflow, including batching logic and performance considerations, which can be intricate to implement and test."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "Update `embeddings.json` Schema and Implement Backward Compatibility",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Specify the new `embeddings.json` schema, detail the read/write logic for both the new and legacy formats, outline the mechanism for detecting and parsing legacy files, and implement the automatic conversion of legacy data to the new schema upon the next save operation.",
+			"reasoning": "Involves critical data migration and backward compatibility, which requires careful design and thorough testing to ensure data integrity and prevent data loss during schema evolution."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Implement 'Regenerate Embeddings' Action and Progress Reporting",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Describe the full flow for the 'Regenerate embeddings' action, from the IPC command handler in the main process to clearing existing embeddings, triggering `walkAndGenerateEmbeddings`, ensuring data persistence with the new schema, and implementing real-time progress reporting via IPC to update the renderer UI.",
+			"reasoning": "This task orchestrates several components and introduces real-time progress reporting via IPC, adding complexity to asynchronous communication, state management, and UI updates."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "Implement Robust Error Handling and Rate Limiting for Embedding Providers",
+			"complexityScore": 8,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Detail the implementation of exponential backoff and retry logic within `GeminiEmbeddingProvider` (and potentially Ollama), the strategy for handling partial failures within `embedBatch` operations, and the mechanism for collecting and summarizing all errors encountered during a full embedding regeneration process.",
+			"reasoning": "Introduces advanced error handling patterns like exponential backoff and complex logic for managing partial failures in batch operations, significantly increasing the robustness but also the implementation complexity and testing requirements."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "Develop Unit and Integration Tests",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Outline a comprehensive test plan, including specific unit tests for each new component (providers, factory, schema migration, batching logic) and integration tests for the full `vectorSearch` path, detailing mocking strategies for external APIs and ensuring adequate test coverage for critical paths.",
+			"reasoning": "This is a broad and critical task that requires designing and implementing comprehensive tests across multiple modules, including mocking external dependencies and setting up integration test environments, making it highly complex."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "Update Documentation",
+			"complexityScore": 3,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "List the specific sections and content to be updated in the `README.md` and other relevant documentation, covering Gemini API key setup, provider selection, usage of the 'Regenerate embeddings' feature, and important notes on API quotas, potential costs, and recommended batch sizes.",
+			"reasoning": "A straightforward documentation task that requires clear and concise communication of new features and configurations. Its complexity is low as it doesn't involve coding logic."
+		}
+	]
+}

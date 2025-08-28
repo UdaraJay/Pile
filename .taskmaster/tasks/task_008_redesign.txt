@@ -1,0 +1,27 @@
+# Task ID: 8
+# Title: Security & CSP: enforce Electron best practices
+# Status: done
+# Dependencies: 2, 3
+# Priority: high
+# Description: Verify contextIsolation, nodeIntegration, preload exposure, and add/adjust CSP. Validate IPC sender origins; sanitize inputs.
+# Details:
+Audit BrowserWindow creation, preload API surface, and enable strict CSP for renderer assets.
+
+# Test Strategy:
+Manual audit checklist + unit tests for preload API shape; verify no node APIs in renderer.
+
+# Subtasks:
+## 1. Enforce security flags and narrow preload [done]
+### Dependencies: None
+### Description: Audit BrowserWindow flags; minimize preload API surface; add schema validation.
+### Details:
+
+
+## 2. Add/adjust CSP [done]
+### Dependencies: None
+### Description: Add CSP meta or headers in dev/prod; restrict remote content and eval.
+### Details:
+<info added on 2025-08-26T19:12:09.204Z>
+Implemented CSP hardening and consolidation: Removed meta CSP from renderer HTML (header-only now). Added environment-specific CSP in main process (dev vs prod). `script-src` updated to drop 'unsafe-inline' (allowing 'unsafe-eval' only in dev). `style-src` allows 'unsafe-inline' for CSS injection. `connect-src` allows ws/http localhost in dev and restricts to Google API in prod. Added `frame-ancestors 'none'` and `worker-src 'self' blob:`. Validated BrowserWindow flags remain secure (contextIsolation on, nodeIntegration off).
+</info added on 2025-08-26T19:12:09.204Z>
+

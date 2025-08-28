@@ -1,0 +1,43 @@
+# Task ID: 3
+# Title: IPC bridge: expose Gemini generate + streaming to renderer
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Add ipcMain handler and event channel; preload contextBridge exposes invoke and listener; validate sender; no key leakage.
+# Details:
+Add channels: `gemini:generate` (invoke) and `gemini:stream` (event). Update preload to expose minimal API. Update window creation to set security flags.
+
+# Test Strategy:
+Unit: mock ipcMain handlers; integration: preload exposure shape.
+
+# Subtasks:
+## 1. ipcMain handler for non-stream JSON [done]
+### Dependencies: None
+### Description: `ipcMain.handle('gemini:generate')` returns JSON or text; validate input and sanitize.
+### Details:
+
+
+## 2. Streaming channel and preload bridge [done]
+### Dependencies: None
+### Description: Send chunks via `webContents.send('gemini:stream', data)`; preload exposes `onGeminiResponse` and `invokeGemini`.
+### Details:
+<info added on 2025-08-26T16:29:16.937Z>
+Implemented streaming channel functionality: Added 'gemini:stream' IPC handler that streams chunks via webContents.send() with unique stream IDs. Updated preload.ts to expose onGeminiResponse() listener and invokeGemini()/startStream() methods. Includes proper stream lifecycle management (start/chunk/end/error events) and cleanup functions.
+</info added on 2025-08-26T16:29:16.937Z>
+
+## 3. Type declarations and sender validation [done]
+### Dependencies: None
+### Description: Update `src/renderer/preload.d.ts`; validate sender frame URL is `file:` before serving requests.
+### Details:
+<info added on 2025-08-26T16:30:55.209Z>
+Sender validation added to Gemini IPC handlers, ensuring `file://` protocol for sender frame URL. TypeScript type definitions (`GeminiResponse`, `GeminiStreamResponse`, `GeminiStreamEvent`) created in `src/main/types/gemini.ts` and used to update handler return types for improved type safety. Preload type declarations are automatically included via `ElectronHandler`.
+</info added on 2025-08-26T16:30:55.209Z>
+
+## 4. Security: narrow preload API surface [done]
+### Dependencies: None
+### Description: Expose only functions needed; no raw ipcRenderer; add input schema validation.
+### Details:
+<info added on 2025-08-26T16:32:39.643Z>
+Added comprehensive input schema validation to all Gemini functions (prompt type/length checks, callback function validation). Added data structure validation for streaming responses before passing to callbacks.
+</info added on 2025-08-26T16:32:39.643Z>
+

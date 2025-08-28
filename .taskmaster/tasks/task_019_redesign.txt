@@ -1,0 +1,43 @@
+# Task ID: 19
+# Title: Develop Pile Sharing & Member Management UI
+# Status: pending
+# Dependencies: 14, 18
+# Priority: high
+# Description: Create the user interface and backend logic for sharing piles with other users and managing collaborators' permissions.
+# Details:
+Implement functionality to generate shareable links for piles, allowing users to invite others. Develop a UI for managing pile members, including inviting, removing, and assigning roles/permissions (e.g., read-only, editor) using the `pile_members` table. Ensure RLS policies are respected.
+
+# Test Strategy:
+Test sharing a pile with different permission levels. Verify invited users can access/edit based on their role. Confirm the owner can remove members and revoke access.
+
+# Subtasks:
+## 1. Implement Backend API for Shareable Links & Initial Invitations [pending]
+### Dependencies: None
+### Description: Develop the server-side logic and API endpoints required to generate unique shareable links for piles and process initial invitations when users accept these links.
+### Details:
+Implement API endpoints for creating secure, unique shareable links for a given pile, including options for default permission levels. Develop backend logic to store link metadata and to validate and process invitations, adding users to the `pile_members` table with the specified role upon link acceptance.
+
+## 2. Develop UI for Shareable Link Generation & Display [pending]
+### Dependencies: None
+### Description: Create the user interface elements that allow pile owners to generate shareable links and easily copy them, including options for initial access permissions.
+### Details:
+Design and implement a UI component (e.g., a button, a modal within the pile view) that enables a pile owner to generate a shareable link. Display the generated link prominently for copying and provide UI controls for setting the initial permission level (e.g., read-only, editor) for users joining via this link.
+
+## 3. Implement Backend API for Member CRUD & Role Management [pending]
+### Dependencies: None
+### Description: Develop the server-side logic and API endpoints for directly managing pile members, including adding, removing, and updating their roles and permissions.
+### Details:
+Implement API endpoints for direct management of pile members: adding specific users to a pile (e.g., by ID or email), removing users from a pile, and updating the roles/permissions (e.g., 'read-only', 'editor') of existing members within the `pile_members` table.
+
+## 4. Develop UI for Pile Member Management Dashboard [pending]
+### Dependencies: None
+### Description: Create a dedicated user interface for pile owners to view, invite, remove, and modify the roles of collaborators on their piles.
+### Details:
+Design and implement a dedicated UI screen or modal (e.g., a 'Manage Collaborators' panel) where the pile owner can view a list of all current members, see their assigned roles, and perform actions such as inviting new users (e.g., by username/email lookup), removing existing members, and changing their roles (e.g., from read-only to editor).
+
+## 5. Implement RLS Policies & Conduct End-to-End Testing [pending]
+### Dependencies: None
+### Description: Ensure all pile sharing and member management operations strictly adhere to Row Level Security policies and conduct comprehensive testing across all functionalities.
+### Details:
+Implement and rigorously verify Row Level Security (RLS) policies on the `pile_members` table and any related tables to ensure that users can only perform actions (view, edit, manage) consistent with their assigned roles and pile ownership. Conduct comprehensive end-to-end integration testing covering shareable link generation, invitation acceptance, direct member invitation, member removal, role changes, and access validation for all defined roles (owner, editor, read-only) to confirm RLS is correctly enforced across the entire system.
+

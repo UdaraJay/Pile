@@ -4,6 +4,8 @@ const useIPCListener = (channel, initialData) => {
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
+    if (!window.electron?.ipc?.on) return;
+    
     const handler = (newData) => {
       setData(newData);
     };

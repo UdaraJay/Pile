@@ -1,0 +1,43 @@
+# Task ID: 13
+# Title: Develop Core Sync Infrastructure & Offline Queue
+# Status: done
+# Dependencies: 11, 12
+# Priority: high
+# Description: Establish the foundational client-side sync mechanism and an offline queue for pending operations to support offline-first functionality.
+# Details:
+Design and implement a local data cache (e.g., SQLite or IndexedDB) to mirror Supabase data. Create an 'offline queue' to store all CUD (Create, Update, Delete) operations when the application is offline. Implement a mechanism to detect network connectivity changes and automatically replay queued operations to Supabase upon reconnection.
+
+# Test Strategy:
+Simulate offline mode: create/edit/delete entries, then go online and verify successful sync. Test with multiple operations queued. Ensure data consistency after sync.
+
+# Subtasks:
+## 1. Implement Local Data Cache [done]
+### Dependencies: None
+### Description: Design and implement the client-side local data cache to mirror Supabase data, providing basic CRUD operations for local storage.
+### Details:
+Choose a local storage solution (e.g., SQLite for Electron/mobile, IndexedDB for web). Define the schema for `posts` and `piles` tables locally, mirroring their Supabase structure. Implement methods for creating, reading, updating, and deleting records within this local cache.
+
+## 2. Develop Offline Operations Queue [done]
+### Dependencies: 13.1
+### Description: Create a mechanism to capture and store all CUD (Create, Update, Delete) operations when the application is offline, preparing them for later synchronization.
+### Details:
+Design a dedicated structure (e.g., a table within the local data cache) to store pending CUD operations. Each queued item should include the operation type (Create, Update, Delete), target table, relevant data/payload, a unique identifier, and a timestamp. Implement an interception layer for application CUD calls to push operations to this queue when offline.
+
+## 3. Implement Network Connectivity Detection [done]
+### Dependencies: None
+### Description: Develop a robust mechanism to detect changes in network connectivity status (online/offline) to trigger appropriate sync behaviors.
+### Details:
+Implement listeners for browser `online`/`offline` events or use a more sophisticated method (e.g., periodic pings to a known endpoint) to determine actual connectivity. Provide a clear API or event system to notify other parts of the application about connectivity status changes.
+
+## 4. Develop Queued Operations Replay Logic [done]
+### Dependencies: 13.1, 13.2, 13.3
+### Description: Implement the core logic to automatically replay all stored offline CUD operations to Supabase upon network reconnection.
+### Details:
+Upon detecting an 'online' state, iterate through the offline queue. For each queued operation, execute the corresponding CUD operation against Supabase. Handle successful operations by removing them from the queue. Implement basic error handling for failed operations during replay (e.g., retry mechanism, marking as failed). Ensure operations are replayed in a logical order (e.g., creation before updates/deletions on the same entity).
+
+## 5. Implement Initial Conflict Resolution Strategy [done]
+### Dependencies: 13.4
+### Description: Establish a basic conflict resolution strategy for replayed operations to ensure data consistency during sync, specifically 'last-write-wins'.
+### Details:
+Implement a 'last-write-wins' strategy for conflicts that may arise when replaying queued operations. This involves ensuring that the most recent change (based on a `last_modified_at` timestamp or version) takes precedence. For the initial implementation, this means the replayed local change will overwrite the server's state if a conflict occurs on the same record during replay.
+

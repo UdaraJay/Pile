@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback } from 'react';
 
 const GlobalAIContext = createContext();
 
-export const GlobalAIProvider = ({ children }) => {
+export function GlobalAIProvider({ children }) {
   const [globalAIState, setGlobalAIState] = useState({
     isActive: false,
     message: '',
@@ -11,18 +11,21 @@ export const GlobalAIProvider = ({ children }) => {
     canRetry: false,
   });
 
-  const showAISpinner = useCallback((message = 'AI is thinking...', options = {}) => {
-    console.log('🌐 [GlobalAI] Showing spinner:', message, options);
-    setGlobalAIState({
-      isActive: true,
-      message,
-      hasError: false,
-      canCancel: options.canCancel || false,
-      canRetry: false,
-      onCancel: options.onCancel,
-      onRetry: options.onRetry,
-    });
-  }, []);
+  const showAISpinner = useCallback(
+    (message = 'AI is thinking...', options = {}) => {
+      console.log('🌐 [GlobalAI] Showing spinner:', message, options);
+      setGlobalAIState({
+        isActive: true,
+        message,
+        hasError: false,
+        canCancel: options.canCancel || false,
+        canRetry: false,
+        onCancel: options.onCancel,
+        onRetry: options.onRetry,
+      });
+    },
+    [],
+  );
 
   const showAIError = useCallback((errorMessage, options = {}) => {
     console.log('🌐 [GlobalAI] Showing error:', errorMessage, options);
@@ -49,16 +52,18 @@ export const GlobalAIProvider = ({ children }) => {
   }, []);
 
   return (
-    <GlobalAIContext.Provider value={{
-      globalAIState,
-      showAISpinner,
-      showAIError,
-      hideAISpinner,
-    }}>
+    <GlobalAIContext.Provider
+      value={{
+        globalAIState,
+        showAISpinner,
+        showAIError,
+        hideAISpinner,
+      }}
+    >
       {children}
     </GlobalAIContext.Provider>
   );
-};
+}
 
 export const useGlobalAI = () => {
   const context = useContext(GlobalAIContext);

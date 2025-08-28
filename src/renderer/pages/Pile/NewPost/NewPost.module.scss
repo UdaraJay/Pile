@@ -1,7 +1,7 @@
 .post {
   display: block;
   z-index: 2;
-  background: var(--bg);
+  background: transparent; /* let global glow show behind composer */
   margin-left: 1px;
   margin: 18px;
   padding-top: 58px;

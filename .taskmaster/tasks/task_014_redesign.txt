@@ -1,0 +1,43 @@
+# Task ID: 14
+# Title: Implement Row Level Security (RLS) Policies
+# Status: done
+# Dependencies: 11, 12
+# Priority: high
+# Description: Define and apply Row Level Security policies to all relevant tables to ensure user data isolation and secure access.
+# Details:
+Enable RLS on `piles`, `pile_members`, `posts`, `post_replies`, `post_tags`, `post_highlights`, and `attachments` tables. Write policies to ensure users can only access their own data or data from piles they are explicitly members of. Test policies rigorously to prevent unauthorized data access.
+
+# Test Strategy:
+Attempt to access data belonging to other users or unshared piles from a logged-in user. Verify that RLS correctly denies access. Test various user roles and permissions.
+
+# Subtasks:
+## 1. Enable RLS on all specified tables [done]
+### Dependencies: None
+### Description: Activate Row Level Security for `piles`, `pile_members`, `posts`, `post_replies`, `post_tags`, `post_highlights`, and `attachments` tables in the database.
+### Details:
+Execute `ALTER TABLE <table_name> ENABLE ROW LEVEL SECURITY;` for each of the seven specified tables: `piles`, `pile_members`, `posts`, `post_replies`, `post_tags`, `post_highlights`, and `attachments`.
+
+## 2. Implement RLS policies for direct user ownership [done]
+### Dependencies: 14.1
+### Description: Create RLS policies that allow users to access rows where they are the direct owner (e.g., `user_id = auth.uid()`).
+### Details:
+Create `CREATE POLICY` statements for `SELECT`, `INSERT`, `UPDATE`, `DELETE` operations on tables where data is directly owned by a user (e.g., `posts`, `attachments`, `piles` if a user owns a pile directly) using `auth.uid() = user_id` or similar conditions.
+
+## 3. Implement RLS policies for pile membership [done]
+### Dependencies: 14.1
+### Description: Develop RLS policies that grant access to data associated with piles where the current user is an explicit member.
+### Details:
+Develop `CREATE POLICY` statements for `SELECT`, `INSERT`, `UPDATE`, `DELETE` operations on tables associated with piles (e.g., `posts`, `post_replies`, `post_tags`, `post_highlights`, `attachments`, `pile_members`) that check if `auth.uid()` is a member of the relevant `pile_id` using subqueries or `EXISTS` clauses against the `pile_members` table.
+
+## 4. Consolidate and apply all RLS policies to target tables [done]
+### Dependencies: 14.2, 14.3
+### Description: Combine and apply all defined RLS policies (user ownership and pile membership) to ensure comprehensive and correct access control across all specified tables.
+### Details:
+Review and combine the user ownership and pile membership policies. For tables requiring both access types, merge conditions using `OR`. Apply these final, comprehensive policies to all seven specified tables: `piles`, `pile_members`, `posts`, `post_replies`, `post_tags`, `post_highlights`, and `attachments`.
+
+## 5. Conduct comprehensive RLS policy testing and validation [done]
+### Dependencies: 14.4
+### Description: Execute a thorough testing strategy to verify that all RLS policies correctly enforce data isolation and secure access, covering various user roles and access scenarios.
+### Details:
+Execute the parent task's test strategy: 'Attempt to access data belonging to other users or unshared piles from a logged-in user. Verify that RLS correctly denies access. Test various user roles and permissions.' This involves developing and running a suite of test cases for `SELECT`, `INSERT`, `UPDATE`, `DELETE` operations across all tables under different user contexts (owner, pile member, non-member).
+

@@ -1,7 +1,7 @@
 .frame {
   display: block;
   margin-left: 1px;
-  backdrop-filter: blur(10);
+  backdrop-filter: blur(10px);
 
   &.isNew {
     // ideal default height of empty editor

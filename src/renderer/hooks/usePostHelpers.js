@@ -131,7 +131,18 @@ export const setHighlightCreator = (post, setPost, savePost) => {
 };
 
 export const cycleColorCreator = (post, setPost, savePost, highlightColors) => {
+  let lastCycleTime = 0;
+  
   return () => {
+    // Prevent rapid double-clicks (debounce with 300ms)
+    const now = Date.now();
+    if (now - lastCycleTime < 300) {
+      console.log('Ignoring rapid cycleColor click');
+      return;
+    }
+    lastCycleTime = now;
+    
+    console.log('Cycling color for post:', post?.path);
     if (!post.data.highlightColor) {
       const newColor = highlightColors[1];
       setPost((post) => ({

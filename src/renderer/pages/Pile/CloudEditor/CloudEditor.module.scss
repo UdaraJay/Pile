@@ -1,0 +1,89 @@
+// Extend the existing Editor styles
+@use '../Editor/Editor.module.scss';
+
+.cloudIndicator {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--secondary);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--secondary);
+  font-style: italic;
+}
+
+.error {
+  padding: 2rem;
+  text-align: center;
+  color: #e53e3e;
+  font-style: italic;
+}
+
+.errorMessage {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(229, 62, 62, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+.saving {
+  color: var(--brand);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Cloud-specific styling
+.editor {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+  border-radius: 12px;
+}
+
+/* Ensure tags are clickable and not overlapped by post actions */
+.tags {
+  position: relative;
+  z-index: 20; /* above .actions (z-index 11) */
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .editor {
+    background: linear-gradient(var(--bg-primary), var(--bg-primary)) padding-box,
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+  }
+  
+  .errorMessage {
+    background: rgba(229, 62, 62, 0.15);
+  }
+}

@@ -45,4 +45,13 @@ export interface MetadataResponse {
   actionItems: string[];
 }
 
-export type JSONTemplateResponse = SummaryResponse | MetadataResponse;
+export interface LinkPreviewResponse {
+  url: string;
+  category: string;
+  images: Array<{ src: string; alt: string }>;
+  summary: string;
+  highlights: string[];
+  buttons: Array<{ title: string; href: string }>;
+}
+
+export type JSONTemplateResponse = SummaryResponse | MetadataResponse | LinkPreviewResponse;

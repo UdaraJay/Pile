@@ -201,9 +201,10 @@
   display: flex;
   height: 40px;
   min-height: 40px;
-  margin-top: -10px;
+  margin-top: 4px; /* avoid overlapping content above (e.g., tags) */
   position: relative;
   z-index: 10; // Ensure actions are above other elements
+  pointer-events: none; // don't block clicks beneath when actions hidden
 }
 
 .actions {
@@ -213,7 +214,8 @@
   padding: 0 16px 0 51px;
   margin: 0 -5px;
   position: relative;
-  z-index: 11; // Higher than parent to ensure clickability
+  z-index: 5; // keep below tags/popovers (tags use z>=20)
+  pointer-events: auto; // enable interaction when visible
 
   .sep {
     margin: 0 5px 0 4px;

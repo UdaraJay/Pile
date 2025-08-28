@@ -1,0 +1,31 @@
+# Task ID: 9
+# Title: Tests and CI adjustments
+# Status: done
+# Dependencies: 2, 3, 4, 5, 6
+# Priority: medium
+# Description: Update unit/integration tests for Gemini workflows; ensure CI scripts keep lint, type-check, packaging, and tests green.
+# Details:
+Add mocks for @google/genai; update jest setup if needed; ensure streaming tests are deterministic.
+
+# Test Strategy:
+Jest unit tests for wrappers; integration tests for streaming buffer and JSON parsing.
+
+# Subtasks:
+## 1. Add @google/genai mocks for Jest [done]
+### Dependencies: None
+### Description: Create stable mocks for SDK streaming and JSON responses.
+### Details:
+
+
+## 2. Unit tests for main helpers [done]
+### Dependencies: None
+### Description: Test stream and JSON helpers (happy/error/abort).
+### Details:
+
+
+## 3. Integration tests for renderer streaming [done]
+### Dependencies: None
+### Description: Simulate chunked updates and verify buffering/finalization.
+### Details:
+
+

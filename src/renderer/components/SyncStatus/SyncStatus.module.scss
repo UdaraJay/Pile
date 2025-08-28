@@ -1,0 +1,211 @@
+/* Sync Status Component Styles */
+
+.syncStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--surface-background, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-color, #fff);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--surface-background-hover, rgba(255, 255, 255, 0.08));
+  }
+
+  &.compact {
+    padding: 6px;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  .compact & {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+}
+
+.icon { display: inline-flex; align-items: center; justify-content: center; }
+
+.svgIcon {
+  width: 12px;
+  height: 12px;
+}
+
+/* Spinning animation for sync in progress */
+.indicator[data-status='syncing'] .svgIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.statusText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.status {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.latency {
+  font-size: 11px;
+  opacity: 0.7;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actionButton {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: var(--button-background, rgba(255, 255, 255, 0.1));
+  color: var(--text-color, #fff);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--button-background-hover, rgba(255, 255, 255, 0.2));
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.label {
+  font-size: 11px;
+  opacity: 0.8;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  min-width: 60px;
+}
+
+.value {
+  font-size: 11px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--text-color, #fff);
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .syncStatus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.4);
+    }
+  }
+  
+  .actionButton {
+    background: rgba(255, 255, 255, 0.1);
+    
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+/* Light theme adjustments */
+@media (prefers-color-scheme: light) {
+  .syncStatus {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+  }
+  
+  .actionButton {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+    
+    &:hover:not(:disabled) {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .label {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .latency {
+    color: rgba(0, 0, 0, 0.6);
+  }
+}

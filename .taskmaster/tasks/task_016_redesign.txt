@@ -1,0 +1,43 @@
+# Task ID: 16
+# Title: Develop 'Enable Cloud Sync' UI & Migration Wizard
+# Status: done
+# Dependencies: 15
+# Priority: high
+# Description: Create the user interface for enabling cloud sync and a guided migration wizard for existing local data.
+# Details:
+Design and implement a 'Cloud Sync' section in the application settings. Include an 'Enable Supabase Sync' toggle. Develop a multi-step migration wizard for existing users to upload their local piles to Supabase, including pile selection, estimated size, a progress bar, and a verification step comparing local vs. cloud data.
+
+# Test Strategy:
+Test the entire migration flow with various local data sizes. Verify progress bar accuracy and data integrity post-migration. Ensure rollback capabilities function correctly if issues arise.
+
+# Subtasks:
+## 1. Develop 'Cloud Sync' Settings UI & Toggle [done]
+### Dependencies: None
+### Description: Create the dedicated 'Cloud Sync' section within the application settings, including the 'Enable Supabase Sync' toggle.
+### Details:
+Implement the UI for the 'Cloud Sync' section in the application settings. Include an 'Enable Supabase Sync' toggle switch. Design the layout and styling for this settings area.
+
+## 2. Implement Migration Wizard Shell & Navigation [done]
+### Dependencies: 16.1
+### Description: Create the multi-step wizard component, define its overall structure, and manage navigation between steps.
+### Details:
+Develop the main wizard container component. Implement forward/backward navigation buttons and logic. Define the sequence of steps (e.g., Welcome, Pile Selection, Upload, Verification, Complete). Implement the initial launch logic when the 'Enable Supabase Sync' toggle is activated and local data is detected.
+
+## 3. Develop Pile Selection & Size Estimation Step [done]
+### Dependencies: 16.2
+### Description: Create the wizard step allowing users to select local data piles for migration and display their estimated sizes.
+### Details:
+Implement the UI for displaying a list of local data 'piles' (e.g., checkboxes for selection). Develop logic to read local data and calculate the estimated size for each selected pile. Display the total estimated size to the user.
+
+## 4. Implement Data Upload & Progress Monitoring Step [done]
+### Dependencies: 16.3
+### Description: Develop the wizard step responsible for uploading selected local data to Supabase and displaying a real-time progress bar.
+### Details:
+Implement the core logic for iterating through selected local piles and uploading their contents to Supabase. Integrate with the underlying sync infrastructure to perform the upload. Design and implement a dynamic progress bar that updates in real-time. Include error handling for upload failures and options for retry.
+
+## 5. Develop Data Verification & Completion Step [done]
+### Dependencies: 16.4
+### Description: Create the final wizard step to verify data integrity post-upload and provide a completion or rollback option.
+### Details:
+Implement logic to compare the uploaded data in Supabase with the original local data to ensure consistency and completeness. Display a verification status (success/failure). Provide options to finalize the migration, retry, or initiate a rollback if issues are detected. Design the success/failure message UI.
+

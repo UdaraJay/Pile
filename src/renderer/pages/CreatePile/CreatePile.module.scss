@@ -24,7 +24,7 @@
     margin-bottom: 12px;
 
     .name {
-            font-family: "Porpora";
+            font-family: var(--font-heading);
             font-size: 1.4em;
             color: var(--primary);
     }
@@ -109,7 +109,7 @@
         padding: 9px 12px;
         font-weight: 500;
         color: var(--secondary);
-        background: Var(--bg-tertiary);
+        background: var(--bg-tertiary);
         border-radius: 12px;
         width: 100px;
         transition: all ease-in-out 120ms;
@@ -130,7 +130,7 @@
         padding: 9px 12px;
         font-weight: 500;
         color: var(--base);
-        background: Var(--bg-secondary);
+        background: var(--bg-secondary);
         border-radius: 12px;
         width: 200px;
         transition: all ease-in-out 120ms;

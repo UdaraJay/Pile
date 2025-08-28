@@ -5,6 +5,10 @@
 
 /* Root variables for app theme, dark and light mode */
 :root {
+  /* Font tokens (reverted to original) */
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Inter', sans-serif;
+  --font-heading: 'Porpora', serif;
   --brand: #00ff29;
   --translucent: rgba(193, 193, 193, 0.5);
   --sidebar-width: 250px;
@@ -28,6 +32,8 @@
   --border: #e4e4e4;
 
   --bg: #fff;
+  /* Alias for components referencing --bg-primary */
+  --bg-primary: var(--bg);
   --bg-secondary: rgb(246, 246, 246);
   --bg-tertiary: #dedede;
   --bg-color-secondary-hover: rgb(226, 226, 226);
@@ -53,6 +59,8 @@
     --border: #565656;
 
     --bg: #171717;
+    /* keep alias consistent in dark mode */
+    --bg-primary: var(--bg);
     --bg-secondary: #373737;
     --bg-tertiary: #575757;
     --bg-color-secondary-hover: rgb(108, 108, 108);
@@ -317,13 +325,14 @@
 
 @import '../../assets/inter/inter.css';
 
+/* Use Inter as the primary UI font */
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
 }
 
 @supports (font-variation-settings: normal) {
   html {
-    font-family: 'Inter var', sans-serif;
+    font-family: var(--font-sans);
   }
 }
 
@@ -338,8 +347,48 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   color: var(--primary);
+  /* Use theme variable for background rather than fixed dark color */
+  background: var(--bg);
+}
+
+/* Global radial emerald glow background (behind all content) */
+#root {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+#root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Softer glow on light theme */
+  background-image: radial-gradient(
+    circle 500px at 50% 300px,
+    rgba(16, 185, 129, 0.18),
+    transparent
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  #root::before {
+    /* Stronger glow for dark backgrounds */
+    background-image: radial-gradient(
+      circle 500px at 50% 300px,
+      rgba(16, 185, 129, 0.35),
+      transparent
+    );
+  }
+}
+
+/* Ensure app content renders above the glow */
+#root > * {
+  position: relative;
+  z-index: 1;
 }
 
 li {

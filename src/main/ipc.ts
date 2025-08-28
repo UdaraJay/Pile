@@ -7,3 +7,4 @@ import './handlers/index';
 import './handlers/links';
 import './handlers/store';
 import './handlers/gemini';
+import './handlers/auth';

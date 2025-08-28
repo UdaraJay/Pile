@@ -14,7 +14,6 @@ export const LinksContext = createContext();
 
 export function LinksContextProvider({ children }) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-  const { ai } = useAIContext();
   const { addNotification, updateNotification, removeNotification } =
     useToastsContext();
 
@@ -102,54 +101,39 @@ export function LinksContextProvider({ children }) {
     const { text, images, links } = await getContent(url);
     const trimmedContent = trimContent(text);
 
-    const context = [];
+    // Convert to single prompt for Gemini
+    const prompt = `Provided below is some extracted plaintext response of a website. Use it to generate the content for a rich preview card for the webpage.
 
-    context.push({
-      role: 'system',
-      content: `Provided below is some extracted plaintext response of a website. Use it to generate the content for a rich preview card for the webpage.
-        The content is as follows:
-        ${trimmedContent}
-        `,
-    });
-    context.push({
-      role: 'system',
-      content: `These are the links on the page:
-        ${links}
-        `,
-    });
-    context.push({
-      role: 'system',
-      content: `These are the images on the page:
-        ${images}
-        `,
-    });
-    context.push({
-      role: 'system',
-      content: `Provide your response as a JSON object that follows this schema:
-        {
-          "url": ${url},
-          "category": '', // suggest the best category for this page based on the content. eg: video, book, recipie, app, research paper, news, opinion, blog, social media etc.
-          "images": [{src: '', alt: ''}], // key images
-          "summary": string, // tldr summary of this webpage
-          "highlights": [''], // plaintext sentences of 3-8 key insights, facts or quotes. Like an executive summary.
-          "buttons": [{title: '', href: ''}], // use the links to generate a primary and secondary buttons appropriate for this preview. ONLY use relevant links from the page.
-        }`,
-    });
+The content is as follows:
+${trimmedContent}
 
-    const response = await ai.chat.completions.create({
-      model: 'gpt-4o',
-      max_tokens: 500,
-      messages: context,
-      response_format: {
-        type: 'json_object',
-      },
-    });
+These are the links on the page:
+${links}
+
+These are the images on the page:
+${images}
+
+Provide your response as a JSON object that follows this schema:
+{
+  "url": "${url}",
+  "category": "", // suggest the best category for this page based on the content. eg: video, book, recipe, app, research paper, news, opinion, blog, social media etc.
+  "images": [{"src": "", "alt": ""}], // key images
+  "summary": "", // tldr summary of this webpage
+  "highlights": [""], // plaintext sentences of 3-8 key insights, facts or quotes. Like an executive summary.
+  "buttons": [{"title": "", "href": ""}] // use the links to generate a primary and secondary buttons appropriate for this preview. ONLY use relevant links from the page.
+}`;
 
     let choice = false;
 
     try {
-      choice = JSON.parse(response.choices[0].message.content);
-    } catch (error) {}
+      // Use Gemini's JSON generation with a custom template
+      if (window.electron?.gemini?.generateJson) {
+        const response = await window.electron.gemini.generateJson(prompt, 'metadata');
+        choice = response;
+      }
+    } catch (error) {
+      console.error('Error generating link metadata with Gemini:', error);
+    }
 
     return choice;
   };

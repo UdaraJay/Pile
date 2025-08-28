@@ -1,0 +1,11 @@
+# Task ID: 20
+# Title: Integrate Supabase Storage for Attachments
+# Status: pending
+# Dependencies: 11, 14, 15
+# Priority: high
+# Description: Implement secure file upload, download, and management for attachments using Supabase Storage buckets.
+# Details:
+Create `pile-attachments` and `user-avatars` storage buckets in Supabase. Implement client-side logic for securely uploading images and other files, associating them with `posts` via the `attachments` table. Develop functionality to download and display these attachments. Configure RLS for storage buckets to ensure only authorized users can access files.
+
+# Test Strategy:
+Upload various file types and sizes. Verify successful upload, secure storage, and correct display/download. Test RLS by attempting to access unauthorized files.

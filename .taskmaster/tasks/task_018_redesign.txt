@@ -1,0 +1,11 @@
+# Task ID: 18
+# Title: Implement Real-time Post Editing & Presence
+# Status: done
+# Dependencies: 15
+# Priority: high
+# Description: Integrate Supabase Realtime for live synchronization of post content, live cursor positions, and user presence within shared piles.
+# Details:
+Utilize `supabase.channel` to subscribe to `posts` changes within a specific pile for real-time content updates. Implement a mechanism for live cursor positions (e.g., using a dedicated presence channel or a temporary table). Develop UI to display presence indicators (who is currently online and viewing/editing a pile).
+
+# Test Strategy:
+Test real-time editing from multiple clients simultaneously. Verify cursor positions update accurately. Confirm presence indicators reflect active users in a pile.

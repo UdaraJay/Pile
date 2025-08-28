@@ -1,4 +1,5 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { DiscIcon, PhotoIcon, TrashIcon, TagIcon } from 'renderer/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTagsContext } from 'renderer/context/TagsContext';
@@ -11,7 +12,16 @@ export default function Tags({
 }) {
   const { tags: allTags } = useTagsContext();
   const [show, setShow] = useState(false);
-  const toggleShow = () => setShow(!show);
+  const buttonRef = useRef(null);
+  const [popoverPos, setPopoverPos] = useState({ top: 0, left: 0 });
+  const toggleShow = () => {
+    const next = !show;
+    setShow(next);
+    if (next && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPopoverPos({ top: rect.top, left: rect.right + 8 });
+    }
+  };
 
   const [newTag, setNewTag] = useState('');
   const onChangeNewTag = (e) => setNewTag(e.target.value);
@@ -47,26 +57,30 @@ export default function Tags({
 
   return (
     <div className={styles.frame}>
-      <button className={styles.tags} onClick={toggleShow}>
+      <button ref={buttonRef} className={styles.tags} onClick={toggleShow}>
         <TagIcon className={styles.icon} />
       </button>
-      {show && (
-        <div className={styles.popover}>
-          {/* <div className={styles.title}>Tag this post</div> */}
-          <input
-            placeholder="Pick or create a tag"
-            value={newTag}
-            onChange={onChangeNewTag}
-            onKeyDown={handleKeyPress}
-          />
-          <div className={styles.list}>
-            {newTag.length > 0 && (
-              <div className={styles.item}>Create new tag "{newTag}"</div>
-            )}
-            {renderAllTags()}
-          </div>
-        </div>
-      )}
+      {show &&
+        createPortal(
+          <div
+            className={styles.popover}
+            style={{ position: 'fixed', top: popoverPos.top, left: popoverPos.left, zIndex: 9999 }}
+          >
+            <input
+              placeholder="Pick or create a tag"
+              value={newTag}
+              onChange={onChangeNewTag}
+              onKeyDown={handleKeyPress}
+            />
+            <div className={styles.list}>
+              {newTag.length > 0 && (
+                <div className={styles.item}>Create new tag "{newTag}"</div>
+              )}
+              {renderAllTags()}
+            </div>
+          </div>,
+          document.getElementById('dialog') || document.body,
+        )}
     </div>
   );
 }

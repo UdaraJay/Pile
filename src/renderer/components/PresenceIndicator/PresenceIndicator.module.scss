@@ -1,0 +1,200 @@
+.presenceIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  
+  &:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  &.small {
+    gap: 4px;
+    
+    .userAvatar {
+      width: 20px;
+      height: 20px;
+      font-size: 8px;
+    }
+    
+    .statusDot {
+      width: 6px;
+      height: 6px;
+    }
+  }
+
+  &.medium {
+    gap: 6px;
+    
+    .userAvatar {
+      width: 28px;
+      height: 28px;
+      font-size: 10px;
+    }
+    
+    .statusDot {
+      width: 8px;
+      height: 8px;
+    }
+  }
+
+  &.large {
+    gap: 8px;
+    
+    .userAvatar {
+      width: 36px;
+      height: 36px;
+      font-size: 12px;
+    }
+    
+    .statusDot {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  background: #4ECDC4;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+
+  .pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #4ECDC4;
+    border-radius: 50%;
+  }
+}
+
+.userList {
+  display: flex;
+  align-items: center;
+  gap: -4px; // Overlap slightly
+}
+
+.userAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: white;
+  border: 2px solid var(--background-color);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+
+  &:not(:first-child) {
+    margin-left: -8px;
+  }
+
+  &:hover {
+    z-index: 2;
+    transform: scale(1.1);
+  }
+
+  &.overflow {
+    background: #666 !important;
+    font-size: 9px;
+  }
+
+  .userInitials {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  pointer-events: none;
+
+  .tooltipContent {
+    background: var(--background-color-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    backdrop-filter: blur(8px);
+
+    .tooltipHeader {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tooltipUser {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-color-secondary);
+      padding: 2px 0;
+
+      .tooltipUserColor {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+    }
+
+    .tooltipMore {
+      font-size: 9px;
+      color: var(--text-color-tertiary);
+      font-style: italic;
+      margin-top: 2px;
+      text-align: center;
+    }
+
+    // Arrow
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--background-color-secondary);
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .tooltip .tooltipContent {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Animation variants
+.userAvatar {
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}

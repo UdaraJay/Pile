@@ -69,6 +69,16 @@ const electronHandler = {
   settingsSet: (key: string, value: string) =>
     ipcRenderer.invoke('electron-store-set', key, value),
 
+  // Store functionality for secure session storage
+  store: {
+    get: (key: string) => ipcRenderer.invoke('electron-store-get', key),
+    set: (key: string, value: any) =>
+      ipcRenderer.invoke('electron-store-set', key, value),
+    delete: (key: string) => ipcRenderer.invoke('electron-store-delete', key),
+    has: (key: string) => ipcRenderer.invoke('electron-store-has', key),
+    clear: () => ipcRenderer.invoke('electron-store-clear'),
+  },
+
   // Gemini AI integration
   gemini: {
     // Invoke Gemini for JSON responses
@@ -157,6 +167,28 @@ const electronHandler = {
       }
       return ipcRenderer.invoke('gemini:generate-json', prompt, template);
     },
+
+    // Test if API key is valid
+    testApiKey: (apiKey?: string) => {
+      return ipcRenderer.invoke('gemini:test-api-key', apiKey);
+    },
+  },
+
+  // Shell functionality for opening external URLs
+  shell: {
+    openExternal: (url: string) => shell.openExternal(url),
+    openPath: (path: string) => shell.openPath(path),
+  },
+
+  // Authentication functionality using loopback OAuth
+  auth: {
+    signInWithGoogle: () => ipcRenderer.invoke('auth:google-signin'),
+    getSession: () => ipcRenderer.invoke('auth:get-session'),
+    signOut: () => ipcRenderer.invoke('auth:signout'),
+    getProfile: (userId: string) => ipcRenderer.invoke('auth:get-profile', userId),
+    getPiles: () => ipcRenderer.invoke('auth:get-piles'),
+    createPile: (name: string, description?: string, isPrivate?: boolean) => 
+      ipcRenderer.invoke('auth:create-pile', name, description, isPrivate),
   },
 };
 

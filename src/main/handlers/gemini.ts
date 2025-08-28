@@ -1,5 +1,5 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { json, stream, JSON_TEMPLATES } from '../ai/gemini';
+import { json, stream, JSON_TEMPLATES, testApiKey } from '../ai/gemini';
 import { safeParseJson } from '../utils/jsonParser';
 import type {
   GeminiResponse,
@@ -91,12 +91,23 @@ ipcMain.handle(
  */
 ipcMain.handle(
   'gemini:stream',
-  async (event, prompt: string, selectedModel?: string): Promise<GeminiStreamResponse> => {
+  async (
+    event,
+    prompt: string,
+    selectedModel?: string,
+  ): Promise<GeminiStreamResponse> => {
     try {
       // Validate sender frame URL
       if (!validateSender(event)) {
         throw new Error('Invalid sender: only file:// protocol allowed');
       }
+
+      // Test API key before proceeding
+      const keyValid = await testApiKey();
+      if (!keyValid) {
+        throw new Error('Invalid or missing Gemini API key. Please check your API key in settings.');
+      }
+
       // Input validation (same as generate)
       if (!prompt || typeof prompt !== 'string') {
         throw new Error('Invalid prompt: must be a non-empty string');
@@ -130,7 +141,10 @@ ipcMain.handle(
 
       try {
         // Stream the response with the selected model
-        console.log('Starting Gemini stream with model:', selectedModel || 'default');
+        console.log(
+          'Starting Gemini stream with model:',
+          selectedModel || 'default',
+        );
         for await (const chunk of stream(sanitizedPrompt, selectedModel)) {
           event.sender.send('gemini:stream', {
             type: 'chunk',
@@ -196,6 +210,12 @@ ipcMain.handle(
         throw new Error('Invalid sender: only file:// protocol allowed');
       }
 
+      // Test API key before proceeding
+      const keyValid = await testApiKey();
+      if (!keyValid) {
+        throw new Error('Invalid or missing Gemini API key. Please check your API key in settings.');
+      }
+
       // Input validation
       if (!prompt || typeof prompt !== 'string') {
         throw new Error('Invalid prompt: must be a non-empty string');
@@ -250,6 +270,35 @@ ipcMain.handle(
         success: false,
         error:
           error instanceof Error ? error.message : 'Unknown error occurred',
+        timestamp: new Date().toISOString(),
+      };
+    }
+  },
+);
+
+/**
+ * IPC handler for testing Gemini API key validity
+ */
+ipcMain.handle(
+  'gemini:test-api-key',
+  async (event: Electron.IpcMainInvokeEvent, apiKey?: string) => {
+    if (!validateSender(event)) {
+      console.error('Invalid sender for gemini:test-api-key');
+      return { success: false, error: 'Invalid request source' };
+    }
+
+    try {
+      const isValid = await testApiKey(apiKey);
+      return {
+        success: true,
+        isValid,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error('Gemini API key test IPC handler error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
         timestamp: new Date().toISOString(),
       };
     }

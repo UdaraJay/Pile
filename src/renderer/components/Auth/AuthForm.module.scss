@@ -1,0 +1,430 @@
+// AuthForm component styles - updated to match app design
+/* Old full-screen overlay style removed; AuthForm is embedded in dialogs */
+
+.container {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1; /* above backdrop */
+}
+
+.embedded {
+  /* When inside CreatePile-style card, let outer card style drive visuals */
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  max-width: unset;
+  min-width: 350px;
+  width: 100%;
+  border-radius: 0;
+}
+
+/* Remove conflicting styles in embedded mode */
+.embedded[data-mode='signup'] {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Cartoonish, flat style for Sign Up mode */
+.container[data-mode='signup'] {
+  background: var(--bg);
+  border: 4px solid var(--active);
+  box-shadow:
+    0 20px 0 rgba(0, 0, 0, 0.4), /* bold flat drop shadow */
+    inset 0 0 0 1px var(--bg-secondary); /* subtle inner stroke */
+  border-radius: 18px;
+}
+
+/* Optional: make header pop a bit in signup mode */
+.container[data-mode='signup'] + .header,
+.container[data-mode='signup'] ~ .header {
+  /* fallback in case DOM structure changes; header already styled above */
+}
+
+/* Target header inside container context */
+[data-mode='signup'] .header h1 {
+  color: var(--active);
+}
+
+.topRow {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  color: var(--secondary);
+  text-decoration: none;
+  font-size: 0.8em;
+  font-weight: 500;
+  padding: 9px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  transition: all ease-in-out 120ms;
+  margin-right: 12px;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--primary);
+    background: var(--bg-secondary);
+  }
+}
+
+.header {
+  margin-bottom: 12px;
+
+  .name {
+    font-family: var(--font-heading);
+    font-size: 1.4em;
+    color: var(--primary);
+    margin: 0;
+  }
+}
+
+.modeToggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.modeButton {
+  -webkit-app-region: none;
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  font-weight: 500;
+  background: var(--bg);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: 90px;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+  transition: all ease-in-out 120ms;
+  white-space: nowrap;
+  box-sizing: border-box;
+
+  &:hover:not(:disabled) {
+    background: var(--bg-secondary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &[data-active='true'] {
+    background: var(--active);
+    border-color: var(--active);
+    color: var(--active-text);
+  }
+}
+
+.alert {
+  padding: 0.875rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid;
+
+  &[data-type="error"] {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: var(--error);
+  }
+
+  &[data-type="success"] {
+    background-color: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: var(--success);
+  }
+}
+
+.form {
+  -webkit-app-region: none;
+  margin-bottom: 1.5rem;
+  min-width: 350px;
+  width: 100%;
+
+  .input {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 20px 0;
+    width: 100%;
+
+    .des {
+      font-size: 0.8em;
+      color: var(--secondary);
+      margin-bottom: 12px;
+
+      label {
+        display: block;
+        font-weight: 500;
+        color: var(--primary);
+        margin-bottom: 2px;
+      }
+    }
+
+    input {
+      border: none;
+      border-radius: 8px;
+      padding: 9px 12px;
+      line-height: 0.9;
+      outline: none;
+      font-size: 0.8em;
+      background: var(--bg-secondary);
+      color: var(--primary);
+      box-sizing: border-box;
+      width: 100%;
+
+      &:focus {
+        background: var(--bg-tertiary);
+      }
+
+      &:disabled {
+        background-color: var(--bg-tertiary);
+        color: var(--secondary);
+        cursor: not-allowed;
+      }
+
+      &::placeholder {
+        color: var(--secondary);
+      }
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  -webkit-app-region: none;
+  width: 100%;
+
+  .button {
+    text-align: center;
+    font-size: 0.8em;
+    padding: 12px 16px;
+    font-weight: 500;
+    color: var(--base);
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    min-width: 150px;
+    flex: 1;
+    max-width: 250px;
+    border: none;
+    transition: all ease-in-out 120ms;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    &:hover:not(:disabled) {
+      cursor: pointer;
+      color: var(--base-hover);
+      background: var(--bg-tertiary);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.75em;
+      padding: 10px 12px;
+      min-width: 120px;
+    }
+  }
+}
+
+.primaryButton {
+  /* Keep for backwards compatibility */
+  text-align: center;
+  font-size: 0.8em;
+  padding: 9px 12px;
+  font-weight: 500;
+  color: var(--base);
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  width: 100%;
+  border: none;
+  transition: all ease-in-out 120ms;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    cursor: pointer;
+    color: var(--base-hover);
+    background: var(--bg-tertiary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: var(--secondary);
+  font-size: 0.85rem;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  span {
+    padding: 0 1rem;
+    background: var(--bg-secondary);
+  }
+}
+
+/* Fix divider in embedded mode */
+.embedded .divider span {
+  background: var(--bg);
+}
+
+.form .input .googleButton {
+  /* Google button inside form structure - responsive */
+  width: 100%;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  font-size: 0.8em;
+  padding: 12px 16px;
+  font-weight: 500;
+  color: var(--secondary);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  transition: all ease-in-out 120ms;
+  cursor: pointer;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover:not(:disabled) {
+    cursor: pointer;
+    color: var(--primary);
+    background: var(--bg-tertiary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.75em;
+    padding: 10px 12px;
+    white-space: normal;
+    text-overflow: unset;
+  }
+}
+
+/* Keep original googleButton for backwards compatibility */
+.googleButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.8em;
+  padding: 9px 12px;
+  font-weight: 500;
+  color: var(--secondary);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  transition: all ease-in-out 120ms;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    cursor: pointer;
+    color: var(--primary);
+    background: var(--bg-tertiary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.googleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.footer {
+  text-align: center;
+
+  p {
+    color: var(--secondary);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--brand);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: inherit;
+  padding: 0;
+  transition: color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: var(--active);
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* Dark theme support automatically handled by CSS variables */

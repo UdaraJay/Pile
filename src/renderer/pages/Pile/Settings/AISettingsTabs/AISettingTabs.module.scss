@@ -195,7 +195,7 @@
   background: var(--bg-tertiary);
   border: none;
   outline: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-serif);
 
   &:focus {
     box-shadow: 0 0 0 2px var(--base);
@@ -396,4 +396,60 @@
       color: var(--active-text);
     }
   }
+}
+
+// API Key Test Button Styles
+.testButton {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--base);
+  color: var(--base-text);
+  font-size: 0.85em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 120ms ease-in-out;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--base-hover);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px var(--primary);
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.testing {
+    background: var(--amber-3);
+    border-color: var(--amber-6);
+    color: var(--amber-11);
+  }
+
+  &.valid {
+    background: var(--green-3);
+    border-color: var(--green-6);
+    color: var(--green-11);
+  }
+
+  &.invalid {
+    background: var(--red-3);
+    border-color: var(--red-6);
+    color: var(--red-11);
+  }
+}
+
+.keyTestError {
+  font-size: 0.8em;
+  color: var(--red-11);
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: var(--red-3);
+  border-radius: 4px;
+  border: 1px solid var(--red-6);
 }

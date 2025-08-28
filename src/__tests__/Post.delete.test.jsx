@@ -60,18 +60,18 @@ describe('Post Delete Functionality', () => {
       refreshPost: jest.fn(),
       setHighlight: jest.fn(),
     });
-    
+
     mockDeletePost.mockClear();
   });
 
   it('renders delete button when hovering over post', () => {
     render(<Post postPath="test-post.md" />);
-    
+
     const postElement = screen.getByText('Test Post').closest('[tabindex="0"]');
-    
+
     // Hover over the post
     fireEvent.mouseEnter(postElement);
-    
+
     // Check if delete button appears
     expect(screen.getByText('Delete')).toBeInTheDocument();
     expect(screen.getByTitle('Delete this entry')).toBeInTheDocument();
@@ -79,19 +79,21 @@ describe('Post Delete Functionality', () => {
 
   it('shows confirmation state when delete button is clicked once', async () => {
     render(<Post postPath="test-post.md" />);
-    
+
     const postElement = screen.getByText('Test Post').closest('[tabindex="0"]');
     fireEvent.mouseEnter(postElement);
-    
+
     const deleteButton = screen.getByText('Delete');
     fireEvent.click(deleteButton);
-    
+
     // Should show confirmation state
     await waitFor(() => {
       expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
-      expect(screen.getByTitle('Click again to confirm deletion')).toBeInTheDocument();
+      expect(
+        screen.getByTitle('Click again to confirm deletion'),
+      ).toBeInTheDocument();
     });
-    
+
     // Should not have called deletePost yet
     expect(mockDeletePost).not.toHaveBeenCalled();
   });
@@ -99,22 +101,22 @@ describe('Post Delete Functionality', () => {
   it('calls deletePost when clicked twice (confirmation)', async () => {
     mockDeletePost.mockResolvedValue();
     render(<Post postPath="test-post.md" />);
-    
+
     const postElement = screen.getByText('Test Post').closest('[tabindex="0"]');
     fireEvent.mouseEnter(postElement);
-    
+
     const deleteButton = screen.getByText('Delete');
-    
+
     // First click - should show confirmation
     fireEvent.click(deleteButton);
     await waitFor(() => {
       expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
     });
-    
+
     // Second click - should actually delete
     const confirmButton = screen.getByText('Confirm Delete');
     fireEvent.click(confirmButton);
-    
+
     await waitFor(() => {
       expect(mockDeletePost).toHaveBeenCalledTimes(1);
     });
@@ -123,27 +125,27 @@ describe('Post Delete Functionality', () => {
   it('resets confirmation state after 3 seconds', async () => {
     jest.useFakeTimers();
     render(<Post postPath="test-post.md" />);
-    
+
     const postElement = screen.getByText('Test Post').closest('[tabindex="0"]');
     fireEvent.mouseEnter(postElement);
-    
+
     const deleteButton = screen.getByText('Delete');
     fireEvent.click(deleteButton);
-    
+
     // Should show confirmation
     await waitFor(() => {
       expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
     });
-    
+
     // Fast-forward 3 seconds
     jest.advanceTimersByTime(3000);
-    
+
     // Should reset to normal delete button
     await waitFor(() => {
       expect(screen.getByText('Delete')).toBeInTheDocument();
       expect(screen.queryByText('Confirm Delete')).not.toBeInTheDocument();
     });
-    
+
     jest.useRealTimers();
   });
 });

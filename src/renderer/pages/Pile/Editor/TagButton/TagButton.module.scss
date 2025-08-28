@@ -1,5 +1,6 @@
    .frame {
        position: relative;
+       z-index: 30; /* ensure tag UI stacks above post actions */
    }
 
    .tags {
@@ -43,9 +44,7 @@
    }
 
    .popover {
-       position: absolute;
-       left: 34px;
-       top: 0px;
+       /* position and z-index are now set inline when portaled */
        width: 240px;
        border-radius: 12px;
        background: var(--bg-secondary);
@@ -53,10 +52,11 @@
        padding: 5px;
        font-size: 0.9em;
        border: 1px solid var(--border);
-
+       box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+   
        .title {
            font-weight: 500;
-           color: Var(--secondary);
+           color: var(--secondary);
            margin-bottom: 8px;
        }
 

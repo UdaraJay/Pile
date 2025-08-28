@@ -1,0 +1,75 @@
+# Task ID: 26
+# Title: Fix Google OAuth Popup UX and Session Transfer
+# Status: in-progress
+# Dependencies: 3, 8
+# Priority: medium
+# Description: Address critical UX issues in Google OAuth, ensuring the popup window closes automatically and the authentication state is correctly transferred to the main window for a seamless user experience.
+# Details:
+The current Google OAuth flow successfully authenticates users but fails to provide a smooth UX due to the popup window not closing automatically and the main window not reflecting the authenticated state. The fix will involve:
+1.  **Popup Window Management**:
+    *   Modify the OAuth initiation to open the Google sign-in flow in a new `BrowserWindow` managed by the Electron main process.
+    *   In the main process, attach a `webContents.on('did-navigate')` or `webContents.on('will-redirect')` listener to the popup `BrowserWindow`.
+    *   Upon detection of the Supabase OAuth callback URL (containing `access_token`, `refresh_token`, etc.), capture the full URL.
+    *   Parse the URL to extract the session tokens.
+    *   Immediately close the popup `BrowserWindow` using `popupWindow.close()`.
+2.  **Authentication State Transfer**:
+    *   After extracting the session tokens in the main process, use `supabase.auth.setSession({ access_token, refresh_token })` if the Supabase client is managed in the main process.
+    *   Alternatively, send the extracted `access_token` and `refresh_token` to the main window's renderer process via IPC (e.g., `ipcMain.send(mainWindow.webContents, 'auth:session-update', { accessToken, refreshToken })`).
+    *   In the main window's renderer process, listen for the `auth:session-update` IPC message.
+    *   Upon receiving the message, update the Supabase client's session using `supabase.auth.setSession()` or trigger a manual session refresh (`supabase.auth.refreshSession()`) to ensure the `onAuthStateChange` listener is triggered.
+    *   Ensure the UI components in the main window (e.g., sign-in button, user profile, piles list) react to the updated authentication state.
+    *   Consider using `localStorage` directly if `supabase.auth.setSession` is not directly available or if the `onAuthStateChange` listener is expected to pick up changes from `localStorage` automatically.
+
+# Test Strategy:
+1. Initiate the Google OAuth sign-in process from the main application window.
+2. Verify that a new popup window appears for Google authentication.
+3. Complete the Google authentication successfully.
+4. Observe that the popup window automatically closes immediately after successful authentication, without displaying the app's home page.
+5. Verify that the main application window instantly transitions from showing the sign-in button to displaying the authenticated user's profile and 'piles' list.
+6. Log out from the application and repeat the entire process to ensure consistent behavior.
+7. Test scenarios where the user closes the popup manually before completing authentication (main window should remain unauthenticated).
+8. Verify error handling if session transfer fails (e.g., tokens are invalid or missing).
+
+# Subtasks:
+## 1. Verify deep link registration (macOS) and add success/error logging [pending]
+### Dependencies: None
+### Description: Confirm `app.setAsDefaultProtocolClient('pilebintang')` succeeds at runtime on macOS. Add explicit logs for registration result and add `app.on('open-url')` diagnostics to confirm the callback is received. Ensure logs are concise and gated behind a debug flag.
+### Details:
+
+
+## 2. Implement deep-link handling for Windows/Linux via `second-instance` argv [pending]
+### Dependencies: None
+### Description: Use `app.requestSingleInstanceLock()` and the `second-instance` event to parse argv for `pilebintang://auth-callback?...`, route to the same resolver (close popup, resolve callback URL), and add diagnostics. Document the expected argv format for different shells.
+### Details:
+
+
+## 3. Add comprehensive OAuth popup logging across all navigation events [pending]
+### Dependencies: None
+### Description: Instrument the OAuth popup with debug logs for `will-navigate`, `will-redirect`, `did-redirect-navigation`, `did-navigate`, `did-fail-load`, `did-fail-provisional-load`, and `setWindowOpenHandler`. Each log should include the event name, URL, and whether the flow resolved or was ignored.
+### Details:
+
+
+## 4. Harden dev HTTP callback close conditions for app origin and /auth/callback [pending]
+### Dependencies: None
+### Description: Expand app-origin detection to include http/https with dev host/port and path, and intercept navigation to `/auth/callback` immediately. Ensure the popup closes before the SPA renders and starts API calls inside the popup.
+### Details:
+
+
+## 5. Update Supabase Allowed Redirect URLs and verify PKCE compatibility [pending]
+### Dependencies: None
+### Description: In the Supabase dashboard, add both `pilebintang://auth-callback` and your dev URL (e.g., `http://localhost:1212/auth/callback`) to Allowed Redirect URLs. Confirm the supabase-js version supports `auth.exchangeCodeForSession(authCode)`; adjust to `getSessionFromUrl` if needed.
+### Details:
+
+
+## 6. Enhance renderer diagnostics and manual callback URL exchange helper [pending]
+### Dependencies: None
+### Description: Add logs for `OAuth result` including whether `callbackUrl` is present (mask sensitive params). Show user-friendly error if `success === false`. Optionally add a debug input to paste a callback URL and trigger `exchangeCodeForSession` manually to recover.
+### Details:
+
+
+## 7. Prepare production packaging and docs for deep link OAuth [pending]
+### Dependencies: None
+### Description: Document deep link registration and expected behavior in packaged builds. Verify the installer/packager registers `pilebintang://` and test the OAuth flow end-to-end in a packaged app. Include troubleshooting tips for users.
+### Details:
+
+

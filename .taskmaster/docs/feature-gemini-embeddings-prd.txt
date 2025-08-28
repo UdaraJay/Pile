@@ -1,0 +1,76 @@
+# PRD: Migrate Embeddings to Gemini (text-embedding-004)
+
+## Summary
+Switch semantic search from Ollama-only embeddings to Google Gemini embeddings (`text-embedding-004`). Provide a provider abstraction so the app can support both Gemini and Ollama (and future providers). Maintain existing vector search UX, reuse `embeddings.json` persistence, and ensure safe key handling via main process.
+
+## Goals
+- Use Gemini `text-embedding-004` to generate embeddings for entries and queries
+- Keep Ollama support as optional provider (toggle in settings)
+- Preserve `embeddings.json` format and location per pile, with forward-compatible schema
+- Regeneration/migration flow to rebuild embeddings via Gemini
+- Rate limiting/backoff and batching for initial embedding generation
+- Security: keys stored in main process; no leakage to renderer
+- Tests updated; docs updated
+
+## Non-Goals
+- Changing search UI/UX beyond provider select
+- Introducing a remote vector database
+
+## Requirements
+1. Provider Abstraction
+   - Define an embedding provider interface in main process with `embed(text: string): Promise<number[]>` and `embedBatch(texts: string[]): Promise<number[][]>`
+   - Implement providers:
+     - GeminiEmbeddingProvider (using `text-embedding-004`) via @google/genai or REST
+     - OllamaEmbeddingProvider (existing `mxbai-embed-large`)
+   - Add simple factory based on settings (`pileAIProvider` = 'gemini' | 'ollama')
+
+2. Settings & Key Handling
+   - Add UI to choose provider: Gemini or Ollama
+   - Store GEMINI_API_KEY in secure main storage (reuse existing key storage path)
+   - Validate key with a lightweight call; surface errors in settings
+
+3. Pile Embeddings Module Update
+   - Replace direct calls in `pileEmbeddings.generateEmbedding` with provider abstraction
+   - Add batch embedding in `walkAndGenerateEmbeddings` for performance (configurable batch size)
+   - Persist embeddings to `embeddings.json` with schema: `{ version, model, provider, dims, createdAt, items: [ [path, vector] ] }`
+   - Backward compatibility: read legacy `[ [path, vector] ]` format and write new schema
+
+4. Migration & Regeneration
+   - Add a command/action: "Regenerate embeddings" that:
+     - Clears in-memory map
+     - Rebuilds all embeddings using selected provider
+     - Writes new schema
+   - Display progress in console/log and optional UI toast
+
+5. Vector Search Behavior
+   - Continue cosine similarity implementation
+   - Ensure query embedding uses selected provider
+   - Return top N results mapped back to index
+
+6. Error Handling & Rate Limits
+   - Implement exponential backoff (e.g., 100ms, 250ms, 500ms, 1s...) for transient errors (429/5xx)
+   - Handle partial failures and continue
+   - Surface summary of failures at end of regeneration
+
+7. Tests
+   - Unit tests for provider factory and Gemini provider (mock network)
+   - Unit tests for batch embedding logic and legacy schema read
+   - Integration test for vectorSearch path producing ranked results
+
+8. Documentation
+   - Update README: setup Gemini API key, provider selection, and regeneration flow
+   - Add notes on quotas and recommended batch size
+
+## Technical Notes
+- Gemini endpoint: `text-embedding-004` via @google/genai Embeddings API (512–3072 dims depending on model variant; confirm dims in code)
+- Consider chunking large documents to respect token limits; simple approach: whole-thread embedding as today
+- Electron: keep all network calls in main, renderer calls via IPC
+
+## Acceptance Criteria
+- When provider = Gemini and API key is valid:
+  - Regenerate produces `embeddings.json` with Gemini metadata and vectors
+  - `vectorSearch()` returns relevant results using Gemini embeddings
+- When provider = Ollama:
+  - Existing behavior preserved
+- Legacy `embeddings.json` (array-map) is read and auto-migrated on next save
+- Tests pass and docs updated

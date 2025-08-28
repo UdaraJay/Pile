@@ -150,3 +150,42 @@ When working with this codebase:
 2. Follow existing Context patterns for state management
 3. TipTap editor customizations go in `src/renderer/pages/Pile/Editor/`
 4. New IPC handlers should be added to `src/main/handlers/` and registered in `ipc.ts`
+
+## Repository Guidelines (Contributor Quick Reference)
+
+For the full guide, see AGENTS.md.
+
+### Project Structure & Module Organization
+- `src/main/`: Electron main process (boot, menu, IPC, filesystem).
+- `src/renderer/`: React UI (pages, components, hooks, context, styles).
+- `src/renderer/pages/Pile/`: Core features (Posts, Editor, CloudEditor, Search, Settings).
+- `src/__tests__/`: Jest tests. `assets/`: icons/packaging. `.erb/`: build configs.
+
+### Build, Test, and Development Commands
+- `npm start`: Dev server + Electron.
+- `npm test`: Jest (JSDOM).
+- `npm run lint` / `npm run lint:fix`: Lint and auto‑fix.
+- `npm run build`: Production bundles.
+- `npm run package`: Local installers.
+- `npm run release`: Build and publish.
+
+### Coding Style & Naming
+- TypeScript + modern JS; React function components with hooks.
+- Prettier (single quotes), ESLint (Airbnb/ERB rules).
+- SCSS Modules per component (e.g., `Component.module.scss`).
+- Naming: PascalCase/CamelCase (e.g., `CloudEditor/index.jsx`, `usePost.js`).
+
+### Testing Guidelines
+- Jest + Testing Library; tests in `src/__tests__/` mirroring sources.
+- Naming: `*.test.(js|jsx|ts|tsx)`; focus on user‑visible behavior.
+- Run: `npm test` (use `--watch` locally).
+
+### Commit & PR Guidelines
+- Commits: small, descriptive; Conventional Commits encouraged (`feat:`, `fix:`, `refactor:`).
+- Branches: short, task‑scoped (e.g., `feat/editor-shortcuts`).
+- PRs: clear description, steps to test, UI screenshots/GIFs, linked issues; ensure lint/tests pass.
+
+### Security & Configuration
+- Keep secrets in `.env` (never commit). Supabase and optional AI keys should be scoped.
+- Validate native/runtime changes with `npm run package` for macOS/Windows.
+- Main process should avoid writing outside app data directories.

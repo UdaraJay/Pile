@@ -2,9 +2,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useGlobalAI } from 'renderer/context/GlobalAIContext';
 import styles from './GlobalAISpinner.module.scss';
 
-const GlobalAISpinner = () => {
+function GlobalAISpinner() {
   const { globalAIState, hideAISpinner } = useGlobalAI();
-  const { isActive, message, hasError, canCancel, canRetry, onCancel, onRetry } = globalAIState;
+  const {
+    isActive,
+    message,
+    hasError,
+    canCancel,
+    canRetry,
+    onCancel,
+    onRetry,
+  } = globalAIState;
 
   const handleCancel = () => {
     if (onCancel) onCancel();
@@ -24,7 +32,7 @@ const GlobalAISpinner = () => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
         >
           <div className={styles.content}>
             <div className={styles.left}>
@@ -39,10 +47,10 @@ const GlobalAISpinner = () => {
               )}
               <span className={styles.message}>{message}</span>
             </div>
-            
+
             <div className={styles.actions}>
               {hasError && canRetry && (
-                <button 
+                <button
                   className={styles.retryButton}
                   onClick={handleRetry}
                   title="Retry AI request"
@@ -51,7 +59,7 @@ const GlobalAISpinner = () => {
                 </button>
               )}
               {canCancel && (
-                <button 
+                <button
                   className={styles.cancelButton}
                   onClick={handleCancel}
                   title="Cancel AI request"
@@ -60,7 +68,7 @@ const GlobalAISpinner = () => {
                 </button>
               )}
               {!canCancel && !canRetry && (
-                <button 
+                <button
                   className={styles.dismissButton}
                   onClick={hideAISpinner}
                   title="Dismiss"
@@ -74,6 +82,6 @@ const GlobalAISpinner = () => {
       )}
     </AnimatePresence>
   );
-};
+}
 
 export default GlobalAISpinner;

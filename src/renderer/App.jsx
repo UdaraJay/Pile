@@ -149,6 +149,14 @@ export default function App() {
                                         </AnimatedPage>
                                       }
                                     />
+                                    <Route
+                                      path="cloud/:pileId"
+                                      element={
+                                        <AnimatedPage down _key="pile-cloud">
+                                          <Pile />
+                                        </AnimatedPage>
+                                      }
+                                    />
                                   </Route>
                               </Routes>
                               </AnimatePresence>

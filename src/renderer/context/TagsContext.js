@@ -15,8 +15,10 @@ export function TagsContextProvider({ children }) {
   const [tags, setTags] = useState(new Map());
 
   useEffect(() => {
-    if (currentPile) {
-      loadTags(getCurrentPilePath());
+    if (!currentPile || currentPile.isCloudPile) return;
+    const pilePath = getCurrentPilePath();
+    if (pilePath) {
+      loadTags(pilePath);
     }
   }, [currentPile]);
 

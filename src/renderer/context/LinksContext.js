@@ -20,6 +20,10 @@ export function LinksContextProvider({ children }) {
   const getLink = useCallback(
     async (url) => {
       const pilePath = getCurrentPilePath();
+      if (!pilePath) {
+        // Cloud piles don't cache previews on disk; just generate ad-hoc
+        return await getPreview(url);
+      }
       const preview = await window.electron.ipc.invoke(
         'links-get',
         pilePath,
@@ -74,6 +78,7 @@ export function LinksContextProvider({ children }) {
   const setLink = useCallback(
     async (url, data) => {
       const pilePath = getCurrentPilePath();
+      if (!pilePath) return; // Skip caching for cloud piles
       window.electron.ipc.invoke('links-set', pilePath, url, data);
     },
     [currentPile],

@@ -1,15 +1,39 @@
 // Extend the existing Editor styles
 @use '../Editor/Editor.module.scss';
 
-.cloudIndicator {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--secondary);
-  opacity: 0.7;
-  pointer-events: none;
-  z-index: 10;
+// Tag input styling
+.tagInputSection {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: rgba(102, 126, 234, 0.02);
+}
+
+.tagInputForm {
+  display: flex;
+  width: 100%;
+}
+
+.tagInput {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--primary);
+  font-size: 0.85rem;
+  outline: none;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--secondary);
+    opacity: 0.7;
+  }
 }
 
 .loading {
@@ -68,6 +92,268 @@
   background: linear-gradient(white, white) padding-box,
               linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
   border-radius: 12px;
+  overflow: hidden; /* Prevent content overflow */
+  
+  .content {
+    padding: 12px;
+    min-height: 60px;
+  }
+  
+  .characterCount {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.7rem;
+    color: var(--secondary);
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 5;
+  }
+}
+
+.cloudPost {
+  border-left: 3px solid #667eea;
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, transparent 20%);
+  border-radius: 0 8px 8px 0;
+}
+
+// Actions styling for cloud editor
+.actionsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: rgba(102, 126, 234, 0.02);
+  border-radius: 0 0 8px 8px;
+  gap: 8px;
+}
+
+.actionsLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actionsRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--secondary);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--bg-secondary);
+    color: var(--primary);
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.saveButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  background: #667eea;
+  color: white;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #5a67d8;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    
+    &:hover {
+      background: #667eea;
+      transform: none;
+    }
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--base-red);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--base-red-light);
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Tags styling for cloud editor
+.tagsSection {
+  margin-top: 12px;
+  padding: 8px 12px 0;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  z-index: 20;
+  position: relative;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  cursor: default;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.15);
+  }
+}
+
+.removeTag {
+  margin-left: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Attachments styling for cloud editor
+.attachmentsSection {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: rgba(102, 126, 234, 0.02);
+}
+
+.attachmentsHeader {
+  font-size: 0.75rem;
+  color: var(--secondary);
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.attachmentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.attachmentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  gap: 8px;
+}
+
+.attachmentLink {
+  flex: 1;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    color: #667eea;
+    text-decoration: underline;
+  }
+}
+
+.attachmentDelete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--base-red);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--base-red-light);
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
 }
 
 /* Ensure tags are clickable and not overlapped by post actions */

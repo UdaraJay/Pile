@@ -91,8 +91,15 @@ export function IndexContextProvider({ children }) {
   };
 
   const getThreadsAsText = useCallback(async (filePaths) => {
+    if (isCloudPile) {
+      const ids = (filePaths || []).map((p) => String(p).replace('cloud://', ''));
+      const threads = (cloudPosts || [])
+        .filter((p) => ids.includes(p.id))
+        .map((p) => p.content || '');
+      return threads;
+    }
     return window.electron.ipc.invoke('index-get-threads-as-text', filePaths);
-  }, []);
+  }, [isCloudPile, cloudPosts]);
 
   const updateIndex = useCallback(async (filePath, data) => {
     window.electron.ipc.invoke('index-update', filePath, data).then((index) => {
@@ -108,8 +115,20 @@ export function IndexContextProvider({ children }) {
   }, []);
 
   const search = useCallback(async (query) => {
+    if (isCloudPile) {
+      const q = (query || '').toLowerCase();
+      const results = (cloudPosts || [])
+        .filter((p) => {
+          if (!q) return true;
+          const t = (p.title || '').toLowerCase();
+          const c = (p.content || '').toLowerCase();
+          return t.includes(q) || c.includes(q);
+        })
+        .map((p) => ({ ref: `cloud://${p.id}`, score: 1 }));
+      return results;
+    }
     return window.electron.ipc.invoke('index-search', query);
-  }, []);
+  }, [isCloudPile, cloudPosts]);
 
   const vectorSearch = useCallback(async (query, topN = 50) => {
     return window.electron.ipc.invoke('index-vector-search', query, topN);

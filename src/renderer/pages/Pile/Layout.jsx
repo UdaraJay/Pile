@@ -20,10 +20,10 @@ import InstallUpdate from './InstallUpdate';
 import Chat from './Chat';
 
 export default function PileLayout({ children }) {
-  const { pileName } = useParams();
+  const { pileName, pileId } = useParams();
   const { index, refreshIndex } = useIndexContext();
   const { visibleIndex, closestDate } = useTimelineContext();
-  const { currentTheme } = usePilesContext();
+  const { currentTheme, currentPile } = usePilesContext();
   
   // Real-time presence data
   const { 
@@ -95,7 +95,7 @@ export default function PileLayout({ children }) {
           <div className={styles.nav}>
             <ErrorBanner />
             <div className={styles.left}>
-              {pileName} <span style={{ padding: '6px' }}>·</span>
+              {currentPile?.name || pileName || (pileId ? 'Cloud Pile' : '')} <span style={{ padding: '6px' }}>·</span>
               <motion.span
                 key={now}
                 initial={{ opacity: 0 }}

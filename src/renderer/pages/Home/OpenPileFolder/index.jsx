@@ -11,7 +11,7 @@ export default function OpenPileFolder({ pile }) {
   };
 
   return (
-    <button className={styles.button} onClick={handleClick}>
+    <button className={styles.iconButton} onClick={handleClick}>
       <FolderIcon className={styles.icon} />
     </button>
   );

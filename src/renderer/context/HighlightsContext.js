@@ -24,8 +24,10 @@ export function HighlightsContextProvider({ children }) {
   };
 
   useEffect(() => {
-    if (currentPile) {
-      loadHighlights(getCurrentPilePath());
+    if (!currentPile || currentPile.isCloudPile) return;
+    const pilePath = getCurrentPilePath();
+    if (pilePath) {
+      loadHighlights(pilePath);
     }
   }, [currentPile]);
 

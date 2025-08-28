@@ -11,7 +11,7 @@ export default function DeletePile({ pile }) {
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger asChild>
-        <button className={styles.deleteButton}>
+        <button className={styles.iconButton}>
           <TrashIcon className={styles.icon} />
         </button>
       </AlertDialog.Trigger>

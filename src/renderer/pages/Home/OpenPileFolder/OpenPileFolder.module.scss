@@ -1,13 +1,13 @@
-.button {
+.iconButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 0; /* spacing handled by parent gap */
   color: var(--secondary);
   height: 28px;
   width: 28px;
   border-radius: 90px;
   transition: all ease-in-out 120ms;
+  flex-shrink: 0;
 
   &:hover {
     cursor: pointer;
@@ -15,8 +15,13 @@
     background: var(--bg-tertiary);
   }
 
+  &:active {
+    transform: scale(0.97);
+  }
+
   .icon {
     height: 20px;
+    width: 20px;
     margin: 0;
     padding: 0;
   }

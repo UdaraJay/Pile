@@ -302,6 +302,7 @@ export function CloudPostsProvider({ children }) {
           title: post.title,
           created: post.created_at,
           lastModified: post.updated_at,
+          updatedAt: post.updated_at,
           path: `cloud://${post.id}`,
           hash: post.id,
           isCloudPost: true,

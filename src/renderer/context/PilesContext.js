@@ -44,15 +44,29 @@ export function PilesContextProvider({ children }) {
     }
   }, [isAuthenticated, user, authLoading]);
 
-  // Set the current pile based on the url
+  // Set the current pile based on the url (supports local and cloud piles)
   useEffect(() => {
     if (!location.pathname) return;
     if (!location.pathname.startsWith('/pile/')) return;
 
-    const currentPileName = location.pathname.split(/[/\\]/).pop();
+    // Cloud route: /pile/cloud/:pileId
+    const cloudMatch = location.pathname.match(/^\/pile\/cloud\/([^/]+)$/);
+    if (cloudMatch) {
+      const pileId = cloudMatch[1];
+      const cloud = cloudPiles.find((p) => p.id === pileId);
+      if (cloud) {
+        setCurrentPile({ ...cloud, isCloudPile: true, type: 'cloud' });
+      } else if (isAuthenticated) {
+        // Ensure cloud piles are loaded; when they arrive, this effect re-runs
+        loadCloudPiles?.();
+      }
+      return;
+    }
 
+    // Local route: /pile/:name
+    const currentPileName = location.pathname.split(/[\/\\]/).pop();
     changeCurrentPile(currentPileName);
-  }, [location.pathname]);
+  }, [location.pathname, cloudPiles, isAuthenticated]);
 
   const getConfig = async () => {
     if (!window.electron?.getConfigPath) return;
@@ -76,9 +90,14 @@ export function PilesContextProvider({ children }) {
   };
 
   const getCurrentPilePath = (appendPath = '') => {
-    if (!currentPile) return;
-    const pile = piles.find((p) => p.name == currentPile.name);
-    const path = window.electron.joinPath(pile.path, appendPath);
+    if (!currentPile) return null;
+    // Cloud piles do not have a filesystem path
+    if (currentPile.isCloudPile) return null;
+    const pile = piles.find((p) => p.name === currentPile.name);
+    if (!pile || !pile.path) return null;
+    const path = appendPath
+      ? window.electron.joinPath(pile.path, appendPath)
+      : pile.path;
     return path;
   };
 
@@ -121,29 +140,21 @@ export function PilesContextProvider({ children }) {
     if (!isAuthenticated || !user) return null;
 
     try {
-      const { data, error } = await supabase
-        .from('piles')
-        .insert({
-          user_id: user.id,
-          name: name.trim(),
-          description: description.trim(),
-          is_private: isPrivate,
-          settings: {
-            theme: 'light',
-            sync_enabled: true,
-          },
-        })
-        .select()
-        .single();
+      // Use IPC to create pile in main process (ensures authenticated session)
+      const result = await window.electron?.auth?.createPile(
+        name,
+        description,
+        isPrivate,
+      );
 
-      if (error) {
-        console.error('Error creating cloud pile:', error);
+      if (result?.error) {
+        console.error('Error creating cloud pile (IPC):', result.error);
         return null;
       }
 
       // Refresh cloud piles
       await loadCloudPiles();
-      return data;
+      return result?.data || null;
     } catch (error) {
       console.error('Error creating cloud pile:', error);
       return null;

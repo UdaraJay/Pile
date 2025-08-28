@@ -365,18 +365,17 @@ const CloudEditor = memo(
 
         {/* Actions */}
         {editable && (
-          <div className={styles.actions}>
-            <div className={styles.left}>
+          <div className={cloudStyles.actionsContainer}>
+            <div className={cloudStyles.actionsLeft}>
               <button
-                className={styles.tagButton}
+                className={cloudStyles.actionButton}
                 onClick={() => setShowTagInput(true)}
                 title="Add tag"
               >
                 <TagIcon />
               </button>
-              {/* Upload attachments */}
               <button
-                className={styles.tagButton}
+                className={cloudStyles.actionButton}
                 onClick={handleUploadClick}
                 title="Attach file"
               >
@@ -391,11 +390,11 @@ const CloudEditor = memo(
               />
             </div>
 
-            <div className={styles.right}>
+            <div className={cloudStyles.actionsRight}>
               {/* Todo/Done toggle */}
               {openTodo && (
                 <button
-                  className={styles.saveButton}
+                  className={cloudStyles.actionButton}
                   onClick={() => addTag(DONE_TAG)}
                   title="Mark done"
                 >
@@ -404,7 +403,7 @@ const CloudEditor = memo(
               )}
               {done && (
                 <button
-                  className={styles.saveButton}
+                  className={cloudStyles.actionButton}
                   onClick={() => removeTag(DONE_TAG)}
                   title="Undo done"
                 >
@@ -413,7 +412,7 @@ const CloudEditor = memo(
               )}
               {!isNew && (
                 <button
-                  className={styles.deleteButton}
+                  className={cloudStyles.deleteButton}
                   onClick={handleDeletePost}
                   title="Delete post"
                 >
@@ -425,7 +424,7 @@ const CloudEditor = memo(
                 <div className={cloudStyles.saving}>Saving...</div>
               ) : (
                 <button
-                  className={styles.saveButton}
+                  className={cloudStyles.saveButton}
                   onClick={handleSavePost}
                   disabled={!post.content.trim()}
                   title="Save to cloud"
@@ -439,25 +438,27 @@ const CloudEditor = memo(
 
         {/* Tags */}
         {post.data.tags && post.data.tags.length > 0 && (
-          <div className={styles.tags}>
-            {post.data.tags.map((tag, index) => (
-              <span
-                key={index}
-                className={styles.tag}
-                onClick={() => editable && removeTag(tag)}
-              >
-                {tag}
-                {editable && <span className={styles.removeTag}>×</span>}
-              </span>
-            ))}
+          <div className={cloudStyles.tagsSection}>
+            <div className={cloudStyles.tagsContainer}>
+              {post.data.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className={cloudStyles.tag}
+                  onClick={() => editable && removeTag(tag)}
+                >
+                  {tag}
+                  {editable && <span className={cloudStyles.removeTag}>×</span>}
+                </span>
+              ))}
+            </div>
           </div>
         )}
 
         {/* Attachments list */}
         {attachments && attachments.length > 0 && (
-          <div style={{ marginTop: 12 }}>
-            <div style={{ fontSize: 12, color: 'var(--secondary)', marginBottom: 6 }}>Attachments</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div className={cloudStyles.attachmentsSection}>
+            <div className={cloudStyles.attachmentsHeader}>Attachments</div>
+            <div className={cloudStyles.attachmentsList}>
               {attachments.map((att) => (
                 <AttachmentRow key={att.id} att={att} onDelete={() => handleAttachmentDelete(att)} />
               ))}
@@ -467,29 +468,25 @@ const CloudEditor = memo(
 
         {/* Tag input */}
         {showTagInput && (
-          <form onSubmit={handleTagSubmit} className={styles.tagInputForm}>
-            <input
-              ref={tagInputRef}
-              type="text"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={handleTagInputKeyDown}
-              onBlur={() => {
-                setShowTagInput(false);
-                setTagInput('');
-              }}
-              placeholder="Enter tag..."
-              autoFocus
-              className={styles.tagInput}
-            />
-          </form>
+          <div className={cloudStyles.tagInputSection}>
+            <form onSubmit={handleTagSubmit} className={cloudStyles.tagInputForm}>
+              <input
+                ref={tagInputRef}
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagInputKeyDown}
+                onBlur={() => {
+                  setShowTagInput(false);
+                  setTagInput('');
+                }}
+                placeholder="Enter tag..."
+                autoFocus
+                className={cloudStyles.tagInput}
+              />
+            </form>
+          </div>
         )}
-
-        {/* Cloud indicator */}
-        <div className={cloudStyles.cloudIndicator}>
-          <CloudIcon style={{ width: 14, height: 14, marginRight: 6, verticalAlign: 'text-bottom' }} />
-          Cloud Post
-        </div>
       </div>
     );
   },
@@ -511,12 +508,20 @@ function AttachmentRow({ att, onDelete }) {
   }, [att?.path]);
 
   return (
-    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-      <a href={url || '#'} target="_blank" rel="noreferrer" style={{ flex: 1, color: 'var(--primary)' }}>
+    <div className={cloudStyles.attachmentRow}>
+      <a 
+        href={url || '#'} 
+        target="_blank" 
+        rel="noreferrer" 
+        className={cloudStyles.attachmentLink}
+      >
         {att.name || att.path}
       </a>
-      <button className="button" style={{ padding: '4px 10px' }} onClick={onDelete}>
-        Delete
+      <button 
+        className={cloudStyles.attachmentDelete}
+        onClick={onDelete}
+      >
+        <TrashIcon />
       </button>
     </div>
   );

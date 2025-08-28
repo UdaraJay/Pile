@@ -1,0 +1,83 @@
+$tokens-colors: (
+  primary: var(--primary),
+  secondary: var(--secondary),
+  surface: var(--bg),
+  surfaceSecondary: var(--bg-secondary),
+  surfaceTertiary: var(--bg-tertiary),
+  border: var(--border),
+  brand: var(--brand),
+  accent: var(--active),
+  accentHover: var(--active-hover),
+  textOnAccent: var(--active-text)
+);
+
+$tokens-spacing: (
+  xs: 4px,
+  sm: 8px,
+  md: 12px,
+  lg: 16px,
+  xl: 24px,
+  xxl: 32px,
+  xxxl: 48px,
+  max: 64px
+);
+
+$tokens-radius: (
+  sm: 8px,
+  md: 12px,
+  lg: 20px
+);
+
+$tokens-typography: (
+  display: (
+    family: var(--font-heading),
+    size: 44px,
+    line: 52px,
+    weight: 400
+  ),
+  body: (
+    family: var(--font-sans),
+    size: 15px,
+    line: 24px,
+    weight: 400
+  ),
+  mono: (
+    family: 'Menlo, Monaco, monospace',
+    size: 13px,
+    line: 20px,
+    weight: 400
+  )
+);
+
+@function token($map, $key) {
+  @return map-get($map, $key);
+}
+
+@mixin apply-text($slot) {
+  $cfg: map-get($tokens-typography, $slot);
+  font-family: map-get($cfg, family);
+  font-size: map-get($cfg, size);
+  line-height: map-get($cfg, line);
+  font-weight: map-get($cfg, weight);
+}
+
+@mixin card() {
+  background: token($tokens-colors, surface);
+  border: 1px solid token($tokens-colors, border);
+  border-radius: token($tokens-radius, md);
+  padding: token($tokens-spacing, xl);
+}
+
+@mixin button-primary() {
+  background: token($tokens-colors, accent);
+  color: token($tokens-colors, textOnAccent);
+  border: 1px solid token($tokens-colors, accent);
+  border-radius: token($tokens-radius, sm);
+  padding: token($tokens-spacing, sm) token($tokens-spacing, lg);
+  transition: background 200ms ease, border-color 200ms ease;
+  &:hover {
+    background: token($tokens-colors, accentHover);
+    border-color: token($tokens-colors, accentHover);
+  }
+}
+

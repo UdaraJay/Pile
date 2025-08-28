@@ -190,6 +190,43 @@ const electronHandler = {
     createPile: (name: string, description?: string, isPrivate?: boolean) => 
       ipcRenderer.invoke('auth:create-pile', name, description, isPrivate),
   },
+
+  // Sync functionality for per-pile Supabase syncing
+  sync: {
+    linkPile: (pilePath: string, remotePileId?: string) =>
+      ipcRenderer.invoke('sync:link-pile', pilePath, remotePileId),
+    unlinkPile: (pilePath: string) =>
+      ipcRenderer.invoke('sync:unlink-pile', pilePath),
+    runSync: (pilePath: string, mode?: 'pull' | 'push' | 'both') =>
+      ipcRenderer.invoke('sync:run', pilePath, mode),
+    getStatus: (pilePath?: string) =>
+      ipcRenderer.invoke('sync:status', pilePath),
+    listConflicts: (pilePath: string) =>
+      ipcRenderer.invoke('sync:list-conflicts', pilePath),
+    resolveConflict: (pilePath: string, postId: string, choice: 'local' | 'remote' | 'merged', mergedContent?: string) =>
+      ipcRenderer.invoke('sync:resolve', pilePath, postId, choice, mergedContent),
+    migrateCloudPile: (remotePileId: string, destFolder: string) =>
+      ipcRenderer.invoke('sync:migrate-cloud-pile', remotePileId, destFolder),
+    
+    // Attachment management
+    uploadAttachment: (pilePath: string, postId: string, filePath: string) =>
+      ipcRenderer.invoke('sync:upload-attachment', pilePath, postId, filePath),
+    listAttachments: (pilePath: string, postId: string) =>
+      ipcRenderer.invoke('sync:list-attachments', pilePath, postId),
+    getAttachmentSignedUrl: (postId: string, hash: string, filename?: string, expiresIn?: number) =>
+      ipcRenderer.invoke('sync:get-attachment-url', postId, hash, filename, expiresIn),
+    downloadAttachment: (pilePath: string, postId: string, hash: string, filename: string) =>
+      ipcRenderer.invoke('sync:download-attachment', pilePath, postId, hash, filename),
+    
+    // Conflict management
+    getConflict: (pilePath: string, conflictId: string) =>
+      ipcRenderer.invoke('sync:get-conflict', pilePath, conflictId),
+    getConflictArtifact: (pilePath: string, conflictId: string, version: 'local' | 'remote') =>
+      ipcRenderer.invoke('sync:get-conflict-artifact', pilePath, conflictId, version),
+
+    // Maintenance
+    rescan: (pilePath: string) => ipcRenderer.invoke('sync:rescan', pilePath),
+  },
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

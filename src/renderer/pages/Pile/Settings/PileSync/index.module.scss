@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: #1f1f1f;
+}
+
+.btn {
+  padding: 6px 10px;
+  border: 1px solid #333;
+  background: #222;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnSecondary {
+  composes: btn;
+  background: #1a1a1a;
+}
+
+.warning {
+  color: orange;
+}
+
+.muted {
+  opacity: 0.8;
+}
+
+/* Diff styles */
+.diff {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: 360px;
+}
+.diffCol {
+  border: 1px solid #333;
+  border-radius: 6px;
+  overflow: auto;
+  background: #141414;
+}
+.diffHeader {
+  position: sticky;
+  top: 0;
+  background: #0f0f0f;
+  padding: 6px 8px;
+  font-weight: 600;
+  border-bottom: 1px solid #222;
+}
+.rowWrap {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+}
+.gutter {
+  padding: 2px 6px;
+  color: #888;
+  border-right: 1px solid #222;
+  background: #111;
+}
+.line {
+  padding: 2px 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.context {
+  background: transparent;
+}
+.added {
+  background: rgba(16, 118, 48, 0.25);
+}
+.removed {
+  background: rgba(158, 27, 27, 0.25);
+}
+.pad {
+  background: transparent;
+}

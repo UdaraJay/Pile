@@ -3,6 +3,8 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 
+@use './styles/_tokens.scss';
+
 /* Root variables for app theme, dark and light mode */
 :root {
   /* Font tokens (reverted to original) */

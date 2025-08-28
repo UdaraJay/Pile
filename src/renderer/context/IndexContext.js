@@ -7,14 +7,11 @@ import {
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePilesContext } from './PilesContext';
-import { useCloudPostsContext } from './CloudPostsContext';
 
 export const IndexContext = createContext();
 
 export function IndexContextProvider({ children }) {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-  const { cloudPosts, getCloudPostsAsIndex, isCloudPile } =
-    useCloudPostsContext();
   const [filters, setFilters] = useState();
   const [searchOpen, setSearchOpen] = useState(false);
   const [index, setIndex] = useState(new Map());
@@ -22,21 +19,11 @@ export function IndexContextProvider({ children }) {
 
   useEffect(() => {
     if (currentPile) {
-      if (currentPile.isCloudPile) {
-        loadCloudIndex();
-      } else {
-        loadIndex(getCurrentPilePath());
-      }
+      loadIndex(getCurrentPilePath());
       loadLatestThreads();
     }
   }, [currentPile]);
 
-  // Load cloud posts into index format
-  useEffect(() => {
-    if (isCloudPile && cloudPosts.length > 0) {
-      loadCloudIndex();
-    }
-  }, [cloudPosts, isCloudPile]);
 
   const loadIndex = useCallback(async (pilePath) => {
     const newIndex = await window.electron.ipc.invoke('index-load', pilePath);
@@ -44,23 +31,12 @@ export function IndexContextProvider({ children }) {
     setIndex(newMap);
   }, []);
 
-  const loadCloudIndex = useCallback(() => {
-    if (!isCloudPile || !getCloudPostsAsIndex) return;
-
-    const cloudIndex = getCloudPostsAsIndex();
-    const newMap = new Map(cloudIndex);
-    setIndex(newMap);
-  }, [isCloudPile, getCloudPostsAsIndex]);
 
   const refreshIndex = useCallback(async () => {
-    if (isCloudPile) {
-      loadCloudIndex();
-    } else {
-      const newIndex = await window.electron.ipc.invoke('index-get');
-      const newMap = new Map(newIndex);
-      setIndex(newMap);
-    }
-  }, [isCloudPile, loadCloudIndex]);
+    const newIndex = await window.electron.ipc.invoke('index-get');
+    const newMap = new Map(newIndex);
+    setIndex(newMap);
+  }, []);
 
   const prependIndex = useCallback((key, value) => {
     console.log('prepend index', key, value);
@@ -91,15 +67,8 @@ export function IndexContextProvider({ children }) {
   };
 
   const getThreadsAsText = useCallback(async (filePaths) => {
-    if (isCloudPile) {
-      const ids = (filePaths || []).map((p) => String(p).replace('cloud://', ''));
-      const threads = (cloudPosts || [])
-        .filter((p) => ids.includes(p.id))
-        .map((p) => p.content || '');
-      return threads;
-    }
     return window.electron.ipc.invoke('index-get-threads-as-text', filePaths);
-  }, [isCloudPile, cloudPosts]);
+  }, []);
 
   const updateIndex = useCallback(async (filePath, data) => {
     window.electron.ipc.invoke('index-update', filePath, data).then((index) => {
@@ -115,20 +84,8 @@ export function IndexContextProvider({ children }) {
   }, []);
 
   const search = useCallback(async (query) => {
-    if (isCloudPile) {
-      const q = (query || '').toLowerCase();
-      const results = (cloudPosts || [])
-        .filter((p) => {
-          if (!q) return true;
-          const t = (p.title || '').toLowerCase();
-          const c = (p.content || '').toLowerCase();
-          return t.includes(q) || c.includes(q);
-        })
-        .map((p) => ({ ref: `cloud://${p.id}`, score: 1 }));
-      return results;
-    }
     return window.electron.ipc.invoke('index-search', query);
-  }, [isCloudPile, cloudPosts]);
+  }, []);
 
   const vectorSearch = useCallback(async (query, topN = 50) => {
     return window.electron.ipc.invoke('index-vector-search', query, topN);

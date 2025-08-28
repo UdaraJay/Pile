@@ -15,17 +15,11 @@ import { LinksContextProvider } from './context/LinksContext';
 import { ToastsContextProvider } from './context/ToastsContext';
 import { AutoUpdateContextProvider } from './context/AutoUpdateContext';
 import { AuthProvider } from './context/AuthContext';
-import { SyncProvider } from './context/SyncContext';
-import { SyncInfraContextProvider } from './context/SyncInfraContext';
-import { CloudPostsProvider } from './context/CloudPostsContext';
 import { DebugProvider } from './context/DebugContext';
 import DebugNotifications from './components/DebugNotifications';
 import OAuthCallback from './pages/Auth/OAuthCallback';
 import Profile from './pages/Profile';
-import ConflictBanner from './components/Conflicts/Banner';
-import ConflictsPage from './pages/Conflicts';
 import AuthPage from './pages/Auth';
-import './lib/syncTest.js'; // Make test functions available globally
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
@@ -58,9 +52,6 @@ export default function App() {
   return (
     <AuthProvider>
       <PilesContextProvider>
-        <SyncProvider>
-          <SyncInfraContextProvider>
-            <CloudPostsProvider>
               <ToastsContextProvider>
                 <AutoUpdateContextProvider>
                 <AIContextProvider>
@@ -80,7 +71,7 @@ export default function App() {
                                     path="/conflicts"
                                     element={
                                       <AnimatedPage _key="conflicts">
-                                        <ConflictsPage />
+                                        <div>Conflicts feature has been moved to the new sync system</div>
                                       </AnimatedPage>
                                     }
                                   />
@@ -149,18 +140,10 @@ export default function App() {
                                         </AnimatedPage>
                                       }
                                     />
-                                    <Route
-                                      path="cloud/:pileId"
-                                      element={
-                                        <AnimatedPage down _key="pile-cloud">
-                                          <Pile />
-                                        </AnimatedPage>
-                                      }
-                                    />
                                   </Route>
                               </Routes>
                               </AnimatePresence>
-                              <ConflictBanner />
+                              {/* ConflictBanner removed - conflicts now handled by new sync system */}
                             </LinksContextProvider>
                           </TimelineContextProvider>
                         </TagsContextProvider>
@@ -170,9 +153,6 @@ export default function App() {
                 </AIContextProvider>
                 </AutoUpdateContextProvider>
               </ToastsContextProvider>
-            </CloudPostsProvider>
-          </SyncInfraContextProvider>
-        </SyncProvider>
       </PilesContextProvider>
     </AuthProvider>
   );

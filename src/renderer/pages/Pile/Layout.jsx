@@ -5,15 +5,14 @@ import { useEffect, useState, useMemo } from 'react';
 import { DateTime } from 'luxon';
 import { usePilesContext } from 'renderer/context/PilesContext';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
-import { useCloudPostsContext } from 'renderer/context/CloudPostsContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import Settings from './Settings';
+import StatusPill from 'renderer/components/Sync/StatusPill';
+import AutoSyncManager from 'renderer/components/Sync/AutoSyncManager';
 import HighlightsDialog from './Highlights';
 import Toasts from './Toasts';
 import Search from './Search';
 import Sidebar from './Sidebar/Timeline/index';
-import SyncStatus from '../../components/SyncStatus';
-import ErrorBanner from '../../components/Sync/ErrorBanner';
 import PresenceIndicator from '../../components/PresenceIndicator';
 import styles from './PileLayout.module.scss';
 import InstallUpdate from './InstallUpdate';
@@ -25,12 +24,6 @@ export default function PileLayout({ children }) {
   const { visibleIndex, closestDate } = useTimelineContext();
   const { currentTheme, currentPile } = usePilesContext();
   
-  // Real-time presence data
-  const { 
-    isCloudPile, 
-    isRealtimeConnected, 
-    activeUsers 
-  } = useCloudPostsContext();
 
   const [now, setNow] = useState(DateTime.now().toFormat('cccc, LLL dd, yyyy'));
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -64,6 +57,7 @@ export default function PileLayout({ children }) {
     <div className={`${styles.frame} ${themeStyles} ${osStyles}`}>
       <div className={styles.bg} />
       <div className={styles.main}>
+        <AutoSyncManager />
         <div
           className={`${styles.sidebar} ${sidebarCollapsed ? styles.collapsed : ''}`}
         >
@@ -93,9 +87,8 @@ export default function PileLayout({ children }) {
           className={`${styles.content} ${sidebarCollapsed ? styles.contentExpanded : ''}`}
         >
           <div className={styles.nav}>
-            <ErrorBanner />
             <div className={styles.left}>
-              {currentPile?.name || pileName || (pileId ? 'Cloud Pile' : '')} <span style={{ padding: '6px' }}>·</span>
+              {currentPile?.name || pileName} <span style={{ padding: '6px' }}>·</span>
               <motion.span
                 key={now}
                 initial={{ opacity: 0 }}
@@ -107,18 +100,9 @@ export default function PileLayout({ children }) {
               </motion.span>
             </div>
             <div className={styles.right}>
+              <StatusPill />
               <Toasts />
               <InstallUpdate />
-              {isCloudPile && (
-                <PresenceIndicator
-                  activeUsers={activeUsers}
-                  isConnected={isRealtimeConnected}
-                  showUsernames={true}
-                  maxVisible={3}
-                  size="small"
-                />
-              )}
-              <SyncStatus compact={true} showDetails={false} />
               <Chat />
               <Search />
               <Settings />

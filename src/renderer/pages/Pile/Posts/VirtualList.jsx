@@ -4,12 +4,9 @@ import { motion } from 'framer-motion';
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import NewPost from '../NewPost';
 import Post from './Post';
-import CloudPostRow from './CloudPostRow';
 import Scrollbar from './Scrollbar';
 
 const PostItem = memo(({ postPath, post }) => {
-  const isCloud = typeof postPath === 'string' && postPath.startsWith('cloud://');
-  const cloudId = isCloud ? postPath.replace('cloud://', '') : null;
   return (
     <motion.div
       layout
@@ -19,7 +16,7 @@ const PostItem = memo(({ postPath, post }) => {
       transition={{ duration: 0.2 }}
       style={{ minHeight: 72, width: '100%' }}
     >
-      {isCloud ? <CloudPostRow postId={cloudId} /> : <Post postPath={postPath} />}
+      <Post postPath={postPath} />
     </motion.div>
   );
 });

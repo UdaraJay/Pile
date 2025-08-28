@@ -16,6 +16,9 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import './ipc';
 import AppUpdater from './utils/autoUpdates';
+import { syncStateManager } from './sync/state';
+import { fileWatcher } from './sync/fileWatcher';
+import { pushPile, primeQueueForPile } from './sync/push';
 
 Menu.setApplicationMenu(null);
 
@@ -141,6 +144,13 @@ const createWindow = async () => {
 
   // setupAutoUpdater(mainWindow);
   new AppUpdater(mainWindow);
+
+  // After window is created, auto-start sync watchers for linked piles
+  try {
+    await autoStartSyncWatchers();
+  } catch (e) {
+    console.error('[SYNC] Auto-start watchers failed:', e);
+  }
 };
 
 // OAuth handler for Google authentication
@@ -415,6 +425,46 @@ const handleOAuth = async (authUrl: string): Promise<string> => {
     );
   });
 };
+
+/**
+ * Auto-start file watchers and initial push for any previously linked piles.
+ */
+async function autoStartSyncWatchers() {
+  try {
+    const userHomeDirectoryPath = app.getPath('home');
+    const pilesConfigPath = path.join(userHomeDirectoryPath, 'Piles', 'piles.json');
+    if (!fs.existsSync(pilesConfigPath)) {
+      console.log('[SYNC] No piles.json found, skipping auto-start');
+      return;
+    }
+    const raw = fs.readFileSync(pilesConfigPath, 'utf8');
+    let piles: Array<{ name: string; path: string }>; 
+    try { piles = JSON.parse(raw); } catch { piles = []; }
+    if (!Array.isArray(piles) || piles.length === 0) {
+      console.log('[SYNC] No piles in config, skipping auto-start');
+      return;
+    }
+
+    for (const pile of piles) {
+      try {
+        const state = await syncStateManager.loadState(pile.path);
+        if (state.linked && state.remotePileId) {
+          console.log(`[SYNC] Auto-start watcher for linked pile: ${pile.path}`);
+          await fileWatcher.startWatching(pile.path);
+          // Prime the queue with existing posts, then push
+          await primeQueueForPile(pile.path);
+          pushPile(pile.path).catch((err) => console.error('[SYNC] Auto-push failed:', err));
+        } else {
+          // Not linked; skip
+        }
+      } catch (e) {
+        console.error('[SYNC] Failed to start watcher for pile:', pile?.path, e);
+      }
+    }
+  } catch (e) {
+    console.error('[SYNC] Auto-start error:', e);
+  }
+}
 
 // IPC handler for OAuth (legacy popup method)
 ipcMain.handle('oauth-google', async (_, authUrl) => {

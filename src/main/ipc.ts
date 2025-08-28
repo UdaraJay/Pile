@@ -8,3 +8,4 @@ import './handlers/links';
 import './handlers/store';
 import './handlers/gemini';
 import './handlers/auth';
+import './handlers/sync';

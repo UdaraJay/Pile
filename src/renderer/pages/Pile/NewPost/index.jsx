@@ -7,22 +7,10 @@ import { useState, memo } from 'react';
 import { usePilesContext } from 'renderer/context/PilesContext';
 import usePost from 'renderer/hooks/usePost';
 import Editor from '../Editor';
-import CloudEditor from '../CloudEditor';
 import styles from './NewPost.module.scss';
 
 const NewPost = memo(() => {
   const { currentPile, getCurrentPilePath } = usePilesContext();
-
-  // Use different editors for cloud vs local piles
-  if (currentPile?.isCloudPile) {
-    return (
-      <div className={styles.post}>
-        <div className={styles.editor}>
-          <CloudEditor editable />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.post}>

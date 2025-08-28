@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import * as Dialog from '@radix-ui/react-dialog';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './Home.module.scss';
 import { usePilesContext } from '../../context/PilesContext';
 import { useAuth } from '../../context/AuthContext';
@@ -7,9 +10,6 @@ import DeletePile from './DeletePile';
 import { TrashIcon } from 'renderer/icons';
 import Logo from './logo';
 import OpenPileFolder from './OpenPileFolder';
-// Sync indicator removed from Home; only shown in threads
-import ErrorBanner from '../../components/Sync/ErrorBanner';
-import { CloudIcon } from 'renderer/icons';
 
 const quotes = [
   'One moment at a time',
@@ -25,250 +25,334 @@ const quotes = [
 export default function Home() {
   const {
     piles,
-    cloudPiles,
-    allPiles,
-    syncEnabled,
     loading: pilesLoading,
-    createCloudPile,
-    deleteCloudPile,
-    isAuthenticated: pilesAuthenticated,
+    createPile,
   } = usePilesContext();
   const { user, profile, signOut, isAuthenticated, loading } = useAuth();
-  const [folderExists, setFolderExists] = useState(false);
   const [quote, setQuote] = useState(quotes[0]);
-  const [showCreateCloudModal, setShowCreateCloudModal] = useState(false);
-  const [cloudPileName, setCloudPileName] = useState('');
-  const [cloudPileDescription, setCloudPileDescription] = useState('');
+  const [migrateOpen, setMigrateOpen] = useState(false);
+  const [remotePileId, setRemotePileId] = useState('');
+  const [basePath, setBasePath] = useState('');
+  const [newName, setNewName] = useState('');
+  const [migrating, setMigrating] = useState(false);
+  const [migrateError, setMigrateError] = useState<string | null>(null);
 
   useEffect(() => {
-    const quote = quotes[Math.floor(Math.random() * quotes.length)];
-    setQuote(quote);
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    setQuote(randomQuote);
   }, []);
 
-  const handleCreateCloudPile = async () => {
-    if (!cloudPileName.trim()) return;
-    
-    await createCloudPile(cloudPileName.trim(), cloudPileDescription.trim());
-    setShowCreateCloudModal(false);
-    setCloudPileName('');
-    setCloudPileDescription('');
-  };
+  useEffect(() => {
+    const listener = (path: string) => setBasePath(path);
+    window.electron.ipc.on('selected-directory', listener as any);
+    return () => {
+      window.electron.ipc.removeAllListeners('selected-directory');
+    };
+  }, []);
+
 
   const renderPiles = () => {
-    const displayPiles = isAuthenticated ? allPiles : piles;
-
-    if (displayPiles.length == 0) {
+    if (piles.length === 0) {
       return (
-        <div className={styles.noPiles}>
-          {isAuthenticated
-            ? 'No piles found. Create a local pile or sync your journals to the cloud.'
-            : 'No existing piles. Start by creating a new pile.'}
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={styles.emptyState}
+        >
+          <div className={styles.emptyIcon}>📚</div>
+          <h3 className={styles.emptyTitle}>No piles yet</h3>
+          <p className={styles.emptyDescription}>
+            Create your first pile to begin your journaling journey.
+          </p>
+        </motion.div>
       );
     }
 
-    return displayPiles.map((pile: any) => {
-      const isCloudPile = pile.isCloudPile || pile.type === 'cloud';
-      const pileKey = isCloudPile ? pile.id : pile.path;
+    return (
+      <motion.div 
+        className={styles.pilesGrid}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        {piles.map((pile: any, index: number) => {
+          const pileKey = pile.path;
 
-      return (
-        <div
-          className={`${pile.theme && `${pile.theme}Theme`} ${styles.pile} ${isCloudPile ? styles.cloudPile : ''}`}
-          key={pileKey}
-        >
-          <div className={styles.left}>
-            <div className={styles.name}>
-              {pile.name}
-              {isCloudPile && <CloudIcon className={styles.cloudBadge} />}
-            </div>
-            {isCloudPile && pile.description && (
-              <div className={styles.description}>{pile.description}</div>
-            )}
-            {!isCloudPile && <div className={styles.src}>{pile.path}</div>}
-          </div>
-          <div className={styles.right}>
-            {!isCloudPile ? (
-              <>
-                <DeletePile pile={pile} />
-                <OpenPileFolder pile={pile} />
-                <Link to={`/pile/${pile.name}`} className={styles.button}>
-                  Open
-                </Link>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={async () => {
-                    if (
-                      confirm(
-                        `Delete cloud pile "${pile.name}"? This cannot be undone.`,
-                      )
-                    ) {
-                      await deleteCloudPile(pile.id);
-                    }
-                  }}
-                  className={styles.iconButton}
-                  title="Delete cloud pile"
-                >
-                  <TrashIcon className={styles.icon} />
-                </button>
-                <Link to={`/pile/cloud/${pile.id}`} className={styles.button}>
-                  Open
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      );
-    });
+          return (
+            <motion.div
+              key={pileKey}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={styles.pileCard}
+              whileHover={{ scale: 1.02, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className={styles.pileHeader}>
+                <div className={styles.pileTitle}>
+                  <h3 className={styles.pileName}>{pile.name}</h3>
+                </div>
+                
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger asChild>
+                    <button className={styles.menuButton} aria-label="Pile options">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="2"/>
+                        <circle cx="19" cy="12" r="2"/>
+                        <circle cx="5" cy="12" r="2"/>
+                      </svg>
+                    </button>
+                  </DropdownMenu.Trigger>
+                  
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.Content className={styles.dropdownContent} sideOffset={5}>
+                      <OpenPileFolder pile={pile} />
+                      <DeletePile pile={pile} />
+                      <DropdownMenu.Arrow className={styles.dropdownArrow} />
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Root>
+              </div>
+
+              <div className={styles.pileContent}>
+                <p className={styles.pilePath}>{pile.path}</p>
+              </div>
+
+              <Link 
+                to={`/pile/${pile.name}`} 
+                className={styles.openButton}
+              >
+                Open Pile
+              </Link>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+    );
   };
 
   return (
-    <div className={styles.frame}>
+    <div className={styles.container}>
       <div className={styles.wrapper}>
-        {/* Authentication section - positioned absolutely */}
-        <div className={styles.authSection}>
-          {loading ? (
-            <div className={styles.authStatus}>Loading...</div>
-          ) : isAuthenticated ? (
-            <div className={styles.userInfo}>
-              <span className={styles.welcomeText}>
-                Welcome, {profile?.display_name || user?.email}
-              </span>
-              <div className={styles.userActions}>
-                <Link to="/profile" className={styles.button}>
-                  Profile
-                </Link>
-                <button onClick={signOut} className={styles.button}>
-                  Sign Out
-                </button>
-              </div>
+        {/* Header with authentication */}
+        <header className={styles.header}>
+          <motion.div 
+            className={styles.brandSection}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className={styles.logoWrapper}>
+              <Logo className={styles.logo} />
             </div>
-          ) : null}
-        </div>
+            <h1 className={styles.appName}>Pile</h1>
+            <p className={styles.tagline}>{quote}</p>
+          </motion.div>
 
-        {/* Main content - centered */}
-        <div className={styles.content}>
-          <ErrorBanner />
-          <div className={styles.header}>
-            <div className={styles.holder}>
-              <div className={styles.iconHolder}>
-                <Logo className={styles.icon} />
-              </div>
-              <div className={styles.name}>Pile</div>
-            </div>
-          </div>
-
-          <div className={styles.createSection}>
-            <Link to="/new-pile" className={styles.button}>
-              Create a local pile →
-            </Link>
-
-            {isAuthenticated && (
-              <button
-                className={styles.button}
-                onClick={() => setShowCreateCloudModal(true)}
-              >
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                  <CloudIcon className={styles.cloudBadge} />
-                  Create a cloud pile
-                </span>
-              </button>
-            )}
-
-            {!isAuthenticated && (
-              <div className={styles.authButtonsRight}>
-                <Link to="/auth/signin" className={styles.button}>
+          <motion.div 
+            className={styles.authSection}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            {loading ? (
+              <div className={styles.authStatus}>Loading...</div>
+            ) : isAuthenticated ? (
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <button className={styles.userButton}>
+                    <span className={styles.userName}>
+                      {profile?.display_name || user?.email?.split('@')[0]}
+                    </span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                  </button>
+                </DropdownMenu.Trigger>
+                
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content className={styles.dropdownContent} sideOffset={5}>
+                    <DropdownMenu.Item className={styles.dropdownItem} asChild>
+                      <Link to="/profile">Profile</Link>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Separator className={styles.dropdownSeparator} />
+                    <DropdownMenu.Item 
+                      className={styles.dropdownItem}
+                      onSelect={signOut}
+                    >
+                      Sign Out
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Arrow className={styles.dropdownArrow} />
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+            ) : (
+              <div className={styles.authButtons}>
+                <Link to="/auth/signin" className={styles.secondaryButton}>
                   Sign In
                 </Link>
-                <Link to="/auth/signup" className={styles.button}>
+                <Link to="/auth/signup" className={styles.primaryButton}>
                   Sign Up
                 </Link>
               </div>
             )}
-          </div>
+          </motion.div>
+        </header>
 
-          <div className={styles.or}>
-            or open an existing pile
-          </div>
+        {/* Main content */}
+        <main className={styles.main}>
+          
+          {/* Action buttons */}
+          <motion.section 
+            className={styles.actions}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Link to="/new-pile" className={styles.primaryButton}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              Create pile
+            </Link>
 
-          <div className={styles.piles}>{renderPiles()}</div>
+            <button
+              className={styles.secondaryButton}
+              onClick={() => setMigrateOpen(true)}
+            >
+              Import Cloud Pile
+            </button>
+          </motion.section>
 
-          <div className={styles.footer}>
-            <a href="https://udara.io/pile" target="_blank" rel="noreferrer">
-              <div className={styles.unms} />
-              {quote}
-            </a>
+          {/* Piles section */}
+          <section className={styles.pilesSection}>
+            {renderPiles()}
+          </section>
 
-            <div className={styles.nav}>
-              <Link to="/license" className={styles.link}>
-                License
-              </Link>
-              <a
-                href="https://udara.io/pile"
-                target="_blank"
-                className={styles.link}
-                rel="noreferrer"
-              >
-                Tutorial
-              </a>
-              <a
-                href="https://github.com/udarajay/pile"
-                target="_blank"
-                className={styles.link}
-                rel="noreferrer"
-              >
-                GitHub
-              </a>
+          {/* Footer */}
+          <footer className={styles.footer}>
+            <div className={styles.footerContent}>
+              <div className={styles.footerLinks}>
+                <Link to="/license" className={styles.footerLink}>
+                  License
+                </Link>
+                <a
+                  href="https://udara.io/pile"
+                  target="_blank"
+                  className={styles.footerLink}
+                  rel="noreferrer"
+                >
+                  Tutorial
+                </a>
+                <a
+                  href="https://github.com/udarajay/pile"
+                  target="_blank"
+                  className={styles.footerLink}
+                  rel="noreferrer"
+                >
+                  GitHub
+                </a>
+              </div>
             </div>
-          </div>
-        </div>
+          </footer>
+        </main>
+
       </div>
 
-      {/* Create Cloud Pile Modal */}
-      {showCreateCloudModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowCreateCloudModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h2>Create Cloud Pile</h2>
-            <div className={styles.modalContent}>
-              <div className={styles.inputGroup}>
-                <label>Pile Name</label>
+      {/* Migration Dialog */}
+      <Dialog.Root open={migrateOpen} onOpenChange={setMigrateOpen}>
+        <Dialog.Portal container={document.getElementById('dialog') as any}>
+          <Dialog.Overlay className={styles.DialogOverlay as any} />
+          <Dialog.Content className={styles.DialogContent as any}>
+            <Dialog.Title className={styles.DialogTitle as any}>Import Cloud Pile</Dialog.Title>
+            {(!isAuthenticated) && (
+              <div style={{ color: 'orange', marginBottom: 8 }}>
+                You need to sign in to import a cloud pile.
+              </div>
+            )}
+            <div style={{ display: 'grid', gap: 10 }}>
+              <label style={{ display: 'grid', gap: 4 }}>
+                <span>Remote Pile ID</span>
                 <input
                   type="text"
-                  value={cloudPileName}
-                  onChange={(e) => setCloudPileName(e.target.value)}
-                  placeholder="Enter pile name..."
-                  autoFocus
+                  placeholder="e.g. 7b1e1f5a-..."
+                  value={remotePileId}
+                  onChange={(e) => setRemotePileId(e.target.value)}
+                  style={{ padding: 8 }}
                 />
-              </div>
-              <div className={styles.inputGroup}>
-                <label>Description (optional)</label>
+              </label>
+              <label style={{ display: 'grid', gap: 4 }}>
+                <span>New Pile Name</span>
                 <input
                   type="text"
-                  value={cloudPileDescription}
-                  onChange={(e) => setCloudPileDescription(e.target.value)}
-                  placeholder="Enter description..."
+                  placeholder="e.g. ImportedNotes"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  style={{ padding: 8 }}
                 />
-              </div>
-              <div className={styles.modalButtons}>
-                <button 
-                  className={styles.button}
-                  onClick={() => setShowCreateCloudModal(false)}
+              </label>
+              <label style={{ display: 'grid', gap: 4 }}>
+                <span>Destination Folder</span>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => window.electron.ipc.sendMessage('open-file-dialog')}
                 >
-                  Cancel
+                  {basePath || 'Choose a destination folder'}
                 </button>
-                <button 
-                  className={styles.button}
-                  onClick={handleCreateCloudPile}
-                  disabled={!cloudPileName.trim()}
-                >
-                  Create
-                </button>
-              </div>
+                <div style={{ fontSize: 12, opacity: 0.8 }}>
+                  A new folder named "{newName || 'YourPileName'}" will be created here.
+                </div>
+              </label>
+              {migrateError && (
+                <div style={{ color: 'orange' }}>{migrateError}</div>
+              )}
             </div>
-          </div>
-        </div>
-      )}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
+              <Dialog.Close asChild>
+                <button className={styles.secondaryButton}>Cancel</button>
+              </Dialog.Close>
+              <button
+                className={styles.primaryButton}
+                disabled={!isAuthenticated || !remotePileId || !basePath || !newName || migrating}
+                onClick={async () => {
+                  try {
+                    setMigrateError(null);
+                    setMigrating(true);
+                    // Create the pile folder and add to config
+                    // createPile(name, selectedPath) -> will create folder join(basePath, newName)
+                    // But we are on Home and do not navigate yet; we can compute path directly too
+                    const destFolder = window.electron.joinPath(basePath, newName);
+                    // Ensure config has the pile entry and directory exists
+                    await window.electron.mkdir(destFolder);
+                    await createPile(newName, basePath);
+                    // Call migration
+                    const res = await window.electron.sync.migrateCloudPile(remotePileId, destFolder);
+                    if (res?.error) {
+                      throw new Error(res.error);
+                    }
+                    // Navigate to the new pile; ensure it exists in config list
+                    // Add to config via create pile helper if not present
+                    if (!piles.find((p: any) => p.path === destFolder)) {
+                      // Attempt to add to config by simulating a pile creation record
+                      // Home doesn't expose writeConfig; simplest is to trigger a soft reload of config by creating pile entry
+                      // We cannot import writeConfig here, so we rely on existing Create flow: createPile
+                      // But we are outside context method scope here; keep UX by navigating and letting PilesContext pick it up
+                    }
+                    // Navigate to route using name
+                    window.location.href = `/#/pile/${encodeURIComponent(newName)}`;
+                    setMigrateOpen(false);
+                  } catch (e: any) {
+                    setMigrateError(e?.message || 'Migration failed');
+                  } finally {
+                    setMigrating(false);
+                  }
+                }}
+              >
+                {migrating ? 'Importing…' : 'Import'}
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }

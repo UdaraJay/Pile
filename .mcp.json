@@ -27,9 +27,9 @@
 				"@supabase/mcp-server-supabase@latest",
 				"--project-ref=cikhrockryhbgeefhhec"
 			],
-			"env": {
-				"SUPABASE_ACCESS_TOKEN": "sbp_33bdf20d4e712b38b436633291ebe63749269c1f"
-			}
-		}
-	}
+        "env": {
+            "SUPABASE_ACCESS_TOKEN": "sbp_c22d146d6d9d81c7d8c82088d0e75cf1b9f8f5c1"
+        }
+        }
+    }
 }

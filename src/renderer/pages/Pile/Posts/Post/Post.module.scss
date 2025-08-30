@@ -123,8 +123,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 4px 18px;
+    z-index: 2;
+    pointer-events: none; /* prevent header box from blocking clicks underneath on narrow widths */
 
     .title {
+      pointer-events: auto; /* allow selecting or interacting with title if needed */
     }
 
     .meta {
@@ -132,10 +135,13 @@
       flex-direction: column;
       align-items: flex-end;
       margin-top: -3px;
+      position: relative;
+      z-index: 2; /* ensure header meta stays above other overlapping elements */
 
       .time {
         position: relative;
-        z-index: 1;
+        z-index: 2;
+        pointer-events: auto; /* keep time button clickable while header container ignores events */
         color: var(--secondary);
         font-size: 0.9em;
         padding: 3px 5px;
@@ -199,11 +205,11 @@
 
 .actionsHolder {
   display: flex;
-  height: 40px;
+  height: auto; /* allow wrapping rows to grow */
   min-height: 40px;
-  margin-top: 4px; /* avoid overlapping content above (e.g., tags) */
+  margin-top: 8px; /* extra room under absolute header to avoid overlap */
   position: relative;
-  z-index: 10; // Ensure actions are above other elements
+  z-index: 50; // Lift above nearby UI when window is narrow
   pointer-events: none; // don't block clicks beneath when actions hidden
 }
 
@@ -216,6 +222,12 @@
   position: relative;
   z-index: 5; // keep below tags/popovers (tags use z>=20)
   pointer-events: auto; // enable interaction when visible
+  flex-wrap: wrap; // allow buttons to wrap on narrow widths
+  gap: 6px 8px;
+
+  @media (max-width: 640px) {
+    padding-left: 40px;
+  }
 
   .sep {
     margin: 0 5px 0 4px;
@@ -301,7 +313,31 @@
         color: white;
       }
     }
+
+    &.loading {
+      position: relative;
+      padding-left: 26px;
+    }
+
+    &.loading::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      margin-top: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--secondary);
+      border-top-color: transparent;
+      animation: spin 0.8s linear infinite;
+    }
   }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 // Delete button for individual replies

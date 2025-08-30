@@ -10,6 +10,10 @@ const postFormat = {
   replies: [],
   isReply: false,
   isAI: false,
+  // Summarization fields (optional)
+  isSummarized: false,
+  summaryStale: false,
+  summary: null, // { title, summary, keyPoints, mood, confidence, createdAt, model }
 };
 
 const getDirectoryPath = (filePath) => {

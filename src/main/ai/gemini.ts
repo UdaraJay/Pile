@@ -80,7 +80,7 @@ export const JSON_TEMPLATES = {
       properties: {
         title: { type: 'string', maxLength: 100 },
         summary: { type: 'string', maxLength: 500 },
-        keyThemes: { type: 'array', items: { type: 'string' }, maxItems: 5 },
+        keyThemes: { type: 'array', items: { type: 'string' }, maxItems: 12 },
         mood: {
           type: 'string',
           enum: ['positive', 'negative', 'neutral', 'mixed'],

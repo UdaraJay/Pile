@@ -21,6 +21,7 @@ interface SupabasePost {
   created_at: string;
   updated_at: string;
   deleted_at?: string | null;
+  meta?: any;
 }
 
 /**
@@ -256,7 +257,7 @@ async function handleRegularPost(pilePath: string, post: SupabasePost): Promise<
     }
 
     // Create frontmatter for the post
-    const frontmatter = {
+    const frontmatter: any = {
       id: post.id,
       pile_id: post.pile_id,
       title: post.title || '',
@@ -264,6 +265,19 @@ async function handleRegularPost(pilePath: string, post: SupabasePost): Promise<
       updated_at: post.updated_at,
       etag: post.etag || '',
     };
+
+    // Merge meta back into frontmatter for local persistence
+    if (post.meta && typeof post.meta === 'object') {
+      if (typeof post.meta.isSummarized === 'boolean') {
+        frontmatter.isSummarized = post.meta.isSummarized;
+      }
+      if (typeof post.meta.summaryStale === 'boolean') {
+        frontmatter.summaryStale = post.meta.summaryStale;
+      }
+      if (post.meta.summary && typeof post.meta.summary === 'object') {
+        frontmatter.summary = post.meta.summary;
+      }
+    }
 
     // Format the markdown file with frontmatter
     const frontmatterYaml = Object.entries(frontmatter)

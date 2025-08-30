@@ -770,4 +770,120 @@ ipcMain.handle('sync:clear-queue', async (_evt, pilePath: string) => {
   }
 });
 
+/**
+ * Trigger immediate sync for a pile (for high-priority operations like AI responses)
+ */
+ipcMain.handle('sync:immediate-sync', async (_evt, pilePath: string) => {
+  try {
+    console.log(`[SYNC] Triggering immediate sync for pile: ${pilePath}`);
+    fileWatcher.triggerImmediateSync(pilePath);
+    return { ok: true };
+  } catch (error) {
+    console.error('[SYNC] Immediate sync trigger failed:', error);
+    return { ok: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+});
+
+/**
+ * Migrate timestamp-based filenames to UUID-based filenames
+ */
+ipcMain.handle('sync:migrate-to-uuid', async (_evt, pilePath: string) => {
+  try {
+    console.log(`[SYNC] Starting UUID migration for pile: ${pilePath}`);
+    
+    const { promises: fs } = await import('fs');
+    const path = await import('path');
+    const matter = await import('gray-matter');
+    const crypto = await import('crypto');
+    
+    // Helper function to check if a string is a UUID
+    const isUuid = (val: string): boolean =>
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
+    
+    // Recursively find all markdown files
+    const findMarkdownFiles = async (dir: string): Promise<string[]> => {
+      const files: string[] = [];
+      const entries = await fs.readdir(dir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!['node_modules', '.git', '.pile', 'attachments'].includes(entry.name)) {
+            files.push(...await findMarkdownFiles(fullPath));
+          }
+        } else if (entry.isFile() && fullPath.endsWith('.md')) {
+          files.push(fullPath);
+        }
+      }
+      return files;
+    };
+    
+    const files = await findMarkdownFiles(pilePath);
+    let migratedCount = 0;
+    let skippedCount = 0;
+    
+    for (const filePath of files) {
+      try {
+        const filename = path.basename(filePath, '.md');
+        
+        // Skip if already UUID-based
+        if (isUuid(filename)) {
+          skippedCount++;
+          continue;
+        }
+        
+        // Read and parse the file
+        const content = await fs.readFile(filePath, 'utf8');
+        const { data: frontmatter, content: markdownContent } = matter(content);
+        
+        // Check if frontmatter already has a UUID
+        if (frontmatter.id && isUuid(frontmatter.id)) {
+          // File has UUID in frontmatter but wrong filename, just rename
+          const newFilename = `${frontmatter.id}.md`;
+          const newFilePath = path.join(path.dirname(filePath), newFilename);
+          
+          if (await fs.access(newFilePath).then(() => false).catch(() => true)) {
+            await fs.rename(filePath, newFilePath);
+            console.log(`[MIGRATE] Renamed ${filename}.md to ${newFilename}`);
+            migratedCount++;
+          } else {
+            console.warn(`[MIGRATE] Target file ${newFilename} already exists, skipping ${filename}.md`);
+          }
+        } else {
+          // Generate new UUID and update both frontmatter and filename
+          const newId = crypto.randomUUID();
+          const updatedFrontmatter = { ...frontmatter, id: newId };
+          const updatedContent = matter.stringify(markdownContent, updatedFrontmatter);
+          
+          const newFilename = `${newId}.md`;
+          const newFilePath = path.join(path.dirname(filePath), newFilename);
+          
+          if (await fs.access(newFilePath).then(() => false).catch(() => true)) {
+            await fs.writeFile(newFilePath, updatedContent, 'utf8');
+            await fs.unlink(filePath);
+            console.log(`[MIGRATE] Migrated ${filename}.md to ${newFilename} with UUID ${newId}`);
+            migratedCount++;
+          } else {
+            console.warn(`[MIGRATE] Target file ${newFilename} already exists, skipping ${filename}.md`);
+          }
+        }
+      } catch (error) {
+        console.error(`[MIGRATE] Failed to migrate ${filePath}:`, error);
+      }
+    }
+    
+    console.log(`[SYNC] UUID migration completed: ${migratedCount} files migrated, ${skippedCount} files already had UUIDs`);
+    
+    return { 
+      ok: true, 
+      migrated: migratedCount, 
+      skipped: skippedCount,
+      total: files.length 
+    };
+  } catch (error) {
+    console.error('[SYNC] UUID migration failed:', error);
+    return { ok: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+});
+
 console.log('Sync IPC handlers registered');

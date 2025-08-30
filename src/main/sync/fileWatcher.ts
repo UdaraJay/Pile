@@ -291,23 +291,34 @@ class FileWatcher {
   }
 
   /**
-   * Debounced push trigger for a pile. Ensures user doesn’t have to manually push.
+   * Debounced push trigger for a pile. Ensures user doesn't have to manually push.
    */
-  private schedulePush(pilePath: string): void {
+  private schedulePush(pilePath: string, immediate: boolean = false): void {
     const existing = this.pushTimers.get(pilePath);
     if (existing) clearTimeout(existing);
 
+    const delay = immediate ? 50 : 500; // Much faster for immediate pushes
     const timer = setTimeout(async () => {
       try {
         const { pushPile } = await import('./push');
-        console.log(`[WATCH] Auto-push scheduled for ${pilePath}`);
+        console.log(`[WATCH] ${immediate ? 'Immediate' : 'Auto'}-push scheduled for ${pilePath}`);
         await pushPile(pilePath);
       } catch (err) {
-        console.error(`[WATCH] Auto-push failed for ${pilePath}:`, err);
+        console.error(`[WATCH] ${immediate ? 'Immediate' : 'Auto'}-push failed for ${pilePath}:`, err);
+      } finally {
+        this.pushTimers.delete(pilePath);
       }
-    }, 500);
+    }, delay);
 
     this.pushTimers.set(pilePath, timer);
+  }
+
+  /**
+   * Trigger immediate sync for a pile (for high-priority operations like AI responses)
+   */
+  public triggerImmediateSync(pilePath: string): void {
+    console.log(`[WATCH] Triggering immediate sync for ${pilePath}`);
+    this.schedulePush(pilePath, true);
   }
 
   /**
@@ -336,6 +347,11 @@ class FileWatcher {
           const content = await fs.readFile(absPath, 'utf8');
           const etag = this.computeEtag(content);
           const postId = this.extractPostIdFromPath(absPath);
+          
+          // Log the type of ID we're enqueueing for debugging
+          const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(postId);
+          console.log(`[WATCH] Enqueueing post: ${postId} (UUID: ${isUuid}) from ${relativePath}`);
+          
           await syncQueue.enqueue({
             type: 'upsertPost',
             pilePath,

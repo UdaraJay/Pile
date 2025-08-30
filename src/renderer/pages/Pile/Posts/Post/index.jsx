@@ -20,9 +20,13 @@ import {
 import { useTimelineContext } from 'renderer/context/TimelineContext';
 import { useHighlightsContext } from 'renderer/context/HighlightsContext';
 import { useAIContext } from 'renderer/context/AIContext';
+import { useToastsContext } from 'renderer/context/ToastsContext';
 import Ball from './Ball';
 import Reply from './Reply';
 import Editor from '../../Editor';
+import useThread from 'renderer/hooks/useThread';
+import { generateStructuredResponse } from 'renderer/utils/jsonHelper';
+import OutlineView from './OutlineView';
 import styles from './Post.module.scss';
 import StatusBadge from 'renderer/components/StatusBadge';
 import { isOpenTodo, isDone } from 'renderer/utils/todoTags';
@@ -40,6 +44,9 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
   const [editable, setEditable] = useState(false);
   const [aiApiKeyValid, setAiApiKeyValid] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [showConversation, setShowConversation] = useState(false);
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [summarizeError, setSummarizeError] = useState(null);
 
   // Check if the AI API key is valid
   useEffect(() => {
@@ -114,6 +121,9 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
   const hasReplies = replies.length > 0;
   const isAI = post?.data?.isAI || false;
   const isReply = post?.data?.isReply || false;
+  const isSummarized = post?.data?.isSummarized || false;
+  const summary = post?.data?.summary || null;
+  const summaryStale = post?.data?.summaryStale || false;
   const highlightColor = post?.data?.highlight
     ? highlights.get(post.data.highlight).color
     : 'var(--border)';
@@ -146,6 +156,109 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
   // Replies are handled at the sub-component level
   if (isReply) return;
 
+  const { getThread } = useThread();
+  const { addNotification, updateNotification, removeNotification } = useToastsContext();
+
+  const buildSummaryPrompt = async () => {
+    const thread = await getThread(postPath);
+    if (!thread || thread.length === 0) return '';
+    const stripHtml = (html) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const lines = thread.map((p) => {
+      // No author labels to avoid "Pengguna/User/AI" in context
+      const created = p?.data?.createdAt || '';
+      return `- ${created}: ${stripHtml(p.content)}`;
+    });
+    return (
+      `Task: Create a structured JSON summary (schema: {title, summary, keyThemes[], mood, confidence}) ` +
+      `from the following conversation/notes. Write it as if I wrote it myself (first-person when relevant). ` +
+      `Do not mention 'user', 'assistant', or 'AI'. No meta commentary or greetings. Do not use bullet points.\n\n` +
+      `Output rules (single-paragraph focus):\n` +
+      `- title: optional; if present, keep very short (<= 60 chars)\n` +
+      `- summary: ONE cohesive short paragraph (1–3 sentences) that includes concrete context (people, places, books, tasks)\n` +
+      `- keyThemes: return an empty array [] (we will not display them)\n` +
+      `- mood: positive|negative|neutral|mixed\n` +
+      `- confidence: number 0..1\n\n` +
+      `Content:\n` +
+      lines.join('\n')
+    );
+  };
+
+  const handleSummarize = async () => {
+    try {
+      if (isSummarizing) return;
+      setSummarizeError(null);
+      setIsSummarizing(true);
+      const toastId = `summarize-${postPath}-${Date.now()}`;
+      addNotification({ id: toastId, type: 'info', message: 'Summarizing thread…', dismissTime: 8000 });
+      const prompt = await buildSummaryPrompt();
+      if (!prompt) return;
+      const result = await generateStructuredResponse(prompt, 'summary');
+      const now = new Date().toISOString();
+      const data = result?.data || {};
+      const newSummary = {
+        title: data.title || 'Summary',
+        summary: data.summary || '',
+        keyPoints: Array.isArray(data.keyThemes) ? data.keyThemes : [],
+        mood: data.mood || 'neutral',
+        confidence: typeof data.confidence === 'number' ? data.confidence : 0,
+        createdAt: now,
+        model: 'gemini',
+      };
+      await fileOperations.saveFile(
+        window.electron.joinPath(getCurrentPilePath(), postPath),
+        await fileOperations.generateMarkdown(post.content, {
+          ...post.data,
+          isSummarized: true,
+          summaryStale: false,
+          summary: newSummary,
+          updatedAt: now,
+        }),
+      );
+      await refreshPost();
+      // Trigger immediate sync so meta is pushed quickly (if linked)
+      try {
+        if (currentPile?.path) {
+          await window.electron.sync.immediateSync(currentPile.path);
+        }
+      } catch (_) {}
+      updateNotification(toastId, 'success', 'Summary created');
+      setTimeout(() => removeNotification(toastId), 1500);
+    } catch (e) {
+      console.error('Failed to summarize thread:', e);
+      setSummarizeError(e?.message || 'Failed to summarize');
+      const toastId = `summarize-error-${postPath}-${Date.now()}`;
+      addNotification({ id: toastId, type: 'error', message: 'Failed to summarize. Please try again.', dismissTime: 6000 });
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
+  const handleResummarize = async () => {
+    await handleSummarize();
+  };
+
+  const handleUnpinSummary = async () => {
+    try {
+      const now = new Date().toISOString();
+      await fileOperations.saveFile(
+        window.electron.joinPath(getCurrentPilePath(), postPath),
+        await fileOperations.generateMarkdown(post.content, {
+          ...post.data,
+          isSummarized: false,
+          updatedAt: now,
+        }),
+      );
+      await refreshPost();
+      try {
+        if (currentPile?.path) {
+          await window.electron.sync.immediateSync(currentPile.path);
+        }
+      } catch (_) {}
+    } catch (e) {
+      console.error('Failed to unpin summary:', e);
+    }
+  };
+
   return (
     <div
       ref={containerRef}
@@ -158,6 +271,9 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
       onFocus={handleRootMouseEnter}
       onBlur={handleRootMouseLeave}
     >
+      {isSummarized && summary && (
+        <OutlineView summary={summary} stale={summaryStale} />
+      )}
       <div className={styles.post}>
         <div className={styles.left}>
           {post.data.isReply && <div className={styles.connector} />}
@@ -190,18 +306,20 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
               </button>
             </div>
           </div>
-          <div className={styles.editor}>
-            <Editor
-              postPath={postPath}
-              editable={editable}
-              setEditable={setEditable}
-              searchTerm={searchTerm}
-            />
-          </div>
+          {(!isSummarized || showConversation) && (
+            <div className={styles.editor}>
+              <Editor
+                postPath={postPath}
+                editable={editable}
+                setEditable={setEditable}
+                searchTerm={searchTerm}
+              />
+            </div>
+          )}
         </div>
       </div>
 
-      {renderReplies()}
+      {(!isSummarized || showConversation) && renderReplies()}
 
       <div className={styles.actionsHolder}>
         <AnimatePresence>
@@ -217,7 +335,45 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
                   <NeedleIcon className={styles.icon} />
                   Add another entry
                 </button>
-                <div className={styles.sep}>/</div>
+                {!isSummarized && (
+                  <>
+                    <button
+                      className={`${styles.openReply} ${isSummarizing ? styles.loading : ''}`}
+                      disabled={!aiApiKeyValid || isSummarizing}
+                      onClick={handleSummarize}
+                    >
+                      <PaperIcon className={styles.icon2} />
+                      {isSummarizing ? 'Summarizing…' : 'Summarize'}
+                    </button>
+                  </>
+                )}
+                {isSummarized && (
+                  <>
+                    {summaryStale && (
+                      <>
+                        <button
+                          className={`${styles.openReply} ${isSummarizing ? styles.loading : ''}`}
+                          disabled={!aiApiKeyValid || isSummarizing}
+                          onClick={handleResummarize}
+                        >
+                          <ReflectIcon className={styles.icon2} />
+                          {isSummarizing ? 'Resummarizing…' : 'Resummarize'}
+                        </button>
+                      </>
+                    )}
+                    <button
+                      className={styles.openReply}
+                      onClick={() => setShowConversation((v) => !v)}
+                    >
+                      <EditIcon className={styles.icon2} />
+                      {showConversation ? 'Hide Conversation' : 'View Conversation'}
+                    </button>
+                    <button className={styles.openReply} onClick={handleUnpinSummary}>
+                      <EditIcon className={styles.icon2} />
+                      Unpin Summary
+                    </button>
+                  </>
+                )}
                 <button
                   className={styles.openReply}
                   disabled={!aiApiKeyValid || isAiReplying}
@@ -230,7 +386,6 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
                   <ReflectIcon className={styles.icon2} />
                   Think Deeper
                 </button>
-                <div className={styles.sep}>/</div>
                 <button
                   className={`${styles.openReply} ${deleteConfirm ? styles.confirmDelete : ''}`}
                   onClick={handleDelete}
@@ -250,7 +405,7 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
       </div>
 
       <AnimatePresence>
-        {replying && (
+        {replying && (!isSummarized || showConversation) && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}

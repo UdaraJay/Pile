@@ -76,6 +76,7 @@ button {
     will-change: transform, opacity;
     border: 1px solid var(--border);
     transform-origin: 0 0;
+    z-index: 9999;
 
 }
 

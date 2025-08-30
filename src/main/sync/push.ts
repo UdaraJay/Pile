@@ -25,12 +25,13 @@ interface PostData {
 }
 
 // Cache of posts table column support to avoid repeated probing
-let postsColumnProbe: { probed: boolean; hasContentMd: boolean; hasUserId: boolean; hasEtag: boolean; hasName: boolean } = {
+let postsColumnProbe: { probed: boolean; hasContentMd: boolean; hasUserId: boolean; hasEtag: boolean; hasName: boolean; hasMeta: boolean } = {
   probed: false,
   hasContentMd: false,
   hasUserId: false,
   hasEtag: false,
   hasName: false,
+  hasMeta: false,
 };
 
 async function probePostsColumns(): Promise<typeof postsColumnProbe> {
@@ -40,6 +41,7 @@ async function probePostsColumns(): Promise<typeof postsColumnProbe> {
   let hasUserId = false;
   let hasEtag = false;
   let hasName = false;
+  let hasMeta = false;
   try {
     const { error } = await supabase.from('posts').select('content_md').limit(0);
     hasContentMd = !error;
@@ -64,7 +66,13 @@ async function probePostsColumns(): Promise<typeof postsColumnProbe> {
   } catch {
     hasName = false;
   }
-  postsColumnProbe = { probed: true, hasContentMd, hasUserId, hasEtag, hasName };
+  try {
+    const { error } = await supabase.from('posts').select('meta').limit(0);
+    hasMeta = !error;
+  } catch {
+    hasMeta = false;
+  }
+  postsColumnProbe = { probed: true, hasContentMd, hasUserId, hasEtag, hasName, hasMeta };
   return postsColumnProbe;
 }
 
@@ -270,6 +278,18 @@ export async function buildPostUpsertPayload(frontmatter: any, content: string, 
       if (userId) base.user_id = userId;
     } catch {}
   }
+  // Include summary metadata when supported by schema
+  if (probe.hasMeta) {
+    try {
+      const meta: any = {};
+      if (typeof frontmatter?.isSummarized === 'boolean') meta.isSummarized = frontmatter.isSummarized;
+      if (typeof frontmatter?.summaryStale === 'boolean') meta.summaryStale = frontmatter.summaryStale;
+      if (frontmatter?.summary && typeof frontmatter.summary === 'object') meta.summary = frontmatter.summary;
+      if (Object.keys(meta).length > 0) {
+        base.meta = meta;
+      }
+    } catch {}
+  }
   return base;
 }
 
@@ -296,15 +316,42 @@ async function processUpsertPost(operation: SyncOperation, remotePileId: string)
   // Parse frontmatter and content
   let { data: frontmatter, content } = matter(fileContent);
 
-  const isUuid = (val: string | undefined) =>
+  const isUuid = (val: string | undefined): boolean =>
     !!val && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
 
+  // Generate a UUID if the current ID is not a valid UUID
+  const ensureValidId = (frontmatter: any, fallbackId: string): { id: string; needsUpdate: boolean } => {
+    const currentId = frontmatter?.id || fallbackId;
+    if (isUuid(currentId)) {
+      return { id: currentId, needsUpdate: false };
+    }
+    // Generate a new UUID and mark that we need to update the file
+    const newId = crypto.randomUUID();
+    return { id: newId, needsUpdate: true };
+  };
+
+  // Ensure we have a valid UUID for the post ID
+  const { id: validId, needsUpdate } = ensureValidId(frontmatter, operation.postId!);
+  
+  // Update frontmatter and file if we generated a new UUID
+  if (needsUpdate) {
+    console.log(`[PUSH] Generated new UUID ${validId} for post (was: ${frontmatter?.id || operation.postId})`);
+    frontmatter = { ...frontmatter, id: validId };
+    const updatedContent = matter.stringify(content, frontmatter);
+    try {
+      await fs.writeFile(fullPath, updatedContent, 'utf8');
+    } catch (writeErr) {
+      console.error('[PUSH] Failed to update file with new UUID:', writeErr);
+      // Continue with sync attempt using generated UUID
+    }
+  }
+
   // Prepare post data for Supabase using adaptive builder
-  const postData: any = await buildPostUpsertPayload(frontmatter, content, remotePileId, operation.postId!, operation.etag);
+  const postData: any = await buildPostUpsertPayload(frontmatter, content, remotePileId, validId, operation.etag);
 
   // Upsert to Supabase posts table
   // Check if row exists to enable optimistic update
-  const postId = (frontmatter as any)?.id || operation.postId!;
+  const postId = validId;
   let { data: existingRows, error: fetchErr } = await supabase
     .from('posts')
     .select('id, updated_at, etag')
@@ -366,32 +413,28 @@ async function processUpsertPost(operation: SyncOperation, remotePileId: string)
     if (insErr) error = insErr;
   }
 
-  // Retry path: database expects uuid for posts.id but local ID is not uuid
-  if (error && /invalid input syntax for type uuid/i.test(error.message)) {
-    try {
-      // Only attempt fix if current id is not a UUID
-      const currentId = (frontmatter as any)?.id || operation.postId;
-      if (!isUuid(currentId)) {
-        const newId = crypto.randomUUID();
-        // Update frontmatter with new UUID id
-        const updatedFrontmatter = { ...frontmatter, id: newId } as any;
-        const updatedContent = matter.stringify(content, updatedFrontmatter);
-        await fs.writeFile(fullPath, updatedContent, 'utf8');
-
-        // Update local variables to reflect new state
-        frontmatter = updatedFrontmatter;
-        // Build payload again with UUID id
-        const retryData: any = await buildPostUpsertPayload(frontmatter, content, remotePileId, newId, operation.etag);
-        const retry = await supabase
+  // Enhanced error handling with specific UUID error recovery
+  if (error) {
+    if (/invalid input syntax for type uuid/i.test(error.message)) {
+      // This should now be rare since we pre-validate UUIDs, but handle as fallback
+      console.error('[PUSH] UUID validation error occurred despite pre-validation:', error.message);
+      console.error('[PUSH] PostId used:', postId);
+      throw new Error(`UUID validation failed for post ID "${postId}": ${error.message}`);
+    } else if (/violates unique constraint/i.test(error.message)) {
+      // Handle duplicate key errors gracefully
+      console.warn('[PUSH] Duplicate post detected, attempting update with force:', postId);
+      try {
+        const { error: forceUpdateError } = await supabase
           .from('posts')
-          .upsert(retryData, { onConflict: 'id' });
-        if (retry.error) {
-          throw new Error(`Failed to upsert post after UUID fix: ${retry.error.message}`);
+          .update(postData)
+          .eq('id', postId)
+          .eq('pile_id', remotePileId);
+        if (!forceUpdateError) {
+          error = null; // Success
         }
-        error = null;
+      } catch (retryError) {
+        console.error('[PUSH] Force update also failed:', retryError);
       }
-    } catch (e) {
-      throw new Error((e as Error).message);
     }
   }
 
@@ -407,12 +450,19 @@ async function enqueueExistingPostsForPush(pilePath: string): Promise<void> {
   try {
     const files = await recursiveListMarkdown(pilePath);
     if (files.length === 0) return;
+    console.log(`[PUSH] Enqueueing ${files.length} existing posts for push`);
+    
     for (const absPath of files) {
       try {
         const relativePath = path.relative(pilePath, absPath).replace(/\\/g, '/');
         const content = await fs.readFile(absPath, 'utf8');
         const etag = computeEtag(content);
         const postId = path.basename(absPath).replace(/\.md$/i, '');
+        
+        // Log the type of ID we're enqueueing for debugging
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(postId);
+        console.log(`[PUSH] Enqueueing: ${postId} (UUID: ${isUuid}) from ${relativePath}`);
+        
         await syncQueue.enqueue({
           type: 'upsertPost',
           pilePath,
@@ -422,11 +472,12 @@ async function enqueueExistingPostsForPush(pilePath: string): Promise<void> {
           etag,
         });
       } catch (e) {
-        console.warn('[PUSH] Failed to enqueue existing post:', absPath, e);
+        console.warn('[PUSH] Failed to enqueue existing post:', absPath, (e as Error)?.message);
+        // Continue with other files even if one fails
       }
     }
   } catch (e) {
-    console.error('[PUSH] Failed initial scan:', e);
+    console.error('[PUSH] Failed initial scan:', (e as Error)?.message);
   }
 }
 

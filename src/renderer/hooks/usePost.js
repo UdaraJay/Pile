@@ -30,6 +30,10 @@ const defaultPost = {
     attachments: [],
     isReply: false,
     isAI: false,
+    // summarization
+    isSummarized: false,
+    summaryStale: false,
+    summary: null,
   },
 };
 
@@ -83,6 +87,11 @@ function usePost(
         updatedAt: now,
         ...dataOverrides,
       };
+
+      // If editing a non-reply post that is currently summarized, mark summary stale
+      if (!isReply && data.isSummarized && dataOverrides.summary === undefined) {
+        data.summaryStale = true;
+      }
 
       try {
         const fileContents = await fileOperations.generateMarkdown(content, data);
@@ -144,6 +153,8 @@ function usePost(
     const data = {
       ...parentPost.data,
       replies: newReplies,
+      // If the parent was summarized, mark it stale due to new reply
+      summaryStale: parentPost.data.isSummarized ? true : parentPost.data.summaryStale,
     };
     const fileContents = await fileOperations.generateMarkdown(content, data);
     await fileOperations.saveFile(fullParentPostPath, fileContents);

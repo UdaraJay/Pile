@@ -226,6 +226,9 @@ const electronHandler = {
 
     // Maintenance
     rescan: (pilePath: string) => ipcRenderer.invoke('sync:rescan', pilePath),
+    clearQueue: (pilePath: string) => ipcRenderer.invoke('sync:clear-queue', pilePath),
+    immediateSync: (pilePath: string) => ipcRenderer.invoke('sync:immediate-sync', pilePath),
+    migrateToUuid: (pilePath: string) => ipcRenderer.invoke('sync:migrate-to-uuid', pilePath),
   },
 };
 

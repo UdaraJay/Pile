@@ -355,6 +355,12 @@ body {
   background: var(--bg);
 }
 
+/* Optional: terminal-like font override. Add class 'terminalFont' on body or root container */
+:root.terminalFont, body.terminalFont {
+  --font-sans: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-heading: var(--font-sans);
+}
+
 /* Global radial emerald glow background (behind all content) */
 #root {
   position: relative;

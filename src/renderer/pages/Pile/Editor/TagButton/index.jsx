@@ -26,6 +26,15 @@ export default function Tags({
   const [newTag, setNewTag] = useState('');
   const onChangeNewTag = (e) => setNewTag(e.target.value);
 
+  const toggleTag = (tag) => {
+    if (!tag) return;
+    if (tags.includes(tag)) {
+      removeTag(tag);
+    } else {
+      addTag(tag);
+    }
+  };
+
   const renderAllTags = () => {
     if (allTags.size == 0) {
       return (
@@ -34,13 +43,18 @@ export default function Tags({
         </div>
       );
     }
-    return allTags.keys().map((tag) => {
-      return (
-        <div className={styles.item} key={tag}>
-          {tag}
-        </div>
-      );
-    });
+    return allTags.keys().map((tag) => (
+      <div
+        className={`${styles.item} ${tags.includes(tag) ? styles.active : ''}`}
+        key={tag}
+        onClick={() => toggleTag(tag)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && toggleTag(tag)}
+      >
+        {tag}
+      </div>
+    ));
   };
 
   const handleKeyPress = (event) => {
@@ -51,7 +65,9 @@ export default function Tags({
   };
 
   const createNewTag = () => {
-    addTag(newTag);
+    const t = newTag.trim();
+    if (!t) return;
+    addTag(t);
     setNewTag('');
   };
 
@@ -74,7 +90,9 @@ export default function Tags({
             />
             <div className={styles.list}>
               {newTag.length > 0 && (
-                <div className={styles.item}>Create new tag "{newTag}"</div>
+                <div className={styles.item} onClick={createNewTag}>
+                  Create new tag "{newTag}"
+                </div>
               )}
               {renderAllTags()}
             </div>

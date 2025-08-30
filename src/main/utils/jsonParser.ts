@@ -124,8 +124,8 @@ export function parseSummaryResponse(
         title: parsed.title.substring(0, 100),
         summary: parsed.summary.substring(0, 500),
         keyThemes: parsed.keyThemes
-          .slice(0, 5)
-          .map((theme: string) => theme.substring(0, 50)),
+          .slice(0, 12)
+          .map((theme: string) => theme.substring(0, 120)),
         mood: parsed.mood,
         confidence: Math.max(0, Math.min(1, parsed.confidence)),
       };

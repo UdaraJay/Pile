@@ -15,6 +15,7 @@ import { useAIContext } from 'renderer/context/AIContext';
 import useThread from 'renderer/hooks/useThread';
 import { useToastsContext } from 'renderer/context/ToastsContext';
 import { useDebug } from 'renderer/context/DebugContext';
+import { usePilesContext } from 'renderer/context/PilesContext';
 import Attachments from './Attachments';
 import TagList from './TagList';
 import TagButton from './TagButton';
@@ -62,6 +63,7 @@ const Editor = memo(
       useAIContext();
     const { addNotification, removeNotification } = useToastsContext();
     const { showAIStatus, hideAIStatus } = useDebug();
+    const { currentPile } = usePilesContext();
 
     const isNew = !postPath;
 
@@ -196,6 +198,18 @@ const Editor = memo(
 
     const handleSubmit = useCallback(async () => {
       await savePost();
+      
+      // Trigger immediate sync for user post
+      if (currentPile?.path) {
+        try {
+          console.log('📝 [Editor] Triggering immediate sync for user post');
+          await window.electron.sync.immediateSync(currentPile.path);
+        } catch (syncError) {
+          console.error('📝 [Editor] Failed to trigger immediate sync:', syncError);
+          // Don't fail the post save for sync issues
+        }
+      }
+      
       if (isNew) {
         resetPost();
         closeReply();
@@ -204,7 +218,7 @@ const Editor = memo(
 
       closeReply();
       setEditable(false);
-    }, [editor, isNew, post]);
+    }, [editor, isNew, post, currentPile]);
 
     // Listen for the 'submit' event and call handleSubmit when it's triggered
     useEffect(() => {
@@ -381,6 +395,18 @@ const Editor = memo(
         try {
           // Save with explicit content to avoid state race
           await savePost({}, aiHtml);
+          
+          // Trigger immediate sync for AI response
+          if (currentPile?.path) {
+            try {
+              console.log('📝 [Editor] Triggering immediate sync for AI response');
+              await window.electron.sync.immediateSync(currentPile.path);
+            } catch (syncError) {
+              console.error('📝 [Editor] Failed to trigger immediate sync:', syncError);
+              // Don't fail the AI response for sync issues
+            }
+          }
+          
           try {
             // Ensure parent thread refresh after saving AI entry
             const maybePromise = reloadParentPost?.(parentPostPath);

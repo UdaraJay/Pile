@@ -45,14 +45,14 @@
 
    .popover {
        /* position and z-index are now set inline when portaled */
-       width: 240px;
+       width: 260px;
        border-radius: 12px;
-       background: var(--bg-secondary);
+       background: var(--bg);
        backdrop-filter: blur(12px);
-       padding: 5px;
-       font-size: 0.9em;
+       padding: 8px;
+       font-size: 0.95em;
        border: 1px solid var(--border);
-       box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+       box-shadow: 0 10px 24px rgba(0,0,0,0.35);
    
        .title {
            font-weight: 500;
@@ -69,7 +69,7 @@
            border-radius: 8px;
            padding: 10px;
            font-size: 0.95em;
-           background: var(--bg);
+           background: var(--bg-secondary);
            outline: none;
            margin-bottom: 6px;
 
@@ -95,14 +95,20 @@
            min-height: 180px;
 
            .item {
-               background: var(--bg-tertiary);
-               padding: 5px 7px;
-               border-radius: 7px;
+               background: var(--bg-secondary);
+               padding: 7px 9px;
+               border-radius: 8px;
+               color: var(--primary);
+               border: 1px solid transparent;
+               margin-bottom: 6px;
 
                &:hover {
                    cursor: pointer;
-                   background: var(--base);
-                   color: var(--active-text);
+                   background: var(--bg-tertiary);
+               }
+
+               &.active {
+                   border-color: var(--base);
                }
            }
        }

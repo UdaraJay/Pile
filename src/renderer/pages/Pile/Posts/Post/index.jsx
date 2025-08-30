@@ -274,39 +274,39 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
       {isSummarized && summary && (
         <OutlineView summary={summary} stale={summaryStale} />
       )}
-      <div className={styles.post}>
-        <div className={styles.left}>
-          {post.data.isReply && <div className={styles.connector} />}
-          <Ball
-            isAI={isAI}
-            highlightColor={highlightColor}
-            cycleColor={cycleColor}
-            setHighlight={setHighlight}
-          />
-          <div
-            className={`${styles.line} ${
-              (post.data.replies.length > 0 || replying) && styles.show
-            }`}
-            style={{
-              borderColor: highlightColor,
-            }}
-          />
-        </div>
-        <div className={styles.right}>
-          <div className={styles.header}>
-            <div className={styles.title}>{post.name}</div>
-            <div className={styles.meta}>
-              {(openTodo || done) && (
-                <StatusBadge kind={done ? 'done' : 'todo'}>
-                  {done ? 'Done' : 'Todo'}
-                </StatusBadge>
-              )}
-              <button className={styles.time} onClick={toggleEditable}>
-                {created.toRelative()}
-              </button>
-            </div>
+      {(!isSummarized || showConversation) && (
+        <div className={styles.post}>
+          <div className={styles.left}>
+            {post.data.isReply && <div className={styles.connector} />}
+            <Ball
+              isAI={isAI}
+              highlightColor={highlightColor}
+              cycleColor={cycleColor}
+              setHighlight={setHighlight}
+            />
+            <div
+              className={`${styles.line} ${
+                (post.data.replies.length > 0 || replying) && styles.show
+              }`}
+              style={{
+                borderColor: highlightColor,
+              }}
+            />
           </div>
-          {(!isSummarized || showConversation) && (
+          <div className={styles.right}>
+            <div className={styles.header}>
+              <div className={styles.title}>{post.name}</div>
+              <div className={styles.meta}>
+                {(openTodo || done) && (
+                  <StatusBadge kind={done ? 'done' : 'todo'}>
+                    {done ? 'Done' : 'Todo'}
+                  </StatusBadge>
+                )}
+                <button className={styles.time} onClick={toggleEditable}>
+                  {created.toRelative()}
+                </button>
+              </div>
+            </div>
             <div className={styles.editor}>
               <Editor
                 postPath={postPath}
@@ -315,9 +315,9 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
                 searchTerm={searchTerm}
               />
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {(!isSummarized || showConversation) && renderReplies()}
 

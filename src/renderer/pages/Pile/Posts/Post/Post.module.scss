@@ -222,7 +222,10 @@
   position: relative;
   z-index: 5; // keep below tags/popovers (tags use z>=20)
   pointer-events: auto; // enable interaction when visible
-  flex-wrap: wrap; // allow buttons to wrap on narrow widths
+  flex-wrap: nowrap; // keep buttons on a single row
+  overflow-x: auto; // enable horizontal scrolling on overflow
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; // smooth scroll on iOS
   gap: 6px 8px;
 
   @media (max-width: 640px) {

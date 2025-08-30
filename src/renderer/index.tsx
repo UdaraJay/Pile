@@ -11,7 +11,7 @@ const wrapperStyle = {
 
 root.render(
   <Router>
-    <div style={wrapperStyle}>
+    <div className="uiChrome flatEdgy" style={wrapperStyle}>
       <App />
     </div>
   </Router>,

@@ -23,9 +23,9 @@ $tokens-spacing: (
 );
 
 $tokens-radius: (
-  sm: 8px,
-  md: 12px,
-  lg: 20px
+  sm: 2px,
+  md: 4px,
+  lg: 6px
 );
 
 $tokens-typography: (
@@ -80,4 +80,3 @@ $tokens-typography: (
     border-color: token($tokens-colors, accentHover);
   }
 }
-

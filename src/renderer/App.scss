@@ -368,29 +368,9 @@ body {
   width: 100vw;
 }
 
+/* flat style: remove glow background */
 #root::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  /* Softer glow on light theme */
-  background-image: radial-gradient(
-    circle 500px at 50% 300px,
-    rgba(16, 185, 129, 0.18),
-    transparent
-  );
-}
-
-@media (prefers-color-scheme: dark) {
-  #root::before {
-    /* Stronger glow for dark backgrounds */
-    background-image: radial-gradient(
-      circle 500px at 50% 300px,
-      rgba(16, 185, 129, 0.35),
-      transparent
-    );
-  }
+  content: none;
 }
 
 /* Ensure app content renders above the glow */
@@ -412,4 +392,122 @@ a {
 a:hover {
   opacity: 1;
   text-decoration: none;
+}
+
+/*
+  flat + edgy ui theme
+  - all ui chrome text is lowercase
+  - sharp corners, 1px borders, no shadows
+  - do NOT affect user content (editor/posts)
+*/
+.uiChrome {
+  /* tone down roundness everywhere by default */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  /* lowercase for common ui strings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  nav,
+  button,
+  label,
+  a,
+  span,
+  small,
+  strong,
+  b,
+  em,
+  th,
+  td,
+  li,
+  .pill,
+  .chip,
+  [role='button'] {
+    text-transform: lowercase;
+    letter-spacing: 0.2px;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    text-transform: lowercase;
+  }
+}
+
+.flatEdgy {
+  /* hard edges and flat surfaces */
+  button,
+  .button,
+  a,
+  input,
+  select,
+  textarea,
+  .card,
+  .menu,
+  .Dialog,
+  .pill,
+  .chip {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  button:hover,
+  .button:hover,
+  a:hover,
+  input:hover,
+  select:hover,
+  textarea:hover {
+    background: var(--bg-secondary);
+  }
+
+  button:focus,
+  .button:focus,
+  a:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--active);
+    outline-offset: 0;
+  }
+
+  /* exclude user content from forced lowercase */
+  .ProseMirror,
+  .tiptap,
+  .editor,
+  .postContent {
+    text-transform: none !important;
+  }
+
+  /* remove gradients, shadows, roundness in common areas */
+  .container {
+    background: var(--bg) !important;
+  }
+
+  .nav {
+    background: var(--bg) !important;
+  }
+
+  .logoWrapper,
+  .iconHolder,
+  .toggleButton,
+  .count span,
+  .primaryButton,
+  .secondaryButton {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    border: 1px solid var(--border) !important;
+    background: var(--bg) !important;
+    color: var(--primary) !important;
+    transform: none !important;
+  }
 }

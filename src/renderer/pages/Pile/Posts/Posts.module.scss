@@ -10,15 +10,7 @@
   box-sizing: border-box;
 
   .gradient {
-    position: absolute;
-    bottom: 0px;
-    left: 0;
-    background: var(--bg-secondary);
-    background: linear-gradient(to bottom, transparent, var(--bg));
-    width: calc(100%);
-    height: 15px;
-    z-index: 1;
-    pointer-events: none;
+    display: none; /* remove bottom divider/gradient */
   }
 }
 

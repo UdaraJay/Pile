@@ -88,7 +88,7 @@ export default function PileLayout({ children }) {
         >
           <div className={styles.nav}>
             <div className={styles.left}>
-              {currentPile?.name || pileName} <span style={{ padding: '6px' }}>·</span>
+              {currentPile?.name || pileName}
               <motion.span
                 key={now}
                 initial={{ opacity: 0 }}
@@ -96,7 +96,7 @@ export default function PileLayout({ children }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                {now}
+                {` ${now}`}
               </motion.span>
             </div>
             <div className={styles.right}>

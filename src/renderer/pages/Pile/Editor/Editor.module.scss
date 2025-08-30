@@ -15,11 +15,15 @@
 .editor {
   display: block;
   width: 100%;
-  width: calc(100% - 120px);
-  max-width: 600px;
+  max-width: 720px; /* center for symmetric margins */
+  margin-left: auto;
+  margin-right: auto;
 
   p {
     line-height: 1.45;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
 
     &:first-child {
       margin-top: 0;
@@ -104,6 +108,9 @@
     padding-left: 40px;
     padding-bottom: 12px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* smooth horizontal scroll on mac/ios */
+    overscroll-behavior-x: contain; /* keep horizontal scroll gestures here */
+    touch-action: pan-x; /* enable horizontal panning */
 
     &.new {
       left: -19px;

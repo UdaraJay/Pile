@@ -12,7 +12,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background: transparent; /* allow global glow to be visible */
+  background: transparent;
   opacity: 1;
   pointer-events: none;
 }
@@ -28,7 +28,6 @@
   font-size: 0.85em;
   background: var(--bg);
   transition: all ease-in-out 220ms, border ease-in-out 500ms;
-  background: linear-gradient(to bottom, var(--bg), 90%, transparent);
   -webkit-app-region: drag;
   width: calc(100% - 16px);
 
@@ -159,7 +158,7 @@
     height: 100vh;
     width: var(--sidebar-width);
     flex: 0 0 var(--sidebar-width);
-    border-right: 1px solid rgba(0, 0, 0, 0.03);
+    border-right: none; /* remove visual divider */
 
     @media only screen and (max-width: 909px) {
       display: none;

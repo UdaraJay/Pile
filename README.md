@@ -82,13 +82,14 @@ A sophisticated cross-platform desktop journaling application with AI integratio
 ## 🛠️ Technology Stack
 
 ### Core Technologies
-- **Electron 33.2.0** - Cross-platform desktop framework
-- **React 19** - Modern UI library with hooks
+- **Electron 33** - Cross-platform desktop framework
+- **React 19** - Modern UI with hooks
 - **TypeScript** - Type-safe JavaScript
-- **TipTap** - Extensible rich text editor
+- **Tiptap** - Extensible rich text editor
 - **Framer Motion** - Smooth animations
-- **Google Gemini 2.5 Pro** - Advanced AI integration
-- **Ollama** - Local AI inference
+- **Supabase** - Optional cloud sync, auth, realtime
+- **Google Gemini 2.5 Pro** - Advanced AI integration (optional)
+- **Ollama** - Local AI inference (optional)
 
 ### Development Tools
 - **Webpack** - Module bundling and build system
@@ -99,28 +100,34 @@ A sophisticated cross-platform desktop journaling application with AI integratio
 ## 📁 Project Structure
 
 ### Main Process (`src/main/`)
-- **`main.ts`** - Application entry point and window management
-- **`preload.ts`** - Secure IPC bridge between main and renderer
-- **`handlers/`** - Feature-specific IPC handlers
-  - `file.ts` - File operations and pile management
-  - `gemini.ts` - Gemini AI integration
-  - `keys.ts` - Secure API key management
-  - `store.ts` - Settings and preferences
-- **`ai/gemini.ts`** - Google Gemini 2.5 Pro client implementation
+- App boot, menu, IPC, and filesystem helpers
+- `main.ts` - App entry/window lifecycle
+- `preload.ts` - Context isolation + secure IPC bridge
+- `handlers/` - Feature IPC
+  - `file.ts` - Local piles, posts, attachments
+  - `auth.ts`, `oauth.ts` - Supabase auth flows (PKCE + loopback)
+  - `sync.ts` - Optional Supabase sync orchestration
+  - `store.ts` - Settings/preferences
+  - `keys.ts` - API key handling
+- `sync/` - Pull/Push engines for per‑pile sync
 
 ### Renderer Process (`src/renderer/`)
-- **`App.jsx`** - Main application component with routing
-- **`pages/`** - Application views
+- React UI, pages, components, hooks, context, styles
+- `App.jsx` - Root app + routing
+- `pages/` - Views
   - `Home/` - Pile selection and management
-  - `Pile/` - Main journaling interface
+  - `Pile/` - Core journaling surface
+    - `Posts/`, `Editor/`, `Search/`, `Settings/`, `Highlights/`, `Chat/`
   - `CreatePile/` - Pile creation wizard
-- **`context/`** - React Context providers
-  - `PilesContext.js` - Pile management state
-  - `AIContext.js` - AI integration state
-- **`hooks/`** - Custom React hooks
-  - `useGeminiStream.js` - Gemini streaming integration
+  - `Auth/`, `Profile/`, `License/`
+- `context/` - State containers (Auth, Piles, AI, etc.)
+- `hooks/` - Custom hooks (e.g., realtime, AI streaming)
+- SCSS Modules per component
 
-## 🔧 Development Commands
+### Import Aliases
+- Use `renderer/...` for renderer paths (see Jest and bundler config)
+
+## 🔧 Development & Commands
 
 ### Building and Running
 ```bash
@@ -133,8 +140,8 @@ npm run release         # Build and publish to GitHub releases
 ### Code Quality
 ```bash
 npm run lint            # Run ESLint
-npm run lint:fix        # Fix linting issues automatically
-npm test               # Run Jest tests
+npm run lint:fix        # Auto-fix lint issues
+npm test                # Run Jest tests (JSDOM)
 ```
 
 ### Platform-Specific Development
@@ -150,10 +157,13 @@ npm run build:renderer  # Build renderer process only
 PileBintang follows Electron's multi-process architecture with enhanced security:
 
 ### Security Model
-- **Context Isolation**: Renderer process isolated from Node.js APIs
-- **IPC Communication**: Secure communication via contextBridge
-- **Content Security Policy**: Strict CSP headers for enhanced security
-- **API Key Encryption**: Secure storage of sensitive credentials
+- **Context Isolation**: Renderer isolated from Node.js APIs
+- **Secure IPC**: Strict channel allowlists via `contextBridge`
+- **CSP**: Strict Content Security Policy
+- **Secrets**: API keys loaded via `.env` in development; never commit secrets
+
+### Data & Search
+Local filesystem posts with indexing utilities. Optional per‑pile cloud sync via Supabase (auth, realtime, storage). Full‑text search supported locally and via Supabase where configured.
 
 ### Data Organization
 ```
@@ -165,6 +175,42 @@ Pile Directory/
 │   └── ...
 └── piles.json                   # Pile configuration
 ```
+
+## 🧪 Testing Guidelines
+- Frameworks: Jest + Testing Library (`@testing-library/react`, JSDOM)
+- Location: `src/__tests__/` mirroring source layout
+- Naming: `*.test.(js|jsx|ts|tsx)`
+- Style: Prefer user‑visible assertions, minimal mocks
+- Run: `npm test` (use `--watch` during development)
+
+## 🧰 Coding Style & Conventions
+- Languages: TypeScript + modern JS; React function components with hooks
+- Formatting: Prettier (single quotes)
+- Linting: ESLint with ERB/Airbnb rules
+- Styles: SCSS Modules per component (e.g., `Component.module.scss`)
+- Naming: Components/contexts/hooks in PascalCase/CamelCase
+- Imports: Prefer `renderer/...` alias for renderer paths
+
+## 🔐 Security & Configuration
+- Secrets: Store API keys in `.env` (do not commit)
+- Electron: Test `npm run package` on macOS/Windows for native/runtime changes
+- Filesystem: Main process utilities should avoid writing outside app data dirs
+- Supabase: Optional; see Cloud Sync section below
+
+## ☁️ Cloud Sync (Optional, Supabase)
+Pile is offline‑first. You can link a local pile to Supabase for sync, auth, realtime presence, and attachments.
+
+### Configure Supabase
+- Add Allowed Redirect URLs in your Supabase project:
+  - `http://127.0.0.1:1213/auth/callback` (Electron loopback OAuth)
+  - `http://localhost:1212/auth/callback` (dev renderer)
+  - `pilebintang://auth-callback` (custom protocol for packaged app)
+- RLS policies and schema: see `OFFLINE_FIRST_PROGRESS.md` for tables and requirements
+
+### Using Auth in Dev
+- Sign in via Settings/Profile in the app
+- The main process runs a loopback OAuth server on `127.0.0.1:1213`
+- For password reset flows during dev, renderer uses `http://localhost:1212/auth/reset-password`
 
 ## 🆕 Recent Updates
 
@@ -202,6 +248,12 @@ We welcome contributions! Please follow these steps:
 - Update documentation for significant changes
 - Ensure all tests pass before submitting
 - Use TypeScript for type safety
+
+### Commit & PR Guidelines
+- Small, focused, descriptive commits (Conventional Commits encouraged: `feat:`, `fix:`, `refactor:`, `test:`)
+- Branches: short, task‑scoped names (e.g., `feat/editor-shortcuts`)
+- PRs: clear description, steps to test, screenshots/GIFs for UI, linked issues
+- CI hygiene: ensure `npm test` and `npm run lint` pass before review
 
 ## 📋 Requirements
 

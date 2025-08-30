@@ -22,8 +22,7 @@ function OutlineView({ summary, stale = false }) {
           <div className={styles.meta}>Confidence: {(confidence * 100).toFixed(0)}%</div>
         )}
       </div>
-
-      <div className={styles.divider} />
+      {/* removed divider for cleaner flow into thread */}
     </div>
   );
 }

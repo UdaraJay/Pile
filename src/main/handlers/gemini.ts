@@ -145,7 +145,7 @@ ipcMain.handle(
           'Starting Gemini stream with model:',
           selectedModel || 'default',
         );
-        for await (const chunk of stream(sanitizedPrompt, selectedModel)) {
+        for await (const chunk of stream(sanitizedPrompt, selectedModel, images)) {
           event.sender.send('gemini:stream', {
             type: 'chunk',
             streamId,
@@ -203,6 +203,7 @@ ipcMain.handle(
     event,
     prompt: string,
     template: keyof typeof JSON_TEMPLATES = 'summary',
+    images?: string[],
   ): Promise<GeminiResponse> => {
     try {
       // Validate sender frame URL
@@ -239,8 +240,8 @@ ipcMain.handle(
         throw new Error('Prompt too long: maximum 10000 characters allowed');
       }
 
-      // Generate structured JSON response
-      const response = await json(sanitizedPrompt, template);
+      // Generate structured JSON response (optionally with images for OCR)
+      const response = await json(sanitizedPrompt, template, undefined, images);
 
       // The json() function already handles safe parsing internally
       // But we can check if it's using fallback values by validating completeness

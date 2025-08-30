@@ -165,6 +165,7 @@ export function AIContextProvider({ children }) {
         timeout = 30000,
         onStart = () => {},
         onError = () => {},
+        images = [],
       } = options;
       let isCompleted = false;
       let hasReceivedData = false;
@@ -242,6 +243,7 @@ export function AIContextProvider({ children }) {
             const result = await window.electron.gemini.startStream(
               prompt,
               model,
+              images,
             );
             console.log('🤖 [AI] startStream result:', result);
 

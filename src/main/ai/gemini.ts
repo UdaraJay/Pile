@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import fs from 'fs';
+import path from 'path';
 import { safeParseJson } from '../utils/jsonParser';
 import { getKey } from '../utils/store';
 
@@ -43,7 +45,7 @@ async function initializeGemini(selectedModel: string = 'gemini-2.5-flash') {
  * @param selectedModel - The Gemini model to use (optional)
  * @returns AsyncGenerator that yields text chunks from the streaming response
  */
-export async function* stream(prompt: string, selectedModel?: string) {
+export async function* stream(prompt: string, selectedModel?: string, images?: string[]) {
   try {
     // Ensure Gemini is initialized with the correct model
     if (!model || selectedModel) {
@@ -55,7 +57,43 @@ export async function* stream(prompt: string, selectedModel?: string) {
       }
     }
 
-    const result = await model.generateContentStream(prompt);
+    // Build parts for multimodal if images provided
+    const parts: any[] = [{ text: prompt }];
+    if (Array.isArray(images) && images.length > 0) {
+      const mimeFromExt = (p: string) => {
+        const ext = path.extname(p).toLowerCase();
+        switch (ext) {
+          case '.png':
+            return 'image/png';
+          case '.jpg':
+          case '.jpeg':
+            return 'image/jpeg';
+          case '.gif':
+            return 'image/gif';
+          case '.webp':
+            return 'image/webp';
+          case '.bmp':
+            return 'image/bmp';
+          case '.svg':
+            return 'image/svg+xml';
+          default:
+            return 'application/octet-stream';
+        }
+      };
+      for (const imgPath of images) {
+        try {
+          if (!imgPath || typeof imgPath !== 'string') continue;
+          const buffer = fs.readFileSync(imgPath);
+          const b64 = buffer.toString('base64');
+          const mimeType = mimeFromExt(imgPath);
+          parts.push({ inlineData: { mimeType, data: b64 } });
+        } catch (e) {
+          console.warn('Failed to read attachment for OCR (stream):', imgPath, e);
+        }
+      }
+    }
+
+    const result = await model.generateContentStream(parts);
 
     for await (const chunk of result.stream) {
       const text = chunk.text();
@@ -122,6 +160,7 @@ export async function json(
   prompt: string,
   templateName: keyof typeof JSON_TEMPLATES = 'summary',
   selectedModel?: string,
+  images?: string[],
 ): Promise<any> {
   try {
     // Ensure Gemini is initialized with the correct model
@@ -138,6 +177,7 @@ export async function json(
 
     // Construct schema-aware prompt
     const fullPrompt = `${template.systemPrompt}
+If images are attached to this request, perform OCR on them and incorporate any relevant extracted text and visual cues into your analysis. Prioritize text extracted from images if it clarifies or augments the conversation context.
 
 Schema to follow:
 ${JSON.stringify(template.schema, null, 2)}
@@ -147,7 +187,45 @@ ${prompt}
 
 Return only valid JSON that strictly matches the schema above. No additional text or explanation.`;
 
-    const result = await jsonModel.generateContent(fullPrompt);
+    // Build multimodal parts if images are provided (OCR)
+    const parts: any[] = [{ text: fullPrompt }];
+
+    if (Array.isArray(images) && images.length > 0) {
+      const mimeFromExt = (p: string) => {
+        const ext = path.extname(p).toLowerCase();
+        switch (ext) {
+          case '.png':
+            return 'image/png';
+          case '.jpg':
+          case '.jpeg':
+            return 'image/jpeg';
+          case '.gif':
+            return 'image/gif';
+          case '.webp':
+            return 'image/webp';
+          case '.bmp':
+            return 'image/bmp';
+          case '.svg':
+            return 'image/svg+xml';
+          default:
+            return 'application/octet-stream';
+        }
+      };
+
+      for (const imgPath of images) {
+        try {
+          if (!imgPath || typeof imgPath !== 'string') continue;
+          const buffer = fs.readFileSync(imgPath);
+          const b64 = buffer.toString('base64');
+          const mimeType = mimeFromExt(imgPath);
+          parts.push({ inlineData: { mimeType, data: b64 } });
+        } catch (e) {
+          console.warn('Failed to read attachment for OCR:', imgPath, e);
+        }
+      }
+    }
+
+    const result = await jsonModel.generateContent(parts);
     const response = await result.response;
     const text = response.text().trim();
 

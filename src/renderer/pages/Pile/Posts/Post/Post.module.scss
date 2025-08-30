@@ -217,7 +217,7 @@
   display: flex;
   align-items: center;
   vertical-align: middle;
-  padding: 0 16px; /* symmetric margins */
+  padding: 0 16px 0 51px; /* align left with thread content */
   margin: 0 -5px;
   position: relative;
   z-index: 5; // keep below tags/popovers (tags use z>=20)
@@ -229,9 +229,9 @@
   overscroll-behavior-x: contain; // keep horizontal gestures on this scroller
   touch-action: pan-x; // allow horizontal panning with touch/trackpad
   gap: 6px 8px;
-  max-width: 720px; /* match editor width for symmetry */
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
 
   @media (max-width: 640px) {
     padding-left: 40px;

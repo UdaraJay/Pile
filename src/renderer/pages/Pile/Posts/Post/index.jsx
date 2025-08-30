@@ -161,14 +161,33 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
 
   const buildSummaryPrompt = async () => {
     const thread = await getThread(postPath);
-    if (!thread || thread.length === 0) return '';
+    if (!thread || thread.length === 0) return { prompt: '' };
     const stripHtml = (html) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     const lines = thread.map((p) => {
       // No author labels to avoid "Pengguna/User/AI" in context
       const created = p?.data?.createdAt || '';
       return `- ${created}: ${stripHtml(p.content)}`;
     });
-    return (
+    // collect image attachments for OCR
+    const imageExts = ['jpg','jpeg','png','gif','webp','bmp','svg'];
+    const images = [];
+    try {
+      for (const p of thread) {
+        const atts = Array.isArray(p?.data?.attachments) ? p.data.attachments : [];
+        for (const att of atts) {
+          const ext = (att.split('.').pop() || '').toLowerCase();
+          if (imageExts.includes(ext)) {
+            try {
+              const abs = window.electron.joinPath(getCurrentPilePath(), att);
+              images.push(abs);
+            } catch (_) {}
+          }
+        }
+      }
+    } catch (_) {}
+
+    return {
+      prompt: (
       `Task: Create a structured JSON summary (schema: {title, summary, keyThemes[], mood, confidence}) ` +
       `from the following conversation/notes. Write it as if I wrote it myself (first-person when relevant). ` +
       `Do not mention 'user', 'assistant', or 'AI'. No meta commentary or greetings. Do not use bullet points.\n\n` +
@@ -180,7 +199,9 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
       `- confidence: number 0..1\n\n` +
       `Content:\n` +
       lines.join('\n')
-    );
+    ),
+      images,
+    };
   };
 
   const handleSummarize = async () => {
@@ -190,9 +211,9 @@ const Post = memo(({ postPath, searchTerm = null, repliesCount = 0 }) => {
       setIsSummarizing(true);
       const toastId = `summarize-${postPath}-${Date.now()}`;
       addNotification({ id: toastId, type: 'info', message: 'Summarizing thread…', dismissTime: 8000 });
-      const prompt = await buildSummaryPrompt();
+      const { prompt, images } = (await buildSummaryPrompt()) || {};
       if (!prompt) return;
-      const result = await generateStructuredResponse(prompt, 'summary');
+      const result = await generateStructuredResponse(prompt, 'summary', null, images);
       const now = new Date().toISOString();
       const data = result?.data || {};
       const newSummary = {

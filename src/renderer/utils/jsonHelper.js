@@ -14,11 +14,13 @@ export async function generateStructuredResponse(
   prompt,
   template = 'summary',
   onError = null,
+  images = [],
 ) {
   try {
     const response = await window.electron.gemini.generateJson(
       prompt,
       template,
+      images,
     );
 
     if (response.success) {

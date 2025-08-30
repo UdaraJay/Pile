@@ -98,7 +98,7 @@ const electronHandler = {
     },
 
     // Start streaming Gemini responses
-    startStream: (prompt: string, selectedModel?: string) => {
+    startStream: (prompt: string, selectedModel?: string, images?: string[]) => {
       // Input schema validation
       if (!prompt || typeof prompt !== 'string') {
         return Promise.reject(
@@ -110,7 +110,7 @@ const electronHandler = {
           new Error('Prompt too long: maximum 10000 characters allowed'),
         );
       }
-      return ipcRenderer.invoke('gemini:stream', prompt, selectedModel);
+      return ipcRenderer.invoke('gemini:stream', prompt, selectedModel, images);
     },
 
     // Listen to streaming responses
@@ -148,6 +148,7 @@ const electronHandler = {
     generateJson: (
       prompt: string,
       template: 'summary' | 'metadata' = 'summary',
+      images?: string[],
     ) => {
       // Input schema validation
       if (!prompt || typeof prompt !== 'string') {
@@ -165,7 +166,7 @@ const electronHandler = {
           new Error('Invalid template: must be "summary" or "metadata"'),
         );
       }
-      return ipcRenderer.invoke('gemini:generate-json', prompt, template);
+      return ipcRenderer.invoke('gemini:generate-json', prompt, template, images);
     },
 
     // Test if API key is valid

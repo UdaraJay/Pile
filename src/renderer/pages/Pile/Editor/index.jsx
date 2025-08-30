@@ -275,6 +275,24 @@ const Editor = memo(
         console.log('📝 [Editor] Thread retrieved:', thread?.length, 'posts');
 
         const context = prepareCompletionContext(thread, isThinkDeeper);
+
+        // collect image attachments for OCR during think deeper / ai reply
+        const imageExts = ['jpg','jpeg','png','gif','webp','bmp','svg'];
+        const images = [];
+        try {
+          for (const p of thread || []) {
+            const atts = Array.isArray(p?.data?.attachments) ? p.data.attachments : [];
+            for (const att of atts) {
+              const ext = (att.split('.').pop() || '').toLowerCase();
+              if (imageExts.includes(ext) && currentPile?.path) {
+                try {
+                  const abs = window.electron.joinPath(currentPile.path, att);
+                  images.push(abs);
+                } catch (_) {}
+              }
+            }
+          }
+        } catch (_) {}
         console.log(
           '📝 [Editor] Context prepared:',
           context?.length,
@@ -322,6 +340,7 @@ const Editor = memo(
             },
             {
               timeout: 45000, // 45 second timeout
+              images,
               onStart: () => {
                 console.log('📝 [Editor] AI stream started callback');
               },

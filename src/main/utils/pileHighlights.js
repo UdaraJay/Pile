@@ -4,9 +4,9 @@ const glob = require('glob');
 const matter = require('gray-matter');
 
 const defaultHighlights = new Map([
-  ['Highlight', { color: '#FF703A', posts: [] }],
-  ['Do later', { color: '#4de64d', posts: [] }],
-  ['New idea', { color: '#017AFF', posts: [] }],
+  ['Highlight', { color: '#FF703A', order: 0, posts: [] }],
+  ['Do later', { color: '#4de64d', order: 1, posts: [] }],
+  ['New idea', { color: '#017AFF', order: 2, posts: [] }],
 ]);
 
 class PileHighlights {
@@ -18,7 +18,7 @@ class PileHighlights {
 
   sortMap(map) {
     let sortedMap = new Map(
-      [...map.entries()].sort((a, b) => a[1].posts.length - b[1].posts.length)
+      [...map.entries()].sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0))
     );
 
     return sortedMap;
@@ -32,9 +32,24 @@ class PileHighlights {
     if (fs.existsSync(highlightsFilePath)) {
       const data = fs.readFileSync(highlightsFilePath);
       const loadedHighlights = new Map(JSON.parse(data));
-      const sortedHighlights = this.sortMap(loadedHighlights);
 
+      // Ensure all highlights have an order field (migration for existing data)
+      let needsSave = false;
+      let index = 0;
+      loadedHighlights.forEach((value, key) => {
+        if (value.order === undefined) {
+          value.order = index;
+          needsSave = true;
+        }
+        index++;
+      });
+
+      const sortedHighlights = this.sortMap(loadedHighlights);
       this.highlights = sortedHighlights;
+
+      if (needsSave) {
+        this.save();
+      }
 
       return this.highlights;
     } else {
@@ -61,14 +76,68 @@ class PileHighlights {
     });
   }
 
-  create(highlight, filePath) {
-    if (this.highlights.has(highlight)) {
-      return;
+  create(name, color) {
+    if (this.highlights.has(name)) {
+      return this.highlights;
     }
 
-    // create a new highlight
-    const newHighlight = { color: null, icon: null, posts: [] };
-    this.highlights.set(tag, newHighlight);
+    // Find the next available order number
+    let maxOrder = -1;
+    this.highlights.forEach((value) => {
+      if (value.order !== undefined && value.order > maxOrder) {
+        maxOrder = value.order;
+      }
+    });
+
+    // create a new highlight with given name, color, and order
+    const newHighlight = { color: color || '#808080', order: maxOrder + 1, posts: [] };
+    this.highlights.set(name, newHighlight);
+
+    this.save();
+
+    return this.highlights;
+  }
+
+  update(oldName, newName, color) {
+    if (!this.highlights.has(oldName)) {
+      return this.highlights;
+    }
+
+    const existingHighlight = this.highlights.get(oldName);
+
+    // If the name is changing and the new name already exists, reject
+    if (oldName !== newName && this.highlights.has(newName)) {
+      return this.highlights;
+    }
+
+    // Update the highlight
+    const updatedHighlight = {
+      ...existingHighlight,
+      color: color || existingHighlight.color,
+    };
+
+    // If name changed, delete old and add new
+    if (oldName !== newName) {
+      this.highlights.delete(oldName);
+      this.highlights.set(newName, updatedHighlight);
+    } else {
+      this.highlights.set(oldName, updatedHighlight);
+    }
+
+    this.save();
+
+    return this.highlights;
+  }
+
+  reorder(orderedNames) {
+    // Update order field based on array position
+    orderedNames.forEach((name, index) => {
+      if (this.highlights.has(name)) {
+        const highlight = this.highlights.get(name);
+        highlight.order = index;
+        this.highlights.set(name, highlight);
+      }
+    });
 
     this.save();
 
@@ -77,16 +146,11 @@ class PileHighlights {
 
   delete(highlight) {
     if (this.highlights.has(highlight)) {
-      let updatedHighlight = this.highlights.get(highlight);
-      this.highlights.set(highlight, updatedHighlight);
-
-      // Todo: delete this tag from all the posts before
-      // deleting it
-
+      this.highlights.delete(highlight);
       this.save();
     }
 
-    return this.index;
+    return this.highlights;
   }
 
   save() {

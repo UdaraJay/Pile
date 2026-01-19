@@ -11,10 +11,22 @@ ipcMain.handle('highlights-get', (event) => {
   return highlights;
 });
 
-ipcMain.handle('highlights-create', (event, highlight) => {
-  pileHighlights.create(highlight);
+ipcMain.handle('highlights-create', (event, { name, color }) => {
+  const highlights = pileHighlights.create(name, color);
+  return highlights;
+});
+
+ipcMain.handle('highlights-update', (event, { oldName, name, color }) => {
+  const highlights = pileHighlights.update(oldName, name, color);
+  return highlights;
 });
 
 ipcMain.handle('highlights-delete', (event, highlight) => {
-  pileHighlights.delete(highlight);
+  const highlights = pileHighlights.delete(highlight);
+  return highlights;
+});
+
+ipcMain.handle('highlights-reorder', (event, orderedNames) => {
+  const highlights = pileHighlights.reorder(orderedNames);
+  return highlights;
 });

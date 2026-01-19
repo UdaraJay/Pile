@@ -41,26 +41,45 @@ export const HighlightsContextProvider = ({ children }) => {
   const refreshHighlights = useCallback(async () => {
     const newHighlights = await window.electron.ipc.invoke('highlights-get');
     const newMap = new Map(newHighlights);
-    setTags(newMap);
+    setHighlights(newMap);
   }, []);
 
-  const createHighlight = useCallback(async (highlight) => {
-    window.electron.ipc
-      .invoke('highlights-create', highlight)
-      .then((highlights) => {
-        setHighlights(highlights);
-      });
+  const createHighlight = useCallback(async ({ name, color }) => {
+    const highlights = await window.electron.ipc.invoke('highlights-create', {
+      name,
+      color,
+    });
+    const newMap = new Map(highlights);
+    setHighlights(newMap);
   }, []);
 
   const deleteHighlight = useCallback(async (highlight) => {
-    window.electron.ipc
-      .invoke('highlights-delete', highlight)
-      .then((highlights) => {
-        setHighlights(highlights);
-      });
+    const highlights = await window.electron.ipc.invoke(
+      'highlights-delete',
+      highlight
+    );
+    const newMap = new Map(highlights);
+    setHighlights(newMap);
   }, []);
 
-  const updateHighlight = (highlight, content) => {};
+  const updateHighlight = useCallback(async ({ oldName, name, color }) => {
+    const highlights = await window.electron.ipc.invoke('highlights-update', {
+      oldName,
+      name,
+      color,
+    });
+    const newMap = new Map(highlights);
+    setHighlights(newMap);
+  }, []);
+
+  const reorderHighlights = useCallback(async (orderedNames) => {
+    const highlights = await window.electron.ipc.invoke(
+      'highlights-reorder',
+      orderedNames
+    );
+    const newMap = new Map(highlights);
+    setHighlights(newMap);
+  }, []);
 
   const highlightsContextValue = {
     open,
@@ -69,7 +88,9 @@ export const HighlightsContextProvider = ({ children }) => {
     highlights,
     refreshHighlights,
     createHighlight,
+    updateHighlight,
     deleteHighlight,
+    reorderHighlights,
   };
 
   return (

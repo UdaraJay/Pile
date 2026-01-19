@@ -374,3 +374,218 @@ input {
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+// Highlight management styles
+.highlightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  transition: background 120ms ease-in-out, box-shadow 120ms ease-in-out, opacity 120ms ease-in-out;
+
+  &:hover {
+    background: var(--bg-tertiary);
+  }
+
+  &.dragging {
+    opacity: 0.9;
+    background: var(--bg-tertiary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+  }
+}
+
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--secondary);
+  cursor: grab;
+  transition: all 120ms ease-in-out;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--bg);
+    color: var(--primary);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.dragIcon {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: bold;
+  letter-spacing: -1px;
+}
+
+.highlightSwatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.highlightName {
+  flex: 1;
+  font-size: 14px;
+  color: var(--primary);
+}
+
+.highlightActions {
+  display: flex;
+  gap: 4px;
+}
+
+.highlightActionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: transparent;
+  transition: all 120ms ease-in-out;
+  color: var(--secondary);
+
+  &:hover {
+    cursor: pointer;
+    background: var(--bg);
+    color: var(--primary);
+  }
+
+  .actionIcon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.addHighlightBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--secondary);
+  transition: all 120ms ease-in-out;
+  margin-top: 4px;
+
+  &:hover {
+    cursor: pointer;
+    background: var(--bg-tertiary);
+    color: var(--primary);
+  }
+}
+
+.highlightEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.colorPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.colorPresets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.colorPreset {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: all 120ms ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+
+  &.selected {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--bg);
+  }
+}
+
+.customColorInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .Input {
+    flex: 1;
+    font-family: 'Monaco', monospace;
+    font-size: 12px;
+  }
+}
+
+.colorPreview {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  border: 1px solid var(--bg-tertiary);
+}
+
+.editorActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cancelBtn {
+  padding: 6px 14px;
+  border-radius: 90px;
+  font-size: 13px;
+  color: var(--secondary);
+  background: transparent;
+  transition: all 120ms ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--primary);
+    background: var(--bg-tertiary);
+  }
+}
+
+.saveBtn {
+  padding: 6px 14px;
+  border-radius: 90px;
+  font-size: 13px;
+  color: var(--base-text);
+  background: var(--base);
+  transition: all 120ms ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    background: var(--base-hover);
+  }
+}
